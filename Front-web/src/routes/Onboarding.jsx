@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FiArrowRight, FiArrowLeft } from 'react-icons/fi'
-import TopBar from '../components/TopBar'
+import TopBar from '../components/TopBar.jsx'
 
 const Onboarding = () => {
   const navigate = useNavigate()

@@ -4,8 +4,8 @@ import {
   FiArrowRight, FiZap, FiTarget, FiStar,
   FiHeart, FiWifi, FiFileText, FiUser
 } from 'react-icons/fi'
-import TopBar from '../components/TopBar'
-import BottomNav from '../components/Bottomnav'
+import TopBar from '../components/TopBar.jsx'
+import BottomNav from '../components/Bottomnav.jsx'
 import mockupMobile from '../assets/mucupe.png'
 import mockupDesktop from '../assets/mucupePC.png'
 

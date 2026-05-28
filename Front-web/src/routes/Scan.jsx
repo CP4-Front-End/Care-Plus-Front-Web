@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FiArrowLeft, FiCamera, FiGift, FiCheck } from 'react-icons/fi'
-import TopBar from '../components/TopBar'
-import BottomNav from '../components/Bottomnav'
+import TopBar from '../components/TopBar.jsx'
+import BottomNav from '../components/Bottomnav.jsx'
 
 const Scan = () => {
   const navigate = useNavigate()

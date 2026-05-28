@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { FiArrowLeft, FiArrowRight, FiWifi, FiActivity, FiDroplet } from 'react-icons/fi'
-import TopBar from '../components/TopBar'
-import BottomNav from '../components/Bottomnav'
+import TopBar from '../components/TopBar.jsx'
+import BottomNav from '../components/Bottomnav.jsx'
 import Flux from '../assets/img.png'
 import FluxPC from '../assets/imgPC.png'
 

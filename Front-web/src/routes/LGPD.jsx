@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { FiShield, FiCheck, FiX } from 'react-icons/fi'
-import TopBar from '../components/TopBar'
+import TopBar from '../components/TopBar.jsx'
 
 const LGPD = () => {
   const navigate = useNavigate()
