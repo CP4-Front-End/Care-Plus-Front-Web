@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FiArrowLeft, FiCamera, FiGift, FiCheck } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
-import BottomNav from '../components/Bottomnav.jsx'
+import Bottomnav from '../components/Bottomnav.jsx'
 
 const Scan = () => {
   const navigate = useNavigate()
@@ -120,7 +120,7 @@ const Scan = () => {
 
       </main>
 
-      <BottomNav activePage="home" />
+      <Bottomnav activePage="home" />
     </div>
   )
 }

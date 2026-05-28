@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { FiArrowLeft, FiAward } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
-import BottomNav from '../components/Bottomnav.jsx'
+import Bottomnav from '../components/Bottomnav.jsx'
 
 const Ranking = () => {
   const [nome, setNome] = useState('')
@@ -137,7 +137,7 @@ const Ranking = () => {
 
       </main>
 
-      <BottomNav activePage="home" />
+      <Bottomnav activePage="home" />
     </div>
   )
 }

@@ -5,7 +5,7 @@ import {
   FiHeart, FiWifi, FiFileText, FiUser
 } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
-import BottomNav from '../components/Bottomnav.jsx'
+import Bottomnav from '../components/Bottomnav.jsx'
 import mockupMobile from '../assets/mucupe.png'
 import mockupDesktop from '../assets/mucupePC.png'
 
@@ -229,7 +229,7 @@ const Inicial = () => {
 
       </main>
 
-      <BottomNav activePage="home" />
+      <Bottomnav activePage="home" />
     </div>
   )
 }

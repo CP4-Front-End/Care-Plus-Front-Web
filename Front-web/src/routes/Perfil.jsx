@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FiArrowLeft, FiArrowRight, FiUser, FiAward } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
-import BottomNav from '../components/Bottomnav.jsx'
+import Bottomnav from '../components/Bottomnav.jsx'
 
 const Perfil = () => {
   const [nome, setNome] = useState('')
@@ -205,7 +205,7 @@ const Perfil = () => {
 
       </main>
 
-      <BottomNav activePage="home" />
+      <Bottomnav activePage="home" />
     </div>
   )
 }

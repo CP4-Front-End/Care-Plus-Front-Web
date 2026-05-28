@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { FiArrowLeft, FiArrowRight, FiLock } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
-import BottomNav from '../components/Bottomnav.jsx'
+import Bottomnav from '../components/Bottomnav.jsx'
 
 const Beneficios = () => {
   const navigate = useNavigate()
@@ -110,7 +110,7 @@ const Beneficios = () => {
 
       </main>
 
-      <BottomNav activePage="home" />
+      <Bottomnav activePage="home" />
     </div>
   )
 }

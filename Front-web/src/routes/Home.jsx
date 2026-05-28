@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { FiArrowRight, FiCreditCard, FiShield, FiHeart } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
-import BottomNav from '../components/Bottomnav.jsx'
+import Bottomnav from '../components/Bottomnav.jsx'
 
 
 const Home = () => {
@@ -128,7 +128,7 @@ const Home = () => {
 
       </main>
 
-      <BottomNav activePage="home" />
+      <Bottomnav activePage="home" />
     </div>
   )
 }

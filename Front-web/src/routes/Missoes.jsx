@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FiArrowLeft, FiArrowRight, FiZap, FiTarget, FiStar, FiHeart, FiDroplet, FiSun, FiTrendingUp, FiInfo } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
-import BottomNav from '../components/Bottomnav.jsx'
+import Bottomnav from '../components/Bottomnav.jsx'
 
 const Missoes = () => {
   const navigate = useNavigate()
@@ -207,7 +207,7 @@ const Missoes = () => {
 
       </main>
 
-      <BottomNav activePage="home" />
+      <Bottomnav activePage="home" />
     </div>
   )
 }

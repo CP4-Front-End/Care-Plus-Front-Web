@@ -1,6 +1,6 @@
 import { FiHome, FiUsers, FiDollarSign, FiCheckSquare, FiMenu } from 'react-icons/fi'
 
-const BottomNav = ({ activePage = 'home' }) => {
+const Bottomnav = ({ activePage = 'home' }) => {
 
   const navItems = [
     { id: 'home', label: 'Home', icon: FiHome },
@@ -26,4 +26,4 @@ const BottomNav = ({ activePage = 'home' }) => {
   )
 }
 
-export default BottomNav
+export default Bottomnav

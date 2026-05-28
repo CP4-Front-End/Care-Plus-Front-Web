@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { FiArrowLeft, FiArrowRight, FiWifi, FiActivity, FiDroplet } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
-import BottomNav from '../components/Bottomnav.jsx'
+import Bottomnav from '../components/Bottomnav.jsx'
 import Flux from '../assets/img.png'
 import FluxPC from '../assets/imgPC.png'
 
@@ -158,7 +158,7 @@ const Connect = () => {
 
       </main>
 
-      <BottomNav activePage="home" />
+      <Bottomnav activePage="home" />
     </div>
   )
 }
