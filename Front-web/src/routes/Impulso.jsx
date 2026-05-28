@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { FiArrowLeft, FiZap, FiTrendingUp, FiStar, FiAward } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
-import BottomNav from '../components/BottomNav.jsx'
+import BottomNav from '../components/Bottomnav.jsx'
 import flux from '../assets/flux.png'
 
 const Impulso = () => {
