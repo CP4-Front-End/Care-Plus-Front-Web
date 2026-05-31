@@ -17,56 +17,55 @@ const Impulso = () => {
   ]
 
   return (
-    <div className="min-vh-100 bg-body">
+    <div className="min-h-screen bg-[#F4F6F8]">
       <TopBar points={points} showPoints={true} />
 
-      <main className="container py-3 pb-5 mb-4">
+      <main className="w-full px-4 lg:px-8 pt-4 pb-24">
 
-        <section className="d-flex align-items-center gap-2 mb-4">
+        <section className="flex items-center gap-2 mb-4">
           <button
-            className="btn btn-link p-0 text-decoration-none text-muted"
+            className="bg-transparent border-0 p-0 text-[#6B7685] cursor-pointer"
             onClick={() => navigate('/missoes')}
           >
             <FiArrowLeft size={20} />
           </button>
-          <h1 className="fw-bold mb-0 fs-5 text-dark-custom">Impulso+</h1>
+          <h1 className="font-bold text-[20px] text-[#1A202C]">Impulso+</h1>
         </section>
 
         <section className="mb-4">
-          <div className="bg-gradient-primary shadow-primary rounded-3 p-4 text-center">
+          <div className="bg-gradient-primary shadow-brand-primary rounded-xl p-4 text-center">
             <img
               src={flux}
               alt="Flux"
-              className="avatar-xl rounded-circle"
-              style={{ objectFit: 'contain' }}
+              className="w-[180px] h-[180px] rounded-full mx-auto object-contain"
             />
-            <h2 className="fw-bold text-white fs-4 mb-1">Flux</h2>
-            <p className="text-white opacity-75 small mb-3">Seu amigo de streak</p>
-            <div className="d-inline-flex align-items-center gap-2 bg-white bg-opacity-25 rounded-pill px-3 py-2">
+            <h2 className="font-bold text-white text-[24px] mb-1">Flux</h2>
+            <p className="text-white opacity-75 text-[13px] mb-3">Seu amigo de streak</p>
+            <div className="inline-flex items-center gap-2 bg-white/25 rounded-full px-3 py-2">
               <FiZap size={16} color="#fff" />
-              <span className="fw-bold text-white fs-7">{streakDias} dias de streak</span>
+              <span className="font-bold text-white text-[14px]">{streakDias} dias de streak</span>
             </div>
           </div>
         </section>
 
         <section className="mb-4">
-          <div className="bg-white rounded-3 border shadow-card p-3 text-center">
-            <p className="text-muted-custom fs-7 mb-1">Próxima recompensa em</p>
-            <span className="fw-bold text-primary fs-5">2 dias</span>
+          <div className="bg-white rounded-xl border border-[#E4E7EB] shadow-brand-card p-3 text-center">
+            <p className="text-[#6B7685] text-[14px] mb-1">Próxima recompensa em</p>
+            <span className="font-bold text-[#1c9770] text-[24px]">2 dias</span>
           </div>
         </section>
 
         <section className="mb-4">
-          <h2 className="fw-bold fs-6 text-dark-custom mb-3">Como funciona o Flux</h2>
-          <div className="d-flex flex-column gap-2">
+          <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">Como funciona o Flux</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
             {comoFunciona.map(({ id, icon: Icon, title, desc }) => (
-              <div key={id} className="bg-white rounded-3 border shadow-card p-3 d-flex align-items-center gap-3">
-                <div className="icon-box-sm rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 bg-primary-subtle-custom">
+              <div key={id} className="bg-white rounded-xl border border-[#E4E7EB] shadow-brand-card p-3 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-[rgba(28,151,112,0.1)]">
                   <Icon size={18} color="#1c9770" />
                 </div>
                 <div>
-                  <p className="fw-bold mb-0 fs-7 text-dark-custom">{title}</p>
-                  <p className="mb-0 text-muted fs-9">{desc}</p>
+                  <p className="font-bold text-[14px] text-[#1A202C]">{title}</p>
+                  <p className="text-[#6B7685] text-[12px]">{desc}</p>
                 </div>
               </div>
             ))}
@@ -74,15 +73,15 @@ const Impulso = () => {
         </section>
 
         <section>
-          <div className="bg-white rounded-3 border shadow-card p-3">
-            <h2 className="fw-bold fs-6 text-dark-custom mb-3">Seu progresso semanal</h2>
-            <div className="d-flex justify-content-between align-items-end gap-2">
+          <div className="bg-white rounded-xl border border-[#E4E7EB] shadow-brand-card p-3">
+            <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">Seu progresso semanal</h2>
+            <div className="flex justify-between items-end gap-2">
               {['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'].map((dia, index) => (
-                <div key={dia} className="d-flex flex-column align-items-center gap-1 flex-fill">
+                <div key={dia} className="flex flex-col items-center gap-1 flex-1">
                   <div
-                    className={`w-100 rounded-2 ${index < streakDias ? 'bg-primary bar-active' : 'bg-primary-subtle-custom bar-inactive'}`}
+                    className={`w-full rounded ${index < streakDias ? 'bg-[#1c9770] h-10' : 'bg-[rgba(28,151,112,0.1)] h-5'}`}
                   />
-                  <span className="fs-9 text-muted">{dia}</span>
+                  <span className="text-[12px] text-[#6B7685]">{dia}</span>
                 </div>
               ))}
             </div>

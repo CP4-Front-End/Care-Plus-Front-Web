@@ -188,11 +188,11 @@ const Cadastro = () => {
     const dados = await resposta.json()
 
     console.log(dados)
-    
+
     localStorage.setItem(
-  "carteirinha",
-    formData.carteirinha
-  )
+      "carteirinha",
+      formData.carteirinha
+    )
     navigate('/inicial')
   }
 
@@ -272,10 +272,13 @@ const Cadastro = () => {
 
                   <input
                     type="text"
-                    className="w-full rounded-xl py-3 bg-white px-3 border text-[14px] border-[#E4E7EB] outline-none focus:border-[#1c9770] "
+                    className="w-full rounded-xl py-3 bg-white px-3 border text-[14px] border-[#E4E7EB] outline-none focus:border-[#1c9770]"
                     placeholder="Digite seu nome"
                     value={formData.nome}
-                    onChange={e => handleChange('nome', e.target.value)}
+                    onChange={(e) => {
+                      const apenasLetras = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '')
+                      handleChange('nome', apenasLetras)
+                    }}
                   />
                 </div>
 
@@ -285,8 +288,8 @@ const Cadastro = () => {
                   </label>
 
                   <input
-                    type="text"
-                    className="w-full rounded-xl bg-white py-3 px-3 border text-[14px] border-[#E4E7EB] outline-none focus:border-[#1c9770] "
+                    type="number"
+                    className="w-full rounded-xl appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-white py-3 px-3 border text-[14px] border-[#E4E7EB] outline-none focus:border-[#1c9770] "
                     placeholder="Ex: 000000"
                     value={formData.carteirinha}
                     onChange={e => handleChange('carteirinha', e.target.value)}
@@ -350,8 +353,8 @@ const Cadastro = () => {
 
                 <button
                   className={`w-full font-bold rounded-xl py-3 flex items-center justify-center gap-2 text-white text-[14px] cursor-pointer ${isStep2Valid
-                      ? 'bg-[#1c9770] shadow-brand-primary'
-                      : 'bg-[#CDD3DA] cursor-not-allowed'
+                    ? 'bg-[#1c9770] shadow-brand-primary'
+                    : 'bg-[#CDD3DA] cursor-not-allowed'
                     }`}
                   onClick={() => isStep2Valid && handleSubmit()}
                   disabled={!isStep2Valid}
