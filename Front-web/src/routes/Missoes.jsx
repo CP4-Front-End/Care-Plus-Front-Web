@@ -5,14 +5,16 @@ import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
 import ModalConfirmacao from '../components/ModalConfirmacao.jsx'
 
+
 const Missoes = () => {
 
   const navigate = useNavigate()
   const [expandedDesafio, setExpandedDesafio] = useState(false)
   const [modalAberto, setModalAberto] = useState(false)
   const [missaoSelecionada, setMissaoSelecionada] = useState(null)
+  const [tipoMissao, setTipoMissao] = useState("")
+  const [points, setPoints] = useState(0)
 
-  const points = 1500
   const streakDias = 7
 
   const desafioAtual = {
@@ -29,6 +31,7 @@ const Missoes = () => {
   ]
 
   const [missoesPersonalizadas, setMissoesPersonalizadas] = useState([])
+  const [missoesGerais, setMissoesGerais] = useState([])
 
   const mapaMissoes = [
     { id: 1, desbloqueada: true, concluida: true },
@@ -38,6 +41,18 @@ const Missoes = () => {
     { id: 5, desbloqueada: false, concluida: false },
     { id: 6, desbloqueada: false, concluida: false },
   ]
+
+async function carregarMissoesGerais() {
+
+  const resposta = await fetch(
+    "http://127.0.0.1:8000/missoes-gerais"
+  )
+
+  const dados = await resposta.json()
+
+  setMissoesGerais(dados)
+}
+
 
   useEffect(() => {
 
@@ -55,18 +70,59 @@ const Missoes = () => {
       const dados = await resposta.json()
 
       setMissoesPersonalizadas(dados)
+
+      await carregarMissoesGerais()
+
+      const respostaUsuario = await fetch(
+        `http://127.0.0.1:8000/usuario/${carteirinha}`
+      )
+
+      const usuario = await respostaUsuario.json()
+
+      setPoints(usuario.trofeus)
+      setPoints(usuario.trofeus)
     }
 
     carregarMissoes()
 
   }, [])
 
-  function abrirModal(idMissao) {
+
+  function abrirModal(idMissao, tipo) {
 
     setMissaoSelecionada(idMissao)
-
+    setTipoMissao(tipo)
     setModalAberto(true)
   }
+
+
+async function concluirMissaoGeral(idMissao) {
+  const missaoConcluida = missoesGerais.find(m => m.id === idMissao)
+  if (!missaoConcluida) return
+
+  const carteirinha = localStorage.getItem("carteirinha")
+
+  await fetch("http://127.0.0.1:8000/concluir-missao-geral", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ carteirinha, trofeus: missaoConcluida.trofeus })
+  })
+
+  const respostaUsuario = await fetch(`http://127.0.0.1:8000/usuario/${carteirinha}`)
+  const usuario = await respostaUsuario.json()
+
+  setPoints(usuario.trofeus)
+  localStorage.setItem("trofeus", usuario.trofeus)
+  window.dispatchEvent(new Event("trofeusAtualizados"))
+
+
+  const novasMissoes = missoesGerais.filter(m => m.id !== idMissao)
+  setMissoesGerais(novasMissoes)
+  if (novasMissoes.length === 0) carregarMissoesGerais()
+}
+
+
+
 
   async function concluirMissao(idMissao) {
 
@@ -90,7 +146,6 @@ const Missoes = () => {
           })
         }
       )
-
       if (!resposta.ok) {
         throw new Error("Erro ao concluir missão")
       }
@@ -102,6 +157,21 @@ const Missoes = () => {
       const dados = await novaResposta.json()
 
       setMissoesPersonalizadas(dados)
+      const respostaUsuario = await fetch(
+        `http://127.0.0.1:8000/usuario/${carteirinha}`
+      )
+
+      const usuario = await respostaUsuario.json()
+
+      setPoints(usuario.trofeus)
+      localStorage.setItem(
+        "trofeus",
+        usuario.trofeus
+      )
+
+      window.dispatchEvent(
+        new Event("trofeusAtualizados")
+      )
 
     } catch (erro) {
 
@@ -197,14 +267,58 @@ const Missoes = () => {
               Acesse o app diariamente para liberar o Impulso+ e receber recompensas
             </p>
           </div>
+
+        </section>
+
+        <section className="mb-4">
+
+          <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">
+            Missões Gerais
+          </h2>
+
+          <div className="flex flex-col gap-2">
+
+            {missoesGerais.map((missao, index) => (
+
+              <div
+                key={index}
+                className="bg-white rounded-xl border border-[#E4E7EB] p-3 flex items-center gap-3"
+              >
+
+                <div className="rounded-xl flex items-center justify-center shrink-0 w-10 h-10 bg-[rgba(28,151,112,0.08)]">
+                  <FiTarget size={18} color="#1c9770" />
+                </div>
+
+                <div className="flex-1">
+
+                  <p className="text-[13px] text-[#1A202C]">
+                    {missao.missao}
+                  </p>
+
+                  <span className="text-[#1c9770] text-[12px] font-bold">
+                    {missao.trofeus} troféus
+                  </span>
+
+                </div>
+                <button
+                  onClick={() => abrirModal(missao.id, "geral")}
+                  className={`rounded-full flex items-center justify-center shrink-0 w-[22px] h-[22px] border-2 'bg-transparent border-[#CDD3DA]'
+                    }`}
+                >
+                  <FiArrowRight size={10} color="#9BA3AE" />
+                </button>
+              </div>
+
+            ))}
+
+          </div>
+
         </section>
 
         <section className="mb-4">
           <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">Missões personalizadas</h2>
           <div className="flex flex-col gap-2">
             {missoesPersonalizadas.map((missao, index) => (
-
-
 
               <div
                 key={index}
@@ -228,7 +342,7 @@ const Missoes = () => {
                 </div>
 
                 <button
-                  onClick={() => abrirModal(missao.id)}
+                  onClick={() => abrirModal(missao.id, "personalizada")}
                   className={`rounded-full flex items-center justify-center shrink-0 w-[22px] h-[22px] border-2 'bg-transparent border-[#CDD3DA]'
                     }`}
                 >
@@ -284,7 +398,20 @@ const Missoes = () => {
 
         onConfirm={async () => {
 
-          await concluirMissao(missaoSelecionada)
+         
+
+  if (tipoMissao === "personalizada") {
+
+    await concluirMissao(missaoSelecionada)
+
+  }
+
+  if (tipoMissao === "geral") {
+
+    console.log("Missão geral concluída")
+    concluirMissaoGeral(missaoSelecionada)
+
+  }
 
           setModalAberto(false)
         }}

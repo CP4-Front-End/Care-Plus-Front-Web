@@ -150,8 +150,18 @@ const Cadastro = () => {
       peso: formData.peso,
       altura: formData.altura,
     }
-    localStorage.setItem('boostcare_user', JSON.stringify(dadosPasso1))
-    setStep(2)
+    localStorage.setItem(
+  "carteirinha",
+  formData.carteirinha
+)
+
+localStorage.setItem("trofeus", 0)
+
+window.dispatchEvent(
+  new Event("trofeusAtualizados")
+
+)
+setStep(2)
   }
 
   const handleSubmit = async () => {
