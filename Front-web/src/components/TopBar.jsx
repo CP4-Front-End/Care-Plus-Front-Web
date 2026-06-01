@@ -2,19 +2,11 @@ import { FiBell } from 'react-icons/fi'
 import { FaTrophy } from 'react-icons/fa';
 import { useEffect, useState } from 'react'
 
-const TopBar = ({ showPoints = true, points: pointsProp }) => {
+const TopBar = ({ showPoints = true }) => {
 
-  const [points, setPoints] = useState(
-    Number(localStorage.getItem("trofeus") || 0)
-  )
+  const [points, setPoints] = useState(0)
 
-  // busca do backend ao montar, caso o pai não passe o prop
   useEffect(() => {
-
-    if (pointsProp !== undefined) {
-      setPoints(pointsProp)
-      return
-    }
 
     async function buscarTrofeus() {
 
@@ -27,15 +19,16 @@ const TopBar = ({ showPoints = true, points: pointsProp }) => {
 
       const usuario = await resposta.json()
 
+      if (!usuario) return
+
       setPoints(usuario.trofeus)
       localStorage.setItem("trofeus", usuario.trofeus)
     }
 
     buscarTrofeus()
 
-  }, [pointsProp])
+  }, [])
 
-  // listener para atualizações via evento
   useEffect(() => {
 
     function atualizarTrofeus() {
