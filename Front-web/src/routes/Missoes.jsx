@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FiArrowLeft, FiArrowRight, FiZap, FiTarget, FiStar, FiHeart, FiDroplet, FiSun, FiTrendingUp, FiInfo } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
+
 
 const Missoes = () => {
   const navigate = useNavigate()
@@ -24,11 +25,7 @@ const Missoes = () => {
     { id: 3, title: 'Queime um total de 700 calorias', icon: FiZap, concluida: false },
   ]
 
-  const missoesPersonalizadas = [
-    { id: 1, title: 'Vá para o trabalho caminhando ou de bicicleta', icon: FiTarget, concluida: false },
-    { id: 2, title: 'Beba 3 litros de água no dia', icon: FiDroplet, concluida: true },
-    { id: 3, title: 'Durma 8 horas essa noite', icon: FiStar, concluida: false },
-  ]
+  const [missoesPersonalizadas, setMissoesPersonalizadas] = useState([])
 
   const mapaMissoes = [
     { id: 1, desbloqueada: true, concluida: true },
@@ -39,6 +36,70 @@ const Missoes = () => {
     { id: 6, desbloqueada: false, concluida: false },
   ]
 
+  useEffect(() => {
+
+    async function carregarMissoes() {
+
+      const carteirinha =
+        localStorage.getItem("carteirinha")
+
+      if (!carteirinha) return
+
+      const resposta = await fetch(
+        `http://127.0.0.1:8000/missoes/${carteirinha}`
+      )
+
+      const dados = await resposta.json()
+
+      setMissoesPersonalizadas(dados)
+    }
+
+    carregarMissoes()
+
+  }, [])
+
+
+async function concluirMissao(idMissao) {
+
+  try {
+
+    const carteirinha =
+      localStorage.getItem("carteirinha")
+
+    const resposta = await fetch(
+      "http://127.0.0.1:8000/concluir-missao",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          carteirinha,
+          idMissao
+        })
+      }
+    )
+
+    if (!resposta.ok) {
+      throw new Error("Erro ao concluir missão")
+    }
+
+    const novaResposta = await fetch(
+      `http://127.0.0.1:8000/missoes/${carteirinha}`
+    )
+
+    const dados = await novaResposta.json()
+
+    setMissoesPersonalizadas(dados)
+
+  } catch (erro) {
+
+    console.log(erro)
+
+  }
+}
   const getCircleClass = (concluida, desbloqueada) => {
     if (concluida) return 'bg-[#1c9770] text-white border-2 border-transparent'
     if (desbloqueada) return 'bg-[rgba(28,151,112,0.15)] text-[#1c9770] border-2 border-[#1c9770]'
@@ -130,44 +191,45 @@ const Missoes = () => {
         </section>
 
         <section className="mb-4">
-          <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">Missões Connect+</h2>
-          <div className="flex flex-col gap-2">
-            {missoesConect.map(({ id, title, icon: Icon, concluida }) => (
-              <div
-                key={id}
-                className="bg-white rounded-xl border border-[#E4E7EB] p-3 flex items-center gap-3"
-              >
-                <div className="rounded-xl flex items-center justify-center shrink-0 w-10 h-10 bg-[rgba(122,209,195,0.15)]">
-                  <Icon size={18} color="#7AD1C3" />
-                </div>
-                <p className="text-[13px] text-[#1A202C] flex-1">{title}</p>
-                <div
-                  className={`rounded-full flex items-center justify-center shrink-0 w-[22px] h-[22px] border-2 ${concluida ? 'bg-[#1c9770] border-[#1c9770]' : 'bg-transparent border-[#CDD3DA]'}`}
-                >
-                  {concluida && <FiArrowRight size={10} color="#fff" />}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="mb-4">
           <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">Missões personalizadas</h2>
           <div className="flex flex-col gap-2">
-            {missoesPersonalizadas.map(({ id, title, icon: Icon, concluida }) => (
+            {missoesPersonalizadas.map((missao, index) => (
+
+
+
               <div
-                key={id}
+                key={index}
                 className="bg-white rounded-xl border border-[#E4E7EB] p-3 flex items-center gap-3"
               >
+
                 <div className="rounded-xl flex items-center justify-center shrink-0 w-10 h-10 bg-[rgba(28,151,112,0.08)]">
-                  <Icon size={18} color="#1c9770" />
+                  <FiTarget size={18} color="#1c9770" />
                 </div>
-                <p className="text-[13px] text-[#1A202C] flex-1">{title}</p>
-                <div
-                  className={`rounded-full flex items-center justify-center shrink-0 w-[22px] h-[22px] border-2 ${concluida ? 'bg-[#93CB52] border-[#93CB52]' : 'bg-transparent border-[#CDD3DA]'}`}
-                >
-                  {concluida && <FiArrowRight size={10} color="#fff" />}
+
+                <div className="flex-1">
+
+                  <p className="text-[13px] text-[#1A202C]">
+                    {missao.titulo}
+                  </p>
+
+                  <span className="text-[#1c9770] text-[12px] font-bold">
+                    {missao.trofeus} troféus
+                  </span>
+
                 </div>
+
+                <button
+                    onClick={() => concluirMissao(missao.id)}
+                    className={`rounded-full flex items-center justify-center shrink-0 w-[22px] h-[22px] border-2 'bg-transparent border-[#CDD3DA]'
+                    }`}
+                  >
+
+                  <FiArrowRight size={10} color="#9BA3AE" />
+                  </button>
+
+
+
+
               </div>
             ))}
           </div>
