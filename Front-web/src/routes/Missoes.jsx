@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import { FiArrowLeft, FiArrowRight, FiZap, FiTarget, FiStar, FiHeart, FiDroplet, FiSun, FiTrendingUp, FiInfo } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
-
+import ModalConfirmacao from '../components/ModalConfirmacao.jsx'
 
 const Missoes = () => {
+
   const navigate = useNavigate()
   const [expandedDesafio, setExpandedDesafio] = useState(false)
+  const [modalAberto, setModalAberto] = useState(false)
+  const [missaoSelecionada, setMissaoSelecionada] = useState(null)
 
   const points = 1500
   const streakDias = 7
@@ -58,48 +61,54 @@ const Missoes = () => {
 
   }, [])
 
+  function abrirModal(idMissao) {
 
-async function concluirMissao(idMissao) {
+    setMissaoSelecionada(idMissao)
 
-  try {
-
-    const carteirinha =
-      localStorage.getItem("carteirinha")
-
-    const resposta = await fetch(
-      "http://127.0.0.1:8000/concluir-missao",
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-          carteirinha,
-          idMissao
-        })
-      }
-    )
-
-    if (!resposta.ok) {
-      throw new Error("Erro ao concluir missão")
-    }
-
-    const novaResposta = await fetch(
-      `http://127.0.0.1:8000/missoes/${carteirinha}`
-    )
-
-    const dados = await novaResposta.json()
-
-    setMissoesPersonalizadas(dados)
-
-  } catch (erro) {
-
-    console.log(erro)
-
+    setModalAberto(true)
   }
-}
+
+  async function concluirMissao(idMissao) {
+
+    try {
+
+      const carteirinha =
+        localStorage.getItem("carteirinha")
+
+      const resposta = await fetch(
+        "http://127.0.0.1:8000/concluir-missao",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            carteirinha,
+            idMissao
+          })
+        }
+      )
+
+      if (!resposta.ok) {
+        throw new Error("Erro ao concluir missão")
+      }
+
+      const novaResposta = await fetch(
+        `http://127.0.0.1:8000/missoes/${carteirinha}`
+      )
+
+      const dados = await novaResposta.json()
+
+      setMissoesPersonalizadas(dados)
+
+    } catch (erro) {
+
+      console.log(erro)
+
+    }
+  }
   const getCircleClass = (concluida, desbloqueada) => {
     if (concluida) return 'bg-[#1c9770] text-white border-2 border-transparent'
     if (desbloqueada) return 'bg-[rgba(28,151,112,0.15)] text-[#1c9770] border-2 border-[#1c9770]'
@@ -219,17 +228,12 @@ async function concluirMissao(idMissao) {
                 </div>
 
                 <button
-                    onClick={() => concluirMissao(missao.id)}
-                    className={`rounded-full flex items-center justify-center shrink-0 w-[22px] h-[22px] border-2 'bg-transparent border-[#CDD3DA]'
+                  onClick={() => abrirModal(missao.id)}
+                  className={`rounded-full flex items-center justify-center shrink-0 w-[22px] h-[22px] border-2 'bg-transparent border-[#CDD3DA]'
                     }`}
-                  >
-
+                >
                   <FiArrowRight size={10} color="#9BA3AE" />
-                  </button>
-
-
-
-
+                </button>
               </div>
             ))}
           </div>
@@ -268,6 +272,23 @@ async function concluirMissao(idMissao) {
         </section>
 
       </main>
+
+      <ModalConfirmacao
+        aberto={modalAberto}
+
+        titulo="Concluir missão?"
+
+        descricao="Essa missão será marcada como concluída e substituída por outra."
+
+        onClose={() => setModalAberto(false)}
+
+        onConfirm={async () => {
+
+          await concluirMissao(missaoSelecionada)
+
+          setModalAberto(false)
+        }}
+      />
 
       <Bottomnav activePage="home" />
     </div>

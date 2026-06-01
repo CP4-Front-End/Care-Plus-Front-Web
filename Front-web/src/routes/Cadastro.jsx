@@ -171,6 +171,7 @@ const Cadastro = () => {
       cafeina: formData.cafeina,
       arLivre: formData.arLivre,
       refeicoes: formData.refeicoes,
+
     }
     const resposta = await fetch(
       "http://127.0.0.1:8000/cadastro",
