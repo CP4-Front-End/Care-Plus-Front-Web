@@ -20,7 +20,7 @@ O Boost Care é uma funcionalidade gamificada integrada ao ecossistema Care Plus
 src/
   components/
     TopBar.jsx
-    BottomNav.jsx
+    Bottomnav.jsx
   routes/
     HomePage.jsx
     LGPD.jsx

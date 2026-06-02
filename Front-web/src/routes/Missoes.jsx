@@ -41,10 +41,10 @@ const Missoes = () => {
     { id: 6, desbloqueada: false, concluida: false },
   ]
 
-  async function carregarMissoesGerais() {
+  async function carregarMissoesGerais(carteirinha) {
 
     const resposta = await fetch(
-      "http://127.0.0.1:8000/missoes-gerais"
+      `http://127.0.0.1:8000/missoes-gerais?carteirinha=${carteirinha}`
     )
 
     const dados = await resposta.json()
@@ -68,7 +68,7 @@ const Missoes = () => {
 
       setMissoesPersonalizadas(dados)
 
-      await carregarMissoesGerais()
+      await carregarMissoesGerais(carteirinha)
     }
 
     carregarMissoes()
@@ -91,7 +91,7 @@ const Missoes = () => {
     await fetch("http://127.0.0.1:8000/concluir-missao-geral", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ carteirinha, trofeus: missaoConcluida.trofeus })
+      body: JSON.stringify({ carteirinha, idMissao, trofeus: missaoConcluida.trofeus })
     })
 
     const respostaUsuario = await fetch(
@@ -108,7 +108,7 @@ const Missoes = () => {
     const novasMissoes = missoesGerais.filter(m => m.id !== idMissao)
     setMissoesGerais(novasMissoes)
 
-    if (novasMissoes.length === 0) carregarMissoesGerais()
+    if (novasMissoes.length === 0) carregarMissoesGerais(carteirinha)
   }
 
   async function concluirMissao(idMissao) {
