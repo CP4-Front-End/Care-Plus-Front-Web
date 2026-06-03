@@ -206,14 +206,14 @@ const Missoes = () => {
 
         <section>
           <div
-            className="bg-white rounded-xl border border-[rgba(28,151,112,0.2)] p-4 text-center mb-4 cursor-pointer"
-            onClick={() => navigate('/impulso')}
+            className="bg-[#7AD1C3] rounded-xl border border-[rgba(28,151,112,0.2)] p-4 text-center mb-4 cursor-pointer"
+            onClick={() => navigate('/ranking')}
           >
             <div className="rounded-full flex items-center justify-center mx-auto mb-3 w-16 h-16 bg-[rgba(147,203,82,0.15)]">
               <FiTrendingUp size={28} color="#93CB52" />
             </div>
-            <h2 className="font-bold text-[16px] text-[#1A202C] mb-1">Impulso+</h2>
-            <p className="text-[#6B7685] text-[13px] mb-2">Esse é o Flux, seu amigo de streak</p>
+            <h2 className="font-bold text-[16px] text-[#1A202C] mb-1">Ranking</h2>
+            <p className="text-[#6B7685] text-[13px] mb-2">Confira seu desenpenho com seus amigos</p>
             <span className="font-bold inline-block px-3 py-1 rounded-full bg-[rgba(28,151,112,0.1)] text-[#1c9770] text-[13px]">
               {streakDias} dias
             </span>
@@ -344,38 +344,6 @@ const Missoes = () => {
                 </button>
               </div>
             ))}
-          </div>
-        </section>
-
-        <section className="mb-4">
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="font-bold text-[16px] text-[#1A202C]">Desafio semanal</h2>
-            <button
-              className="bg-transparent border-0 p-0 flex items-center gap-1 cursor-pointer"
-              onClick={() => setExpandedDesafio(!expandedDesafio)}
-            >
-              <FiInfo size={14} color="#1c9770" />
-            </button>
-          </div>
-
-          {expandedDesafio && (
-            <div className="rounded-xl p-3 mb-3 text-[13px] bg-[rgba(28,151,112,0.07)] border border-[rgba(28,151,112,0.2)] text-[#1A202C]">
-              Os desafios semanais são lançados toda segunda-feira para o público do aplicativo.
-              Quem completar o desafio mais rápido receberá uma caixa surpresa única.
-            </div>
-          )}
-
-          <div
-            className="rounded-xl p-3 flex items-center justify-between bg-gradient-primary shadow-brand-primary cursor-pointer"
-            onClick={() => navigate('/ranking')}
-          >
-            <div>
-              <p className="font-bold text-white text-[13px]">Ver Ranking Semanal</p>
-              <p className="text-white opacity-75 text-[12px]">
-                Você está no grupo dos 40% melhores
-              </p>
-            </div>
-            <FiArrowRight size={20} color="#fff" />
           </div>
         </section>
 

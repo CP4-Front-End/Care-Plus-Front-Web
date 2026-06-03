@@ -257,5 +257,228 @@
         "streak": 0,
         "ultimoDiaStreak": "",
         "streakDiasAcendidos": []
+    },
+    "1234": {
+        "nome": "cleber",
+        "carteirinha": "1234",
+        "peso": "70",
+        "altura": "8678",
+        "atividadeFisica": "3_4",
+        "tempoSentado": "5_8h",
+        "distanciaDia": "mais_6",
+        "agua": "mais_3",
+        "sono": "menos_5",
+        "celular": "menos_2",
+        "pausas": "4_6",
+        "cafeina": "mais_5",
+        "arLivre": "30_60",
+        "refeicoes": "3",
+        "trofeus": 0,
+        "trofeusAcumulados": 0,
+        "beneficiosResgatados": [],
+        "beneficiosDisponiveis": [
+            {
+                "id": 18,
+                "titulo": "Camiseta esportiva dry-fit",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 16,
+                "titulo": "Suplemento multivitamínico (1 mês)",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 5,
+                "titulo": "Cupom de R$20 no iFood",
+                "parceiro": "iFood",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 2,
+                "titulo": "1 mês grátis de Spotify Premium",
+                "parceiro": "Spotify",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 3,
+                "titulo": "Barrinha de proteína da Growth Supplements",
+                "parceiro": "Growth Supplements",
+                "custoTrofeus": 450
+            },
+            {
+                "id": 1,
+                "titulo": "Desconto de 20% em corridas da Uber",
+                "parceiro": "Uber",
+                "custoTrofeus": 400
+            }
+        ],
+        "missoesConcluidasHoje": 0,
+        "ultimoDiaMissoes": "2026-06-03",
+        "streak": 0,
+        "ultimoDiaStreak": "",
+        "streakDiasAcendidos": []
+    },
+    "3232": {
+        "nome": "sergio",
+        "carteirinha": "3232",
+        "peso": "323",
+        "altura": "323",
+        "atividadeFisica": "3_4",
+        "tempoSentado": "2_5h",
+        "distanciaDia": "3_6",
+        "agua": "menos_1",
+        "sono": "menos_5",
+        "celular": "2_5",
+        "pausas": "mais_6",
+        "cafeina": "1_2",
+        "arLivre": "15_30",
+        "refeicoes": "3",
+        "trofeus": 0,
+        "trofeusAcumulados": 0,
+        "beneficiosResgatados": [],
+        "beneficiosDisponiveis": [
+            {
+                "id": 18,
+                "titulo": "Camiseta esportiva dry-fit",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 4,
+                "titulo": "Desconto de 30% em consulta na Dr. Consulta",
+                "parceiro": "Dr. Consulta",
+                "custoTrofeus": 600
+            },
+            {
+                "id": 20,
+                "titulo": "Plano básico do Gympass (1 semana)",
+                "parceiro": "Gympass",
+                "custoTrofeus": 800
+            },
+            {
+                "id": 14,
+                "titulo": "Voucher de R$30 em farmácia Drogasil",
+                "parceiro": "Drogasil",
+                "custoTrofeus": 650
+            },
+            {
+                "id": 17,
+                "titulo": "Desconto de 20% em nutricionista",
+                "parceiro": "Parceiro saúde",
+                "custoTrofeus": 650
+            },
+            {
+                "id": 3,
+                "titulo": "Barrinha de proteína da Growth Supplements",
+                "parceiro": "Growth Supplements",
+                "custoTrofeus": 450
+            }
+        ],
+        "missoesConcluidasHoje": 0,
+        "ultimoDiaMissoes": "2026-06-03",
+        "streak": 0,
+        "ultimoDiaStreak": "",
+        "streakDiasAcendidos": []
+    },
+    "323": {
+        "nome": "murilo",
+        "carteirinha": "323",
+        "peso": "32",
+        "altura": "32",
+        "atividadeFisica": "5_7",
+        "tempoSentado": "mais_8h",
+        "distanciaDia": "1_3",
+        "agua": "menos_1",
+        "sono": "5_7",
+        "celular": "5_8",
+        "pausas": "0",
+        "cafeina": "3_5",
+        "arLivre": "15_30",
+        "refeicoes": "4_5",
+        "trofeus": 0,
+        "trofeusAcumulados": 0,
+        "beneficiosResgatados": [],
+        "beneficiosDisponiveis": [
+            {
+                "id": 7,
+                "titulo": "Desconto de 25% em academia Smart Fit",
+                "parceiro": "Smart Fit",
+                "custoTrofeus": 700
+            },
+            {
+                "id": 13,
+                "titulo": "Fone esportivo Bluetooth",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 800
+            },
+            {
+                "id": 8,
+                "titulo": "Garrafa térmica esportiva",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 450
+            },
+            {
+                "id": 16,
+                "titulo": "Suplemento multivitamínico (1 mês)",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 9,
+                "titulo": "Desconto de R$15 em corrida 99",
+                "parceiro": "99",
+                "custoTrofeus": 400
+            },
+            {
+                "id": 1,
+                "titulo": "Desconto de 20% em corridas da Uber",
+                "parceiro": "Uber",
+                "custoTrofeus": 400
+            }
+        ],
+        "missoesConcluidasHoje": 0,
+        "ultimoDiaMissoes": "2026-06-03",
+        "streak": 0,
+        "ultimoDiaStreak": "",
+        "streakDiasAcendidos": [],
+        "missoesAtivas": [
+            {
+                "titulo": "Tente alcançar 3km hoje",
+                "trofeus": 30,
+                "id": 1,
+                "concluida": false
+            },
+            {
+                "titulo": "Beba pelo menos 2L de água hoje",
+                "trofeus": 40,
+                "id": 2,
+                "concluida": false
+            },
+            {
+                "titulo": "Levante e caminhe 5 minutos agora",
+                "trofeus": 40,
+                "id": 3,
+                "concluida": false
+            }
+        ],
+        "missoesGeraisAtivas": [
+            {
+                "missao": "Agradecer por algo positivo no dia",
+                "trofeus": 20,
+                "id": 1
+            },
+            {
+                "missao": "Fazer um pequeno alongamento antes de dormir",
+                "trofeus": 30,
+                "id": 2
+            },
+            {
+                "missao": "Alongar o pescoço e ombros",
+                "trofeus": 20,
+                "id": 3
+            }
+        ]
     }
 }
