@@ -9,6 +9,13 @@ const Impulso = () => {
   const navigate = useNavigate()
   const [streakDias, setStreakDias] = useState(0)
   const [missoesHoje, setMissoesHoje] = useState(0)
+  const diaAtual = new Date().getDay()
+
+  const indiceDia = diaAtual === 0
+    ? 6
+    : diaAtual - 1
+
+
 
 
 
@@ -130,9 +137,15 @@ const Impulso = () => {
             <div className="flex justify-between items-end gap-2">
               {['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'].map((dia, index) => (
                 <div key={dia} className="flex flex-col items-center gap-1 flex-1">
+
                   <div
-                    className={`w-full rounded ${index < streakDias ? 'bg-[#1c9770] h-10' : 'bg-[rgba(28,151,112,0.1)] h-5'}`}
+                    className={`w-full rounded transition-all duration-300 ${index === indiceDia && streakDias > 0
+                        ? 'bg-[#1c9770] h-14'
+                        : 'bg-[rgba(28,151,112,0.1)] h-5'
+                      }`}
                   />
+
+
                   <span className="text-[12px] text-[#6B7685]">{dia}</span>
                 </div>
               ))}
