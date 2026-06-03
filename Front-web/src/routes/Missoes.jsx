@@ -31,15 +31,32 @@ const Missoes = () => {
 
   const [missoesPersonalizadas, setMissoesPersonalizadas] = useState([])
   const [missoesGerais, setMissoesGerais] = useState([])
+  const [missoesHoje, setMissoesHoje] = useState(0)
 
-  const mapaMissoes = [
-    { id: 1, desbloqueada: true, concluida: true },
-    { id: 2, desbloqueada: true, concluida: true },
-    { id: 3, desbloqueada: true, concluida: false },
-    { id: 4, desbloqueada: false, concluida: false },
-    { id: 5, desbloqueada: false, concluida: false },
-    { id: 6, desbloqueada: false, concluida: false },
-  ]
+
+
+  const inicioMapa = Math.max(
+    missoesHoje - 5,
+    0
+  )
+
+  const mapaMissoes = Array.from(
+    { length: 6 },
+    (_, index) => {
+
+      const numero = inicioMapa + index + 1
+
+      return {
+        id: numero,
+        concluida: numero <= missoesHoje,
+        desbloqueada: numero === missoesHoje + 1
+      }
+    }
+  )
+
+
+
+
 
   async function carregarMissoesGerais(carteirinha) {
 
@@ -69,6 +86,15 @@ const Missoes = () => {
       setMissoesPersonalizadas(dados)
 
       await carregarMissoesGerais(carteirinha)
+      const respostaUsuario = await fetch(
+        `http://127.0.0.1:8000/usuario/${carteirinha}`
+      )
+
+      const usuario = await respostaUsuario.json()
+
+      setMissoesHoje(
+        usuario.missoesConcluidasHoje || 0
+      )
     }
 
     carregarMissoes()
@@ -104,6 +130,9 @@ const Missoes = () => {
 
     localStorage.setItem("trofeus", usuario.trofeus)
     window.dispatchEvent(new Event("trofeusAtualizados"))
+    setMissoesHoje(
+      usuario.missoesConcluidasHoje || 0
+    )
 
     const novasMissoes = missoesGerais.filter(m => m.id !== idMissao)
     setMissoesGerais(novasMissoes)
@@ -148,6 +177,9 @@ const Missoes = () => {
 
       localStorage.setItem("trofeus", usuario.trofeus)
       window.dispatchEvent(new Event("trofeusAtualizados"))
+      setMissoesHoje(
+        usuario.missoesConcluidasHoje || 0
+      )
 
     } catch (erro) {
 
@@ -226,15 +258,28 @@ const Missoes = () => {
 
             <div className="flex items-center justify-center gap-2 flex-wrap">
               {mapaMissoes.map(({ id, desbloqueada, concluida }) => (
-                <div key={id} className="flex flex-col items-center gap-1">
+
+                <div
+                  key={id}
+                  className="flex flex-col items-center justify-start gap-1 h-[58px]"
+                >
+
+
                   <div
                     className={`rounded-full flex items-center justify-center font-bold w-10 h-10 text-[13px] ${getCircleClass(concluida, desbloqueada)}`}
                   >
                     {id}
                   </div>
-                  {id < mapaMissoes.length && (
-                    <div className={`w-0.5 h-4 ${concluida ? 'bg-[#1c9770]' : 'bg-[#E4E7EB]'}`} />
-                  )}
+
+                  <div
+                    className={`w-0.5 h-4 ${id < mapaMissoes[mapaMissoes.length - 1].id
+                        ? concluida
+                          ? 'bg-[#1c9770]'
+                          : 'bg-[#E4E7EB]'
+                        : 'opacity-0'
+                      }`}
+                  />
+
                 </div>
               ))}
             </div>

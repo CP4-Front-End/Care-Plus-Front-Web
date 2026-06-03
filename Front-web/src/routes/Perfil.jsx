@@ -7,8 +7,9 @@ import Bottomnav from '../components/Bottomnav.jsx'
 const Perfil = () => {
   const [nome, setNome] = useState('')
   const navigate = useNavigate()
-  const points = 1500
-  const [userData, setUserData] = useState(null)
+  const [usuario, setUsuario] = useState(null)
+  const [nivel, setNivel] = useState("Bronze")
+  const [missoesHoje, setMissoesHoje] = useState(0)
 
   useEffect(() => {
     async function carregarUsuario() {
@@ -22,65 +23,254 @@ const Perfil = () => {
 
       const dados = await resposta.json()
 
+      setUsuario(dados)
+      setMissoesHoje(
+        dados.missoesConcluidasHoje || 0
+      )
+
+      const trofeus = dados.trofeusAcumulados || 0
+
+      if (trofeus >= 1500) {
+
+        setNivel("Ouro")
+
+      } else if (trofeus >= 500) {
+
+        setNivel("Prata")
+
+      } else {
+
+        setNivel("Bronze")
+
+      }
+
+
       setNome(dados.nome)
+      setMissoesHoje(
+        dados.missoesConcluidasHoje || 0
+      )
     }
 
     carregarUsuario()
 
-
-    const saved = localStorage.getItem('boostcare_user')
-    if (saved) setUserData(JSON.parse(saved))
   }, [])
 
-  const missoesDiarias = [
-    { dia: 'Seg', quantidade: 7 },
-    { dia: 'Ter', quantidade: 5 },
-    { dia: 'Qua', quantidade: 9 },
-    { dia: 'Qui', quantidade: 4 },
-    { dia: 'Sex', quantidade: 8 },
-  ]
+  useEffect(() => {
 
-  const maxMissoes = Math.max(...missoesDiarias.map(d => d.quantidade))
+    async function atualizarUsuario() {
+
+      const carteirinha =
+        localStorage.getItem("carteirinha")
+
+      if (!carteirinha) return
+
+      const resposta = await fetch(
+        `http://127.0.0.1:8000/usuario/${carteirinha}`
+      )
+
+      const dados = await resposta.json()
+
+      setUsuario(dados)
+      setMissoesHoje(
+        dados.missoesConcluidasHoje || 0
+      )
+
+      const trofeus = dados.trofeus || 0
+
+      if (trofeus >= 1500) {
+
+        setNivel("Ouro")
+
+      } else if (trofeus >= 500) {
+
+        setNivel("Prata")
+
+      } else {
+
+        setNivel("Bronze")
+
+      }
+    }
+
+    window.addEventListener(
+      "trofeusAtualizados",
+      atualizarUsuario
+    )
+
+    return () => {
+
+      window.removeEventListener(
+        "trofeusAtualizados",
+        atualizarUsuario
+      )
+    }
+
+  }, [])
+
+
+
+  const hoje = new Date().getDay()
+
+  const dias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab']
+
+  const missoesDiarias = dias.map((dia, index) => ({
+    dia,
+    quantidade: index === hoje ? missoesHoje : 0
+  }))
+
+  const maxMissoes = 10
+
 
   const trofeus = [
-    { id: 1, title: 'Campeão do Ronco', desc: 'Tenha 8 horas de sono seguidas por 3 dias.', conquistado: true },
-    { id: 2, title: 'Rei das Garrafinhas', desc: 'Beba 3L de água diários por 3 dias.', conquistado: true },
-    { id: 3, title: 'O Poderoso Pratão', desc: 'Tenha 3 refeições coloridas na semana.', conquistado: true },
-    { id: 4, title: 'Mestre dos Passos', desc: 'Dê 10.000 passos diários contados pela pulseira.', conquistado: false },
-    { id: 5, title: 'Day Off', desc: 'Tenha ao menos 1 dia de descanso por semana.', conquistado: false },
-    { id: 6, title: 'ChecKing', desc: 'Faça ao menos 1 checking diário por 1 mês.', conquistado: false },
+
+    {
+      id: 1,
+      title: 'Mestre da Hidratação',
+      desc: 'Complete 5 missões relacionadas à água.',
+      conquistado: true
+    },
+
+    {
+      id: 2,
+      title: 'Respire Fundo',
+      desc: 'Complete 3 missões de relaxamento ou respiração.',
+      conquistado: true
+    },
+
+    {
+      id: 3,
+      title: 'Desconectado',
+      desc: 'Complete 5 missões sem redes sociais ou celular.',
+      conquistado: true
+    },
+
+    {
+      id: 4,
+      title: 'Corpo em Movimento',
+      desc: 'Complete 10 missões de caminhada ou alongamento.',
+      conquistado: false
+    },
+
+    {
+      id: 5,
+      title: 'Pausa Inteligente',
+      desc: 'Faça pausas conscientes por 7 dias diferentes.',
+      conquistado: false
+    },
+
+    {
+      id: 6,
+      title: 'Sono Restaurador',
+      desc: 'Complete 5 missões relacionadas ao sono.',
+      conquistado: false
+    },
+
+    {
+      id: 7,
+      title: 'Foco Total',
+      desc: 'Evite distrações em 5 missões diferentes.',
+      conquistado: false
+    },
+
+    {
+      id: 8,
+      title: 'Zen',
+      desc: 'Complete 10 missões de relaxamento e mindfulness.',
+      conquistado: false
+    },
+
+    {
+      id: 9,
+      title: 'Vida Saudável',
+      desc: 'Complete missões de água, sono e alimentação na mesma semana.',
+      conquistado: false
+    }
+
   ]
 
+
   const nivelLabel = (campo, valor) => {
+
     const map = {
-      nivelAtividade: {
-        sedentario: 'Sedentário',
-        leve: 'Levemente ativo',
-        moderado: 'Moderadamente ativo',
-        ativo: 'Ativo',
-        muito_ativo: 'Muito ativo',
+
+      atividadeFisica: {
+        "0": "Nenhum dia",
+        "1_2": "1 a 2 dias",
+        "3_4": "3 a 4 dias",
+        "5_7": "5 a 7 dias"
       },
-      qualidadeSono: {
-        muito_ruim: 'Muito ruim',
-        ruim: 'Ruim',
-        regular: 'Regular',
-        boa: 'Boa',
-        excelente: 'Excelente',
+
+      tempoSentado: {
+        "menos_2h": "Menos de 2h",
+        "2_5h": "2 a 5h",
+        "5_8h": "5 a 8h",
+        "mais_8h": "Mais de 8h"
       },
-      nivelEnergia: {
-        muito_baixo: 'Muito baixo',
-        baixo: 'Baixo',
-        moderado: 'Moderado',
-        bom: 'Bom',
-        excelente: 'Excelente',
+
+      distanciaDia: {
+        "menos_1": "Menos de 1km",
+        "1_3": "1 a 3km",
+        "3_6": "3 a 6km",
+        "mais_6": "Mais de 6km"
       },
+
+      agua: {
+        "menos_1": "Menos de 1L",
+        "1_2": "1 a 2L",
+        "2_3": "2 a 3L",
+        "mais_3": "Mais de 3L"
+      },
+
+      sono: {
+        "menos_5": "Menos de 5h",
+        "5_7": "5 a 7h",
+        "7_9": "7 a 9h",
+        "mais_9": "Mais de 9h"
+      },
+
+      celular: {
+        "menos_2": "Menos de 2h",
+        "2_5": "2 a 5h",
+        "5_8": "5 a 8h",
+        "mais_8": "Mais de 8h"
+      },
+
+      pausas: {
+        "0": "Nenhuma",
+        "1_3": "1 a 3",
+        "4_6": "4 a 6",
+        "mais_6": "Mais de 6"
+      },
+
+      cafeina: {
+        "0": "Nenhuma",
+        "1_2": "1 a 2 copos",
+        "3_5": "3 a 5 copos",
+        "mais_5": "Mais de 5"
+      },
+
+      arLivre: {
+        "0_15": "0 a 15 min",
+        "15_30": "15 a 30 min",
+        "30_60": "30 a 60 min",
+        "mais_60": "Mais de 60 min"
+      },
+
+      refeicoes: {
+        "1_2": "1 a 2 refeições",
+        "3": "3 refeições",
+        "4_5": "4 a 5 refeições",
+        "mais_5": "Mais de 5 refeições"
+      }
     }
+
     return map[campo]?.[valor] || '-'
   }
 
+
   return (
     <div className="min-h-screen bg-[#F4F6F8]">
-      <TopBar points={points} showPoints={true} />
+      <TopBar showPoints={true} />
 
       <main className="w-full px-4 lg:px-8 pt-4 pb-24">
 
@@ -101,10 +291,10 @@ const Perfil = () => {
             </div>
             <div className="flex-1">
               <h2 className="font-bold text-[16px] text-[#1A202C]">{nome}</h2>
-              <span className="inline-block rounded-full bg-[#1c9770] text-white px-2 py-0.5 text-[11px] font-medium">Bronze</span>
+              <span className="inline-block rounded-full bg-[#1c9770] text-white px-2 py-0.5 text-[11px] font-medium">{nivel}</span>
             </div>
             <div className="bg-[rgba(28,151,112,0.1)] rounded-xl px-3 py-2">
-              <span className="font-bold text-[#1c9770] text-[14px]">{points.toLocaleString('pt-BR')} pts</span>
+              <span className="font-bold text-[#1c9770] text-[14px]">{usuario?.trofeus.toLocaleString('pt-BR') || 0} Troféus</span>
             </div>
           </div>
         </section>
@@ -118,7 +308,14 @@ const Perfil = () => {
                   <span className="text-[#1c9770] font-bold text-[12px]">{quantidade}</span>
                   <div
                     className="w-full rounded bg-[#1c9770]"
-                    style={{ height: `${(quantidade / maxMissoes) * 60}px` }}
+                    id="qs0g1c"
+                    style={{
+                      height: `${Math.max(
+                        (quantidade / maxMissoes) * 120,
+                        quantidade > 0 ? 12 : 4
+                      )}px`
+                    }}
+
                   />
                   <span className="text-[#6B7685] text-[12px]">{dia}</span>
                 </div>
@@ -129,7 +326,7 @@ const Perfil = () => {
 
         <section className="mb-4">
           <div className="flex justify-between items-center mb-3">
-            <h2 className="font-bold text-[16px] text-[#1A202C]">Troféus</h2>
+            <h2 className="font-bold text-[16px] text-[#1A202C]">Conquistas</h2>
             <button
               className="bg-transparent border-0 p-0 text-[#1c9770] flex items-center gap-1 text-[14px] cursor-pointer"
               onClick={() => { }}
@@ -168,37 +365,53 @@ const Perfil = () => {
               <div className="flex justify-between items-center">
                 <span className="text-[#6B7685] text-[14px]">Peso</span>
                 <span className="font-bold text-[14px] text-[#1A202C]">
-                  {userData?.peso ? `${userData.peso} kg` : '-'}
+                  {usuario?.peso ? `${usuario?.peso} kg` : '-'}
                 </span>
               </div>
               <hr className="border-[#E4E7EB] m-0" />
               <div className="flex justify-between items-center">
                 <span className="text-[#6B7685] text-[14px]">Altura</span>
                 <span className="font-bold text-[14px] text-[#1A202C]">
-                  {userData?.altura ? `${userData.altura} cm` : '-'}
+                  {usuario?.altura ? `${usuario?.altura} cm` : '-'}
                 </span>
               </div>
               <hr className="border-[#E4E7EB] m-0" />
+
               <div className="flex justify-between items-center">
-                <span className="text-[#6B7685] text-[14px]">Nível de atividade</span>
+                <span className="text-[#6B7685] text-[14px]">
+                  Atividade física
+                </span>
+
                 <span className="font-bold text-[14px] text-[#1A202C]">
-                  {nivelLabel('nivelAtividade', userData?.nivelAtividade)}
+                  {nivelLabel('atividadeFisica', usuario?.atividadeFisica)}
                 </span>
               </div>
+
               <hr className="border-[#E4E7EB] m-0" />
+
               <div className="flex justify-between items-center">
-                <span className="text-[#6B7685] text-[14px]">Qualidade do sono</span>
+                <span className="text-[#6B7685] text-[14px]">
+                  Consumo de água
+                </span>
+
                 <span className="font-bold text-[14px] text-[#1A202C]">
-                  {nivelLabel('qualidadeSono', userData?.qualidadeSono)}
+                  {nivelLabel('agua', usuario?.agua)}
                 </span>
               </div>
+
               <hr className="border-[#E4E7EB] m-0" />
+
               <div className="flex justify-between items-center">
-                <span className="text-[#6B7685] text-[14px]">Nível de energia</span>
+                <span className="text-[#6B7685] text-[14px]">
+                  Qualidade do sono
+                </span>
+
                 <span className="font-bold text-[14px] text-[#1A202C]">
-                  {nivelLabel('nivelEnergia', userData?.nivelEnergia)}
+                  {nivelLabel('sono', usuario?.sono)}
                 </span>
               </div>
+
+
             </div>
           </div>
         </section>

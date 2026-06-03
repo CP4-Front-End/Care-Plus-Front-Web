@@ -60,6 +60,7 @@ def cadastro(dados: dict):
     dados["trofeus"] = int(0)
     dados["trofeusAcumulados"] = int(0)
     dados["beneficiosResgatados"] = []
+    dados["missoesConcluidasHoje"] = 0
 
     usuarios[carteirinha] = dados
 
@@ -190,6 +191,7 @@ def concluir_missao_geral(data: dict):
     usuario = preparar_usuario(usuarios[carteirinha])
     usuario["trofeus"] += trofeus
     usuario["trofeusAcumulados"] += trofeus
+    usuario["missoesConcluidasHoje"] += 1
     usuario["missoesGeraisAtivas"] = novas_missoes
 
     salvar_usuarios(usuarios)

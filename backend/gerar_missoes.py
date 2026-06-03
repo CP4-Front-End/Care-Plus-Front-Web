@@ -259,6 +259,7 @@ def concluir_missao(carteirinha, id_missao):
 
             usuario["trofeus"] += missao["trofeus"]
             usuario["trofeusAcumulados"] += missao["trofeus"]
+            usuario["missoesConcluidasHoje"] += 1
 
         else:
 
