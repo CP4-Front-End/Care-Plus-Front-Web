@@ -5,9 +5,46 @@ import { FaTrophy } from 'react-icons/fa'
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
 import ModalConfirmacao from '../components/ModalConfirmacao.jsx'
-import { categoriaPorTrofeus } from '../utils/categorias.js'
 
 const API_URL = 'http://127.0.0.1:8000'
+
+// Limiares de troféus acumulados por categoria
+const CATEGORIAS = [
+  { nome: 'Bronze', minimo: 0,    proximo: 'Prata', maximoAtual: 500  },
+  { nome: 'Prata',  minimo: 500,  proximo: 'Ouro',  maximoAtual: 1500 },
+  { nome: 'Ouro',   minimo: 1500, proximo: null,    maximoAtual: null  },
+]
+
+function categoriaPorTrofeus(trofeusAcumulados) {
+  // Encontra a categoria atual: a última cujo mínimo o usuário já atingiu
+  const atual = [...CATEGORIAS]
+    .reverse()
+    .find((c) => trofeusAcumulados >= c.minimo) || CATEGORIAS[0]
+
+  // Se for a categoria máxima, progresso fixo em 100
+  if (!atual.proximo) {
+    return {
+      atual: atual.nome,
+      proxima: 'Máximo',
+      progresso: 100,
+    }
+  }
+
+  // Calcula o progresso percentual dentro da faixa atual
+  // Exemplo: Bronze vai de 0 a 500. Com 250 troféus → (250 - 0) / (500 - 0) = 50%
+  const progresso = Math.min(
+    Math.round(
+      ((trofeusAcumulados - atual.minimo) / (atual.maximoAtual - atual.minimo)) * 100
+    ),
+    100
+  )
+
+  return {
+    atual: atual.nome,
+    proxima: atual.proximo,
+    progresso,
+  }
+}
 
 const Beneficios = () => {
   const navigate = useNavigate()
@@ -160,7 +197,8 @@ const Beneficios = () => {
                 <p className="text-white opacity-75 text-[12px]">
                   {categoria.atual === 'Ouro'
                     ? 'Categoria máxima alcançada'
-                    : `Próxima categoria: ${categoria.proxima}`                  Proxima categoria: {categoria.proxima}
+                    : `Próxima categoria: ${categoria.proxima}`
+                  }
                 </p>
               </div>
               <div className="bg-white/25 rounded-xl px-3 py-2 flex items-center gap-2">
@@ -174,7 +212,14 @@ const Beneficios = () => {
               <div className="flex justify-between mb-1">
                 <span className="text-white opacity-75 text-[12px]">
                   Progresso para {categoria.proxima}
-h-1.5 overflow-hidden">
+                </span>
+
+                <span className="text-white opacity-75 text-[12px]">
+                  {categoria.progresso}%
+                </span>
+              </div>
+
+              <div className="w-full bg-white/20 rounded-full h-1.5 overflow-hidden">
                 <div
                   className="bg-white rounded-full h-1.5"
                   style={{ width: `${categoria.progresso}%` }}
@@ -243,13 +288,12 @@ h-1.5 overflow-hidden">
                     </div>
                     <p className="text-[#6B7685] text-[12px] min-h-10">{beneficio.titulo}</p>
                     <button
-                      className={`mt-3 w-full rounded-xl px-3 py-2 text-[13px] font-bold flex items-center justify-center gap-2 ${
-                        disabled
+                      className={`mt-3 w-full rounded-xl px-3 py-2 text-[13px] font-bold flex items-center justify-center gap-2 ${disabled
                           ? 'bg-[#F0F2F5] text-[#9BA3AE] cursor-not-allowed'
                           : trofeusInsuficientes
                             ? 'bg-[#F0F2F5] text-[#9BA3AE] cursor-pointer'
-                          : 'bg-[#1c9770] text-white cursor-pointer'
-                      }`}
+                            : 'bg-[#1c9770] text-white cursor-pointer'
+                        }`}
                       disabled={disabled}
                       onClick={() => resgatarBeneficio(beneficio)}
                     >
