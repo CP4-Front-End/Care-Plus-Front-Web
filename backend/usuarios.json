@@ -14,14 +14,20 @@
         "cafeina": "0",
         "arLivre": "30_60",
         "refeicoes": "1_2",
-        "trofeus": 5,
-        "trofeusAcumulados": 505,
+        "trofeus": 90,
+        "trofeusAcumulados": 990,
         "beneficiosResgatados": [
             {
                 "id": 5,
                 "titulo": "Cupom de R$20 no iFood",
                 "parceiro": "iFood",
                 "custoTrofeus": 500
+            },
+            {
+                "id": 9,
+                "titulo": "Desconto de R$15 em corrida 99",
+                "parceiro": "99",
+                "custoTrofeus": 400
             }
         ],
         "beneficiosDisponiveis": [
@@ -62,7 +68,7 @@
                 "custoTrofeus": 450
             }
         ],
-        "missoesConcluidasHoje": 16,
+        "missoesConcluidasHoje": 32,
         "streak": 1,
         "ultimoDiaStreak": "2026-06-03",
         "missoesAtivas": [
@@ -87,12 +93,7 @@
         ],
         "missoesGeraisAtivas": [
             {
-                "missao": "Abrir a janela e respirar ar fresco",
-                "trofeus": 20,
-                "id": 2
-            },
-            {
-                "missao": "Organizar sua mesa ou espaço de trabalho",
+                "missao": "Comer uma fruta hoje",
                 "trofeus": 30,
                 "id": 3
             }
@@ -194,5 +195,67 @@
                 "id": 3
             }
         ]
+    },
+    "32": {
+        "nome": "fd",
+        "carteirinha": "32",
+        "peso": "323",
+        "altura": "32",
+        "atividadeFisica": "5_7",
+        "tempoSentado": "5_8h",
+        "distanciaDia": "3_6",
+        "agua": "1_2",
+        "sono": "mais_9",
+        "celular": "2_5",
+        "pausas": "1_3",
+        "cafeina": "1_2",
+        "arLivre": "15_30",
+        "refeicoes": "3",
+        "trofeus": 0,
+        "trofeusAcumulados": 0,
+        "beneficiosResgatados": [],
+        "beneficiosDisponiveis": [
+            {
+                "id": 13,
+                "titulo": "Fone esportivo Bluetooth",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 800
+            },
+            {
+                "id": 18,
+                "titulo": "Camiseta esportiva dry-fit",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 20,
+                "titulo": "Plano básico do Gympass (1 semana)",
+                "parceiro": "Gympass",
+                "custoTrofeus": 800
+            },
+            {
+                "id": 9,
+                "titulo": "Desconto de R$15 em corrida 99",
+                "parceiro": "99",
+                "custoTrofeus": 400
+            },
+            {
+                "id": 7,
+                "titulo": "Desconto de 25% em academia Smart Fit",
+                "parceiro": "Smart Fit",
+                "custoTrofeus": 700
+            },
+            {
+                "id": 11,
+                "titulo": "Kit de snacks saudáveis (barra + nuts)",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 500
+            }
+        ],
+        "missoesConcluidasHoje": 0,
+        "ultimoDiaMissoes": "2026-06-03",
+        "streak": 0,
+        "ultimoDiaStreak": "",
+        "streakDiasAcendidos": []
     }
 }

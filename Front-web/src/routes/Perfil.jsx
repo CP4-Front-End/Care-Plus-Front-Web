@@ -40,7 +40,7 @@ const Perfil = () => {
         dados.missoesConcluidasHoje || 0
       )
 
-      const trofeus = dados.trofeusAcumulados || 0
+      const trofeus = dados.trofeusAcumulados ?? dados.trofeus ?? 0
 
       if (trofeus >= 1500) {
 
@@ -96,7 +96,7 @@ const Perfil = () => {
         dados.missoesConcluidasHoje || 0
       )
 
-      const trofeus = dados.trofeus || 0
+      const trofeus = dados.trofeusAcumulados ?? dados.trofeus ?? 0
 
       if (trofeus >= 1500) {
 
