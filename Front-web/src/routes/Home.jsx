@@ -6,7 +6,7 @@ import Bottomnav from '../components/Bottomnav.jsx'
 
 const Home = () => {
   const navigate = useNavigate()
-  const user = { name: 'Renato', points: 0 }
+  const user = { name: 'Seja bem vindo', points: 0 }
   const boostCarePath = '/login'
 
   const quickAccessItems = [

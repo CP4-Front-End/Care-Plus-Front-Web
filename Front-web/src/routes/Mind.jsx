@@ -10,11 +10,7 @@ const Mind = () => {
   const [modalAberto, setModalAberto] = useState(false)
   const [artigoSelecionado, setArtigoSelecionado] =
     useState(null)
-
-
   const points = 1500
-
-
   const artigos = [
 
     {

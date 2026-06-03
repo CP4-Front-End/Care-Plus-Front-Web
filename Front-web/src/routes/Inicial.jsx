@@ -4,12 +4,13 @@ import {
   FiArrowRight, FiZap, FiTarget, FiStar,
   FiHeart, FiWifi, FiFileText, FiUser, FiGift
 } from 'react-icons/fi'
-import { FaTrophy } from 'react-icons/fa'
+import { FaFire, FaTrophy } from 'react-icons/fa'
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
 import ModalConfirmacao from '../components/ModalConfirmacao.jsx'
 import mockupMobile from '../assets/mucupe.png'
 import mockupDesktop from '../assets/mucupePC.png'
+import flux from '../assets/flux.png'
 import { API_URL, buscarUsuarioLogado, carregarBeneficiosDaSessao } from '../services/sessao.js'
 
 const Inicial = () => {
@@ -17,6 +18,7 @@ const Inicial = () => {
   const [nome, setNome] = useState('')
   const [beneficios, setBeneficios] = useState([])
   const [beneficiosResgatados, setBeneficiosResgatados] = useState([])
+  const [streakDias, setStreakDias] = useState(0)
   const [resgatandoBeneficioId, setResgatandoBeneficioId] = useState(null)
   const [modalBeneficio, setModalBeneficio] = useState({
     aberto: false,
@@ -32,6 +34,7 @@ const Inicial = () => {
 
       setNome(dados.nome)
       setBeneficiosResgatados(dados.beneficiosResgatados || [])
+      setStreakDias(dados.streak || 0)
     }
 
     carregarUsuario()
@@ -67,6 +70,12 @@ const Inicial = () => {
     { id: 'noticias', label: 'Notícias', icon: FiFileText, path: '/noticias', iconColor: '#93CB52', bgColor: 'bg-[rgba(147,203,82,0.15)]' },
     { id: 'perfil', label: 'Perfil', icon: FiUser, path: '/perfil', iconColor: '#1c9770', bgColor: 'bg-[rgba(28,151,112,0.1)]' },
   ]
+
+  const indiceDiaAtual = new Date().getDay() === 0
+    ? 6
+    : new Date().getDay() - 1
+  const diasFlux = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D']
+  const diasProtegidos = Math.min(streakDias, 7)
 
   function abrirModalBeneficio(titulo, descricao) {
     setModalBeneficio({
@@ -133,20 +142,77 @@ const Inicial = () => {
     <div className="min-h-screen bg-[#F4F6F8]">
       <TopBar showPoints={true} />
 
-      <div className="relative w-full">
-        <img src={mockupMobile} alt="" className="w-full block lg:hidden" />
-        <img src={mockupDesktop} alt="" className="w-full hidden lg:block" />
+      <div className="relative p-4 lg:p-8 " >
+        <img src={mockupMobile} alt="" className=" block lg:hidden rounded-md" />
+        <img src={mockupDesktop} alt="" className="hidden lg:block rounded-md " />
 
-        <div className="absolute bottom-[10%] left-4 lg:left-8 z-10">
-          <p className="text-white text-sm md:text-[23px] leading-none mb-1">Olá,</p>
-          <h1 className="font-bold text-[20px] md:text-[29px] lg:text-[32px] text-white leading-none">{nome}!</h1>
-          <p className="text-white text-[15px] md:text-[21px] lg:text-[25px] mt-1 leading-tight">
+        <div className="absolute bottom-[10%] left-4 lg:left-8 z-10 mb-2">
+          <p className="text-white text-sm md:text-[23px] leading-none mb-1 mx-4 lg:mx-9">Olá,</p>
+          <h1 className="font-bold text-[20px] md:text-[29px] lg:text-[32px] mx-3 text-white leading-none lg:mx-8">{nome}!</h1>
+          <p className="text-white text-[15px] md:text-[21px] lg:text-[25px] mx-3 mt-1 leading-tight lg:mx-8">
             Continue sua jornada de bem-estar hoje.
           </p>
         </div>
       </div>
 
       <main className="w-full px-4 lg:px-8 pt-4 pb-24">
+
+        <section className="mb-4">
+          <div
+            className="relative overflow-hidden rounded-xl border border-[rgba(28,151,112,0.18)] bg-white shadow-brand-card p-4 text-center cursor-pointer"
+            onClick={() => navigate('/impulso')}
+          >
+            <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgba(28,151,112,0.12),rgba(28,151,112,0))]" />
+
+            <div className="relative z-10 flex justify-center mb-2">
+              <span className="inline-flex items-center gap-2 rounded-full bg-[rgba(28,151,112,0.1)] px-3 py-1 text-[#1c9770] text-[12px] font-bold">
+                <FaFire size={13} />
+                Flux ativo
+              </span>
+            </div>
+
+            <div className="relative z-10 mx-auto mb-2 w-24 h-24 rounded-full bg-[rgba(28,151,112,0.08)] border border-[rgba(28,151,112,0.14)] flex items-center justify-center">
+              <img
+                src={flux}
+                alt="Flux"
+                className="w-20 h-20 object-contain"
+              />
+            </div>
+
+            <p className="relative z-10 uppercase tracking-[1.8px] text-[#6B7685] text-[11px] font-bold mb-1">
+              Streak protegido pelo Flux
+            </p>
+            <h2 className="relative z-10 text-[#1c9770] text-[48px] leading-none font-bold">
+              {streakDias}
+            </h2>
+            <p className="relative z-10 uppercase tracking-[1.4px] text-[#1A202C] text-[12px] font-bold mb-2">
+              dias consecutivos
+            </p>
+            <p className="relative z-10 text-[#6B7685] text-[13px] mb-3">
+              Chama no auge. Nao deixe o Flux apagar hoje!
+            </p>
+
+            <div className="relative z-10 flex justify-center gap-2">
+              {diasFlux.map((dia, index) => {
+                const ativo = streakDias > 0 &&
+                  index <= indiceDiaAtual &&
+                  index > indiceDiaAtual - diasProtegidos
+
+                return (
+                  <span
+                    key={`${dia}-${index}`}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold ${ativo
+                      ? 'bg-[#1c9770] text-white shadow-brand-primary'
+                      : 'bg-[#F0F2F5] text-[#9BA3AE]'
+                      }`}
+                  >
+                    {dia}
+                  </span>
+                )
+              })}
+            </div>
+          </div>
+        </section>
 
         <section className="mb-4">
           <div className="grid grid-cols-5 gap-3 justify-center">
