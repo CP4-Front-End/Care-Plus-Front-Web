@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import { FiArrowLeft, FiZap, FiTrendingUp, FiStar, FiAward } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
@@ -6,8 +7,51 @@ import flux from '../assets/flux.png'
 
 const Impulso = () => {
   const navigate = useNavigate()
-  const points = 1500
-  const streakDias = 7
+  const [streakDias, setStreakDias] = useState(0)
+  const [missoesHoje, setMissoesHoje] = useState(0)
+
+
+
+  useEffect(() => {
+
+    async function carregarUsuario() {
+
+      const carteirinha =
+        localStorage.getItem("carteirinha")
+
+      if (!carteirinha) return
+
+      const resposta = await fetch(
+        `http://127.0.0.1:8000/usuario/${carteirinha}`
+      )
+
+      const usuario = await resposta.json()
+
+      if (!usuario) return
+
+      setStreakDias(usuario.streak || 0)
+
+      setMissoesHoje(
+        usuario.missoesConcluidasHoje || 0
+      )
+    }
+
+    carregarUsuario()
+
+    window.addEventListener(
+      "trofeusAtualizados",
+      carregarUsuario
+    )
+
+    return () => {
+
+      window.removeEventListener(
+        "trofeusAtualizados",
+        carregarUsuario
+      )
+    }
+
+  }, [])
 
   const comoFunciona = [
     { id: 1, icon: FiZap, title: 'Acesse diariamente', desc: 'Entre no app todos os dias para manter seu streak ativo.' },
@@ -18,7 +62,10 @@ const Impulso = () => {
 
   return (
     <div className="min-h-screen bg-[#F4F6F8]">
-      <TopBar points={points} showPoints={true} />
+
+      <TopBar showPoints={true} />
+
+
 
       <main className="w-full px-4 lg:px-8 pt-4 pb-24">
 
@@ -51,7 +98,12 @@ const Impulso = () => {
         <section className="mb-4">
           <div className="bg-white rounded-xl border border-[#E4E7EB] shadow-brand-card p-3 text-center">
             <p className="text-[#6B7685] text-[14px] mb-1">Próxima recompensa em</p>
-            <span className="font-bold text-[#1c9770] text-[24px]">2 dias</span>
+
+            <span className="font-bold text-[#1c9770] text-[24px]">
+              {Math.max(3 - missoesHoje, 0)} missão(ões)
+            </span>
+
+
           </div>
         </section>
 

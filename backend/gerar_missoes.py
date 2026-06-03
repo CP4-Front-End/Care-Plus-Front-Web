@@ -1,5 +1,6 @@
 import json
 import random
+from datetime import date
 
 
 def gerar_missoes(carteirinha):
@@ -265,6 +266,9 @@ def concluir_missao(carteirinha, id_missao):
 
             novas_missoes.append(missao)
 
+
+
+
     usuario["missoesAtivas"] = novas_missoes
 
     with open("usuarios.json", "w", encoding="utf-8") as arquivo:
@@ -273,5 +277,8 @@ def concluir_missao(carteirinha, id_missao):
             arquivo,
             indent=4,
             ensure_ascii=False
-        )
+    )
+    if len(usuario["missoesAtivas"]) == 0:
+
+        gerar_missoes(carteirinha)
 

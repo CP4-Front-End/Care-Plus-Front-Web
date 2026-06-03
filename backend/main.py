@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import json
 import random
+from datetime import date
 from gerar_missoes import gerar_missoes
 from gerar_missoes import concluir_missao
 from missoes import gerar_missoes_gerais
@@ -61,6 +62,10 @@ def cadastro(dados: dict):
     dados["trofeusAcumulados"] = int(0)
     dados["beneficiosResgatados"] = []
     dados["missoesConcluidasHoje"] = 0
+    dados["streak"] = 0
+    dados["ultimoDiaStreak"] = ""
+
+
 
     usuarios[carteirinha] = dados
 
@@ -192,6 +197,16 @@ def concluir_missao_geral(data: dict):
     usuario["trofeus"] += trofeus
     usuario["trofeusAcumulados"] += trofeus
     usuario["missoesConcluidasHoje"] += 1
+    hoje = str(date.today())
+
+    if (
+        usuario["missoesConcluidasHoje"] >= 3
+        and usuario.get("ultimoDiaStreak") != hoje
+    ):
+
+        usuario["streak"] += 1
+        usuario["ultimoDiaStreak"] = hoje
+
     usuario["missoesGeraisAtivas"] = novas_missoes
 
     salvar_usuarios(usuarios)

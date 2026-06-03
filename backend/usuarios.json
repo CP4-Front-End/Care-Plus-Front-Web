@@ -59,23 +59,57 @@
         ]
     },
     "3232": {
-        "nome": "Joãoteste",
+        "nome": "testenovo",
         "carteirinha": "3232",
-        "peso": "212",
-        "altura": "212",
-        "atividadeFisica": "5_7",
+        "peso": "323",
+        "altura": "323",
+        "atividadeFisica": "3_4",
         "tempoSentado": "2_5h",
-        "distanciaDia": "1_3",
+        "distanciaDia": "3_6",
         "agua": "menos_1",
-        "sono": "mais_9",
-        "celular": "menos_2",
-        "pausas": "4_6",
+        "sono": "5_7",
+        "celular": "5_8",
+        "pausas": "0",
         "cafeina": "0",
-        "arLivre": "30_60",
-        "refeicoes": "3",
-        "trofeus": 0,
-        "trofeusAcumulados": 0,
-        "beneficiosResgatados": []
+        "arLivre": "0_15",
+        "refeicoes": "1_2",
+        "trofeus": 130,
+        "trofeusAcumulados": 130,
+        "beneficiosResgatados": [],
+        "missoesConcluidasHoje": 4,
+        "streak": 1,
+        "ultimoDiaStreak": "2026-06-03",
+        "missoesAtivas": [
+            {
+                "titulo": "Excelente nível de movimento hoje",
+                "trofeus": 20,
+                "id": 2,
+                "concluida": false
+            },
+            {
+                "titulo": "Tente diminuir o tempo de tela",
+                "trofeus": 40,
+                "id": 3,
+                "concluida": false
+            }
+        ],
+        "missoesGeraisAtivas": [
+            {
+                "missao": "Reduzir o brilho da tela por um tempo",
+                "trofeus": 15,
+                "id": 1
+            },
+            {
+                "missao": "Fazer uma pausa e se movimentar agora",
+                "trofeus": 30,
+                "id": 2
+            },
+            {
+                "missao": "Beber água ao acordar",
+                "trofeus": 15,
+                "id": 3
+            }
+        ]
     },
     "4343": {
         "nome": "bcnvf",
@@ -138,10 +172,10 @@
         "cafeina": "0",
         "arLivre": "mais_60",
         "refeicoes": "4_5",
-        "trofeus": 345,
-        "trofeusAcumulados": 345,
+        "trofeus": 365,
+        "trofeusAcumulados": 365,
         "beneficiosResgatados": [],
-        "missoesConcluidasHoje": 13,
+        "missoesConcluidasHoje": 14,
         "missoesAtivas": [
             {
                 "titulo": "Continue se hidratando bem",
@@ -157,11 +191,6 @@
             }
         ],
         "missoesGeraisAtivas": [
-            {
-                "missao": "Fazer uma pausa consciente e relaxar",
-                "trofeus": 20,
-                "id": 1
-            },
             {
                 "missao": "Beber um copo de água agora",
                 "trofeus": 15,

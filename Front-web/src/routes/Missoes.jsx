@@ -14,7 +14,10 @@ const Missoes = () => {
   const [missaoSelecionada, setMissaoSelecionada] = useState(null)
   const [tipoMissao, setTipoMissao] = useState("")
 
-  const streakDias = 7
+
+  const [streakDias, setStreakDias] = useState(0)
+
+
 
   const desafioAtual = {
     title: 'Beba 3 litros de água',
@@ -91,6 +94,9 @@ const Missoes = () => {
       )
 
       const usuario = await respostaUsuario.json()
+    
+      setStreakDias(usuario.streak || 0)
+
 
       setMissoesHoje(
         usuario.missoesConcluidasHoje || 0
@@ -125,6 +131,7 @@ const Missoes = () => {
     )
 
     const usuario = await respostaUsuario.json()
+    setStreakDias(usuario.streak || 0)
 
     if (!usuario) return
 
@@ -172,6 +179,7 @@ const Missoes = () => {
       )
 
       const usuario = await respostaUsuario.json()
+      setStreakDias(usuario.streak || 0)
 
       if (!usuario) return
 
