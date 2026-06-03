@@ -1,10 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import random
-from datetime import date
 from gerar_missoes import gerar_missoes
 from gerar_missoes import concluir_missao
 from missoes import gerar_missoes_gerais
+from progresso import preparar_progresso_usuario, registrar_missao_concluida
 from storage import carregar_beneficios, carregar_usuarios, salvar_usuarios
 
 app = FastAPI()
@@ -24,9 +24,7 @@ def preparar_usuario(usuario):
     usuario.setdefault("trofeusAcumulados", usuario.get("trofeus", 0))
     usuario.setdefault("beneficiosResgatados", [])
     usuario.setdefault("beneficiosDisponiveis", [])
-    usuario.setdefault("missoesConcluidasHoje", 0)
-    usuario.setdefault("streak", 0)
-    usuario.setdefault("ultimoDiaStreak", "")
+    preparar_progresso_usuario(usuario)
 
     return usuario
 
@@ -103,8 +101,10 @@ def cadastro(dados: dict):
             "beneficiosResgatados",
             "beneficiosDisponiveis",
             "missoesConcluidasHoje",
+            "ultimoDiaMissoes",
             "streak",
             "ultimoDiaStreak",
+            "streakDiasAcendidos",
             "missoesAtivas",
             "missoesGeraisAtivas",
         ]
@@ -118,8 +118,10 @@ def cadastro(dados: dict):
         dados["beneficiosResgatados"] = []
         dados["beneficiosDisponiveis"] = []
         dados["missoesConcluidasHoje"] = 0
+        preparar_progresso_usuario(dados)
         dados["streak"] = 0
         dados["ultimoDiaStreak"] = ""
+        dados["streakDiasAcendidos"] = []
 
         garantir_beneficios_sessao(
             dados,
@@ -298,15 +300,7 @@ def concluir_missao_geral(data: dict):
 
     usuario["trofeus"] += trofeus
     usuario["trofeusAcumulados"] += trofeus
-    usuario["missoesConcluidasHoje"] += 1
-    hoje = str(date.today())
-
-    if (
-        usuario["missoesConcluidasHoje"] >= 3
-        and usuario.get("ultimoDiaStreak") != hoje
-    ):
-        usuario["streak"] += 1
-        usuario["ultimoDiaStreak"] = hoje
+    registrar_missao_concluida(usuario)
 
     usuario["missoesGeraisAtivas"] = novas_missoes
 

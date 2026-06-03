@@ -79,7 +79,7 @@ const Impulso = () => {
         <section className="flex items-center gap-2 mb-4">
           <button
             className="bg-transparent border-0 p-0 text-[#6B7685] cursor-pointer"
-            onClick={() => navigate('/missoes')}
+            onClick={() => navigate('/inicial')}
           >
             <FiArrowLeft size={20} />
           </button>

@@ -1,5 +1,5 @@
 import random
-from datetime import date
+from progresso import preparar_progresso_usuario, registrar_missao_concluida
 from storage import carregar_usuarios, salvar_usuarios
 
 
@@ -241,9 +241,7 @@ def concluir_missao(carteirinha, id_missao):
     usuario = usuarios[carteirinha]
     usuario.setdefault("trofeus", 0)
     usuario.setdefault("trofeusAcumulados", usuario.get("trofeus", 0))
-    usuario.setdefault("missoesConcluidasHoje", 0)
-    usuario.setdefault("streak", 0)
-    usuario.setdefault("ultimoDiaStreak", "")
+    preparar_progresso_usuario(usuario)
 
     missoes = usuario["missoesAtivas"]
 
@@ -255,15 +253,7 @@ def concluir_missao(carteirinha, id_missao):
 
             usuario["trofeus"] += missao["trofeus"]
             usuario["trofeusAcumulados"] += missao["trofeus"]
-            usuario["missoesConcluidasHoje"] += 1
-            hoje = str(date.today())
-
-            if (
-                usuario["missoesConcluidasHoje"] >= 3
-                and usuario.get("ultimoDiaStreak") != hoje
-            ):
-                usuario["streak"] += 1
-                usuario["ultimoDiaStreak"] = hoje
+            registrar_missao_concluida(usuario)
 
         else:
 
