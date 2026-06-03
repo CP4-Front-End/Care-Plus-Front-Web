@@ -198,30 +198,81 @@
         "trofeus": 0
     },
     "3232": {
-        "nome": "joaoo",
+        "nome": "Jioçao",
         "carteirinha": "3232",
-        "peso": "3232",
-        "altura": "3232",
-        "atividadeFisica": "0",
+        "peso": "3233",
+        "altura": "333",
+        "atividadeFisica": "3_4",
         "tempoSentado": "menos_2h",
         "distanciaDia": "mais_6",
         "agua": "menos_1",
         "sono": "mais_9",
-        "celular": "mais_8",
-        "pausas": "0",
-        "cafeina": "3_5",
-        "arLivre": "0_15",
+        "celular": "5_8",
+        "pausas": "mais_6",
+        "cafeina": "0",
+        "arLivre": "mais_60",
         "refeicoes": "1_2",
-        "trofeus": 50,
+        "trofeus": 1530,
+        "trofeusAcumulados": 1530,
+        "beneficiosResgatados": [],
         "missoesAtivas": [
             {
-                "titulo": "Continue se movimentando ao longo do dia",
+                "titulo": "Bom controle de cafeína",
                 "trofeus": 20,
                 "id": 2,
                 "concluida": false
             },
             {
-                "titulo": "Comece com 1 dia de atividade física essa semana",
+                "titulo": "Faça pelo menos 3 refeições hoje",
+                "trofeus": 40,
+                "id": 3,
+                "concluida": false
+            }
+        ],
+        "missoesGeraisAtivas": [
+            {
+                "missao": "Abrir a janela e respirar ar fresco",
+                "trofeus": 20,
+                "id": 2
+            },
+            {
+                "missao": "Dormir 30 minutos mais cedo hoje",
+                "trofeus": 50,
+                "id": 3
+            }
+        ]
+    },
+    "271206": {
+        "nome": "João",
+        "carteirinha": "271206",
+        "peso": "84",
+        "altura": "180",
+        "atividadeFisica": "0",
+        "tempoSentado": "menos_2h",
+        "distanciaDia": "1_3",
+        "agua": "1_2",
+        "sono": "5_7",
+        "celular": "mais_8",
+        "pausas": "mais_6",
+        "cafeina": "1_2",
+        "arLivre": "30_60",
+        "refeicoes": "3",
+        "trofeus": 175,
+        "missoesAtivas": [
+            {
+                "titulo": "Continue fazendo pausas regulares",
+                "trofeus": 20,
+                "id": 1,
+                "concluida": false
+            },
+            {
+                "titulo": "Tente alcançar 3km hoje",
+                "trofeus": 30,
+                "id": 2,
+                "concluida": false
+            },
+            {
+                "titulo": "Reduza 1h de tela hoje",
                 "trofeus": 50,
                 "id": 3,
                 "concluida": false
@@ -229,13 +280,197 @@
         ],
         "missoesGeraisAtivas": [
             {
-                "missao": "Ficar em pé por 5 minutos",
+                "missao": "Beber água ao acordar",
+                "trofeus": 15,
+                "id": 1
+            },
+            {
+                "missao": "Ouvir uma música relaxante",
                 "trofeus": 15,
                 "id": 2
             },
             {
-                "missao": "Evitar redes sociais por 1 hora",
-                "trofeus": 50,
+                "missao": "Respirar profundamente por 1 minuto",
+                "trofeus": 15,
+                "id": 3
+            }
+        ]
+    },
+    "21212": {
+        "nome": "João",
+        "carteirinha": "21212",
+        "peso": "2121",
+        "altura": "2121",
+        "atividadeFisica": "3_4",
+        "tempoSentado": "5_8h",
+        "distanciaDia": "3_6",
+        "agua": "1_2",
+        "sono": "7_9",
+        "celular": "2_5",
+        "pausas": "mais_6",
+        "cafeina": "0",
+        "arLivre": "30_60",
+        "refeicoes": "1_2",
+        "trofeus": 0,
+        "missoesAtivas": [
+            {
+                "titulo": "Ótimo controle de tela",
+                "trofeus": 20,
+                "id": 1,
+                "concluida": false
+            },
+            {
+                "titulo": "Excelente rotina de descanso",
+                "trofeus": 20,
+                "id": 2,
+                "concluida": false
+            },
+            {
+                "titulo": "Faça uma pausa para alongamento",
+                "trofeus": 30,
+                "id": 3,
+                "concluida": false
+            }
+        ],
+        "missoesGeraisAtivas": [
+            {
+                "missao": "Fazer uma caminhada leve de 5 minutos",
+                "trofeus": 30,
+                "id": 1
+            },
+            {
+                "missao": "Fazer uma atividade relaxante por 10 minutos",
+                "trofeus": 30,
+                "id": 2
+            },
+            {
+                "missao": "Respirar profundamente por 1 minuto",
+                "trofeus": 15,
+                "id": 3
+            }
+        ]
+    },
+    "3213": {
+        "nome": "João Sarracine",
+        "carteirinha": "3213",
+        "peso": "32",
+        "altura": "32",
+        "atividadeFisica": "5_7",
+        "tempoSentado": "2_5h",
+        "distanciaDia": "1_3",
+        "agua": "menos_1",
+        "sono": "5_7",
+        "celular": "menos_2",
+        "pausas": "0",
+        "cafeina": "0",
+        "arLivre": "30_60",
+        "refeicoes": "1_2",
+        "trofeus": 90,
+        "beneficiosResgatados": [
+            {
+                "id": 8,
+                "titulo": "Garrafa térmica esportiva",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 250
+            }
+        ],
+        "missoesAtivas": [
+            {
+                "titulo": "Beba pelo menos 2L de água hoje",
+                "trofeus": 40,
+                "id": 1,
+                "concluida": false
+            },
+            {
+                "titulo": "Excelente contato com ambiente externo",
+                "trofeus": 20,
+                "id": 2,
+                "concluida": false
+            },
+            {
+                "titulo": "Continue se movimentando ao longo do dia",
+                "trofeus": 20,
+                "id": 3,
+                "concluida": false
+            }
+        ],
+        "missoesGeraisAtivas": [
+            {
+                "missao": "Reduzir o brilho da tela por um tempo",
+                "trofeus": 15,
+                "id": 1
+            },
+            {
+                "missao": "Dar uma volta curta dentro de casa",
+                "trofeus": 30,
+                "id": 2
+            },
+            {
+                "missao": "Descansar os olhos por 2 minutos (olhar para longe)",
+                "trofeus": 15,
+                "id": 3
+            }
+        ]
+    },
+    "3123": {
+        "nome": "mardito",
+        "carteirinha": "3123",
+        "peso": "2313",
+        "altura": "3232",
+        "atividadeFisica": "3_4",
+        "tempoSentado": "2_5h",
+        "distanciaDia": "3_6",
+        "agua": "menos_1",
+        "sono": "menos_5",
+        "celular": "mais_8",
+        "pausas": "0",
+        "cafeina": "mais_5",
+        "arLivre": "0_15",
+        "refeicoes": "1_2",
+        "trofeus": 230,
+        "beneficiosResgatados": [
+            {
+                "id": 8,
+                "titulo": "Garrafa térmica esportiva",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 250
+            },
+            {
+                "id": 1,
+                "titulo": "Desconto de 20% em corridas da Uber",
+                "parceiro": "Uber",
+                "custoTrofeus": 300
+            }
+        ],
+        "missoesAtivas": [
+            {
+                "titulo": "Mantenha sua rotina ativa hoje",
+                "trofeus": 30,
+                "id": 1,
+                "concluida": false
+            },
+            {
+                "titulo": "Passe pelo menos 15min ao ar livre",
+                "trofeus": 40,
+                "id": 2,
+                "concluida": false
+            },
+            {
+                "titulo": "Excelente nível de movimento hoje",
+                "trofeus": 20,
+                "id": 3,
+                "concluida": false
+            }
+        ],
+        "missoesGeraisAtivas": [
+            {
+                "missao": "Beber mais um copo de água antes da próxima refeição",
+                "trofeus": 20,
+                "id": 1
+            },
+            {
+                "missao": "Fazer uma pausa consciente e relaxar",
+                "trofeus": 20,
                 "id": 3
             }
         ]

@@ -1,51 +1,80 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   FiArrowRight, FiZap, FiTarget, FiStar,
-  FiHeart, FiWifi, FiFileText, FiUser
+  FiHeart, FiWifi, FiFileText, FiUser, FiGift
 } from 'react-icons/fi'
+import { FaTrophy } from 'react-icons/fa'
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
+import ModalConfirmacao from '../components/ModalConfirmacao.jsx'
 import mockupMobile from '../assets/mucupe.png'
 import mockupDesktop from '../assets/mucupePC.png'
+
+const API_URL = 'http://127.0.0.1:8000'
+
+function chaveBeneficiosHome(carteirinha) {
+  return `beneficiosHome:${carteirinha || 'visitante'}`
+}
 
 const Inicial = () => {
   const navigate = useNavigate()
   const [nome, setNome] = useState('')
+  const [beneficios, setBeneficios] = useState([])
+  const [beneficiosResgatados, setBeneficiosResgatados] = useState([])
+  const [resgatandoBeneficioId, setResgatandoBeneficioId] = useState(null)
+  const [modalBeneficio, setModalBeneficio] = useState({
+    aberto: false,
+    titulo: '',
+    descricao: '',
+  })
 
   useEffect(() => {
+    async function carregarUsuario() {
+      const carteirinha = localStorage.getItem('carteirinha')
 
-  async function carregarUsuario() {
+      if (!carteirinha) return
 
-    const carteirinha =
-      localStorage.getItem("carteirinha")
+      const resposta = await fetch(`${API_URL}/usuario/${carteirinha}`)
+      const dados = await resposta.json()
 
-    if (!carteirinha) return
+      if (!dados) return
 
-    const resposta = await fetch(
-      `http://127.0.0.1:8000/usuario/${carteirinha}`
-    )
+      setNome(dados.nome)
+      setBeneficiosResgatados(dados.beneficiosResgatados || [])
+    }
 
-    const dados = await resposta.json()
+    carregarUsuario()
+  }, [])
 
-    setNome(dados.nome)
-  }
+  useEffect(() => {
+    async function carregarBeneficiosSorteados() {
+      const carteirinha = localStorage.getItem('carteirinha')
+      const chaveStorage = chaveBeneficiosHome(carteirinha)
+      const beneficiosSalvos = localStorage.getItem(chaveStorage)
 
-  carregarUsuario()
+      if (beneficiosSalvos) {
+        setBeneficios(JSON.parse(beneficiosSalvos))
+        return
+      }
 
-}, [])
-  const points = 1500
+      try {
+        const resposta = await fetch(`${API_URL}/beneficios-sorteados?quantidade=3`)
+        const dados = await resposta.json()
+        setBeneficios(dados)
+        localStorage.setItem(chaveStorage, JSON.stringify(dados))
+      } catch {
+        setBeneficios([])
+      }
+    }
+
+    carregarBeneficiosSorteados()
+  }, [])
 
   const missoesAtivas = [
     { id: 1, title: 'Beber 3 litros de água', progress: 60, icon: FiZap },
     { id: 2, title: 'Andar 3km no dia', progress: 30, icon: FiTarget },
     { id: 3, title: '30min de bike', progress: 0, icon: FiStar },
-  ]
-
-  const beneficios = [
-    { id: 1, title: 'Cashback Nubank', points: 1500 },
-    { id: 2, title: 'Desconto iFood R$10', points: 800 },
-    { id: 3, title: 'Desconto Apple R$40', points: 2000 },
   ]
 
   const quickMenuItems = [
@@ -56,9 +85,70 @@ const Inicial = () => {
     { id: 'perfil', label: 'Perfil', icon: FiUser, path: '/perfil', iconColor: '#1c9770', bgColor: 'bg-[rgba(28,151,112,0.1)]' },
   ]
 
+  function abrirModalBeneficio(titulo, descricao) {
+    setModalBeneficio({
+      aberto: true,
+      titulo,
+      descricao,
+    })
+  }
+
+  function fecharModalBeneficio() {
+    setModalBeneficio({
+      aberto: false,
+      titulo: '',
+      descricao: '',
+    })
+  }
+
+  async function resgatarBeneficio(beneficio) {
+    const carteirinha = localStorage.getItem('carteirinha')
+
+    if (!carteirinha) {
+      abrirModalBeneficio(
+        'Carteirinha necessária',
+        'Entre com sua carteirinha para resgatar benefícios.'
+      )
+      return
+    }
+
+    setResgatandoBeneficioId(beneficio.id)
+
+    try {
+      const resposta = await fetch(`${API_URL}/resgatar-beneficio`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          carteirinha,
+          idBeneficio: beneficio.id,
+        }),
+      })
+
+      const dados = await resposta.json()
+
+      if (!resposta.ok) {
+        throw new Error(dados.detail || 'Não foi possível resgatar este benefício.')
+      }
+
+      setBeneficiosResgatados(dados.usuario.beneficiosResgatados || [])
+      localStorage.setItem('trofeus', dados.usuario.trofeus)
+      window.dispatchEvent(new Event('trofeusAtualizados'))
+      abrirModalBeneficio(
+        'Benefício resgatado',
+        `${beneficio.titulo} foi resgatado com sucesso.`
+      )
+    } catch (erro) {
+      abrirModalBeneficio('Resgate não realizado', erro.message)
+    } finally {
+      setResgatandoBeneficioId(null)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#F4F6F8]">
-      <TopBar points={points} showPoints={true} />
+      <TopBar showPoints={true} />
 
       <div className="relative w-full">
         <img src={mockupMobile} alt="" className="w-full block lg:hidden" />
@@ -156,15 +246,36 @@ const Inicial = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-            {beneficios.map(({ id, title, points: pts }) => (
-              <div key={id} className="bg-white rounded-xl p-3 border border-[#E4E7EB] shadow-brand-card">
-                <div className="w-9 h-9 rounded-xl mb-2 bg-[rgba(28,151,112,0.1)]" />
-                <p className="font-bold text-[14px] text-[#1A202C] mb-1">{title}</p>
-                <p className="font-bold text-[#1c9770] text-[12px]">
-                  {pts.toLocaleString('pt-BR')} pts
-                </p>
-              </div>
-            ))}
+            {beneficios.map(({ id, titulo, parceiro, custoTrofeus }) => {
+              const resgatado = beneficiosResgatados.some((beneficio) => beneficio.id === id)
+              const resgatando = resgatandoBeneficioId === id
+
+              return (
+                <button
+                  key={id}
+                  className={`text-left bg-white rounded-xl p-3 border border-[#E4E7EB] shadow-brand-card ${
+                    resgatado || resgatando ? 'opacity-75 cursor-not-allowed' : 'cursor-pointer'
+                  }`}
+                  disabled={resgatado || resgatando}
+                  onClick={() => resgatarBeneficio({ id, titulo, parceiro, custoTrofeus })}
+                >
+                  <div className="w-9 h-9 rounded-xl mb-2 bg-[rgba(28,151,112,0.1)] flex items-center justify-center">
+                    <FiGift size={17} color="#1c9770" />
+                  </div>
+                  <p className="text-[#6B7685] text-[12px] mb-1">{parceiro}</p>
+                  <p className="font-bold text-[14px] text-[#1A202C] mb-1">{titulo}</p>
+                  <p className="font-bold text-[#1c9770] text-[12px] flex items-center gap-1">
+                    <FaTrophy size={12} />
+                    {custoTrofeus.toLocaleString('pt-BR')} troféus
+                  </p>
+                  <p className="text-[#6B7685] text-[12px] mt-2">
+                    {resgatado && 'Resgatado'}
+                    {!resgatado && resgatando && 'Resgatando...'}
+                    {!resgatado && !resgatando && 'Clique para resgatar'}
+                  </p>
+                </button>
+              )
+            })}
           </div>
         </section>
 
@@ -228,6 +339,15 @@ const Inicial = () => {
         </section>
 
       </main>
+
+      <ModalConfirmacao
+        aberto={modalBeneficio.aberto}
+        titulo={modalBeneficio.titulo}
+        descricao={modalBeneficio.descricao}
+        textoCancelar="Entendi"
+        mostrarConfirmar={false}
+        onClose={fecharModalBeneficio}
+      />
 
       <Bottomnav activePage="home" />
     </div>

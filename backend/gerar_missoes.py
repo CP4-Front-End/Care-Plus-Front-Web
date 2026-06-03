@@ -246,6 +246,8 @@ def concluir_missao(carteirinha, id_missao):
         usuarios = json.load(arquivo)
 
     usuario = usuarios[carteirinha]
+    usuario.setdefault("trofeus", 0)
+    usuario.setdefault("trofeusAcumulados", usuario.get("trofeus", 0))
 
     missoes = usuario["missoesAtivas"]
 
@@ -256,6 +258,7 @@ def concluir_missao(carteirinha, id_missao):
         if missao["id"] == id_missao:
 
             usuario["trofeus"] += missao["trofeus"]
+            usuario["trofeusAcumulados"] += missao["trofeus"]
 
         else:
 

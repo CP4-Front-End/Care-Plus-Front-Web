@@ -3,7 +3,10 @@ const ModalConfirmacao = ({
     onClose,
     onConfirm,
     titulo,
-    descricao
+    descricao,
+    textoCancelar = "Cancelar",
+    textoConfirmar = "Confirmar",
+    mostrarConfirmar = true
 }) => {
 
     if (!aberto) return null
@@ -26,17 +29,23 @@ const ModalConfirmacao = ({
 
                     <button
                         onClick={onClose}
-                        className="flex-1 h-11 rounded-xl border border-[#E4E7EB] text-[#1A202C] font-medium"
+                        className={`flex-1 h-11 rounded-xl font-medium ${
+                            mostrarConfirmar
+                                ? "border border-[#E4E7EB] text-[#1A202C]"
+                                : "bg-[#1c9770] text-white"
+                        }`}
                     >
-                        Cancelar
+                        {textoCancelar}
                     </button>
 
-                    <button
-                        onClick={onConfirm}
-                        className="flex-1 h-11 rounded-xl bg-[#1c9770] text-white font-medium"
-                    >
-                        Confirmar
-                    </button>
+                    {mostrarConfirmar && (
+                        <button
+                            onClick={onConfirm}
+                            className="flex-1 h-11 rounded-xl bg-[#1c9770] text-white font-medium"
+                        >
+                            {textoConfirmar}
+                        </button>
+                    )}
 
                 </div>
 

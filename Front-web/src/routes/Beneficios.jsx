@@ -1,30 +1,142 @@
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FiArrowLeft, FiArrowRight, FiLock } from 'react-icons/fi'
+import { FiArrowLeft, FiArrowRight, FiCheckCircle, FiGift } from 'react-icons/fi'
+import { FaTrophy } from 'react-icons/fa'
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
+import ModalConfirmacao from '../components/ModalConfirmacao.jsx'
+import { categoriaPorTrofeus } from '../utils/categorias.js'
+
+const API_URL = 'http://127.0.0.1:8000'
 
 const Beneficios = () => {
   const navigate = useNavigate()
-  const points = 1500
-  const categoria = 'Bronze'
-  const proximaCategoria = 'Prata'
+  const [beneficios, setBeneficios] = useState([])
+  const [usuario, setUsuario] = useState(null)
+  const [carregando, setCarregando] = useState(true)
+  const [resgatandoId, setResgatandoId] = useState(null)
+  const [modalBeneficio, setModalBeneficio] = useState({
+    aberto: false,
+    titulo: '',
+    descricao: '',
+  })
 
-  const beneficiosAtivos = [
-    { id: 1, title: '5 corridas com 10% de desconto', parceiro: 'Uber', ativo: true },
-  ]
+  useEffect(() => {
+    async function carregarDados() {
+      const carteirinha = localStorage.getItem('carteirinha')
 
-  const beneficiosDisponiveis = [
-    { id: 1, title: 'Ganhe 1% de cashback no roxinho', parceiro: 'Nubank', bloqueado: false },
-    { id: 2, title: 'Ganhe 3% de desconto em qualquer compra', parceiro: 'Amazon', bloqueado: false },
-    { id: 3, title: 'Desconto R$3 na próxima corrida', parceiro: 'Uber', bloqueado: false },
-    { id: 4, title: 'Ganhe até 10% de desconto na primeira sessão', parceiro: 'Mattos Filho', bloqueado: true },
-    { id: 5, title: 'Receba até 2GB de armazenamento', parceiro: 'Google Cloud', bloqueado: true },
-    { id: 6, title: 'Receba aplicativos exclusivos', parceiro: 'Meta', bloqueado: true },
-  ]
+      try {
+        const chamadas = [
+          fetch(`${API_URL}/beneficios`),
+        ]
+
+        if (carteirinha) {
+          chamadas.push(fetch(`${API_URL}/usuario/${carteirinha}`))
+        }
+
+        const [respostaBeneficios, respostaUsuario] = await Promise.all(chamadas)
+        const beneficiosApi = await respostaBeneficios.json()
+        const usuarioApi = respostaUsuario ? await respostaUsuario.json() : null
+
+        setBeneficios(beneficiosApi)
+        setUsuario(usuarioApi)
+      } catch {
+        abrirModalBeneficio(
+          'Benefícios indisponíveis',
+          'Não foi possível carregar os benefícios agora.'
+        )
+      } finally {
+        setCarregando(false)
+      }
+    }
+
+    carregarDados()
+  }, [])
+
+  const trofeus = usuario?.trofeus || 0
+  const trofeusAcumulados = usuario?.trofeusAcumulados ?? trofeus
+  const categoria = categoriaPorTrofeus(trofeusAcumulados)
+  const beneficiosAtivos = useMemo(
+    () => usuario?.beneficiosResgatados || [],
+    [usuario]
+  )
+  const beneficiosResgatadosIds = useMemo(
+    () => new Set(beneficiosAtivos.map((beneficio) => beneficio.id)),
+    [beneficiosAtivos]
+  )
+
+  function abrirModalBeneficio(titulo, descricao) {
+    setModalBeneficio({
+      aberto: true,
+      titulo,
+      descricao,
+    })
+  }
+
+  function fecharModalBeneficio() {
+    setModalBeneficio({
+      aberto: false,
+      titulo: '',
+      descricao: '',
+    })
+  }
+
+  async function resgatarBeneficio(beneficio) {
+    const carteirinha = localStorage.getItem('carteirinha')
+
+    if (!carteirinha) {
+      abrirModalBeneficio(
+        'Carteirinha necessária',
+        'Entre com sua carteirinha para resgatar benefícios.'
+      )
+      return
+    }
+
+    if (trofeus < beneficio.custoTrofeus) {
+      abrirModalBeneficio(
+        'Troféus insuficientes',
+        `Você precisa de ${beneficio.custoTrofeus.toLocaleString('pt-BR')} troféus para resgatar este benefício.`
+      )
+      return
+    }
+
+    setResgatandoId(beneficio.id)
+
+    try {
+      const resposta = await fetch(`${API_URL}/resgatar-beneficio`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          carteirinha,
+          idBeneficio: beneficio.id,
+        }),
+      })
+
+      const dados = await resposta.json()
+
+      if (!resposta.ok) {
+        throw new Error(dados.detail || 'Nao foi possivel resgatar este beneficio.')
+      }
+
+      setUsuario(dados.usuario)
+      localStorage.setItem('trofeus', dados.usuario.trofeus)
+      window.dispatchEvent(new Event('trofeusAtualizados'))
+      abrirModalBeneficio(
+        'Benefício resgatado',
+        `${beneficio.titulo} foi resgatado com sucesso.`
+      )
+    } catch (erro) {
+      abrirModalBeneficio('Resgate não realizado', erro.message)
+    } finally {
+      setResgatandoId(null)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#F4F6F8]">
-      <TopBar points={points} showPoints={true} />
+      <TopBar showPoints={true} />
 
       <main className="w-full px-4 lg:px-8 pt-4 pb-24">
 
@@ -32,55 +144,67 @@ const Beneficios = () => {
           <button
             className="bg-transparent border-0 p-0 text-[#6B7685] cursor-pointer"
             onClick={() => navigate('/inicial')}
+            aria-label="Voltar"
           >
             <FiArrowLeft size={20} />
           </button>
-          <h1 className="font-bold text-[20px] text-[#1A202C]">Benefícios</h1>
+          <h1 className="font-bold text-[20px] text-[#1A202C]">Beneficios</h1>
         </section>
 
         <section className="mb-4">
           <div className="bg-gradient-primary shadow-brand-primary rounded-xl p-4">
-            <div className="flex justify-between items-start">
+            <div className="flex justify-between items-start gap-3">
               <div>
                 <p className="text-white opacity-75 text-[13px] mb-1">Sua categoria</p>
-                <h2 className="font-bold text-white text-[24px] mb-1">{categoria}</h2>
+                <h2 className="font-bold text-white text-[24px] mb-1">{categoria.atual}</h2>
                 <p className="text-white opacity-75 text-[12px]">
-                  Próxima categoria: {proximaCategoria}
+                  {categoria.atual === 'Ouro'
+                    ? 'Categoria máxima alcançada'
+                    : `Próxima categoria: ${categoria.proxima}`                  Proxima categoria: {categoria.proxima}
                 </p>
               </div>
-              <div className="bg-white/25 rounded-xl px-3 py-2">
+              <div className="bg-white/25 rounded-xl px-3 py-2 flex items-center gap-2">
+                <FaTrophy size={14} className="text-white" />
                 <span className="font-bold text-white text-[14px]">
-                  {points.toLocaleString('pt-BR')} pts
+                  {trofeus.toLocaleString('pt-BR')}
                 </span>
               </div>
             </div>
             <div className="mt-3">
               <div className="flex justify-between mb-1">
-                <span className="text-white opacity-75 text-[12px]">Progresso para Prata</span>
-                <span className="text-white font-bold text-[12px]">60%</span>
-              </div>
-              <div className="rounded-full bg-white/25 h-1.5 overflow-hidden">
-                <div className="bg-white rounded-full h-1.5 w-[60%]" />
+                <span className="text-white opacity-75 text-[12px]">
+                  Progresso para {categoria.proxima}
+h-1.5 overflow-hidden">
+                <div
+                  className="bg-white rounded-full h-1.5"
+                  style={{ width: `${categoria.progresso}%` }}
+                />
               </div>
             </div>
           </div>
         </section>
 
         <section className="mb-4">
-          <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">Benefícios ativos</h2>
+          <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">Beneficios ativos</h2>
           <div className="flex flex-col gap-2">
-            {beneficiosAtivos.map(({ id, title, parceiro, ativo }) => (
+            {beneficiosAtivos.length === 0 && (
+              <div className="bg-white rounded-xl border border-[#E4E7EB] shadow-brand-card p-3 text-[#6B7685] text-[13px]">
+                Nenhum beneficio resgatado ainda.
+              </div>
+            )}
+
+            {beneficiosAtivos.map(({ id, titulo, parceiro, custoTrofeus }) => (
               <div key={id} className="bg-white rounded-xl border border-[#E4E7EB] shadow-brand-card p-3 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-[rgba(28,151,112,0.1)]">
-                  <FiArrowRight size={18} color="#1c9770" />
+                  <FiCheckCircle size={18} color="#1c9770" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-bold text-[14px] text-[#1A202C]">{title}</p>
-                  <p className="text-[#6B7685] text-[12px]">{parceiro}</p>
+                  <p className="font-bold text-[14px] text-[#1A202C]">{titulo}</p>
+                  <p className="text-[#6B7685] text-[12px]">
+                    {parceiro} • {custoTrofeus.toLocaleString('pt-BR')} trofeus
+                  </p>
                 </div>
-                {ativo && (
-                  <span className="rounded-full text-[11px] text-white bg-[#1c9770] px-2 py-0.5 font-medium">Ativo</span>
-                )}
+                <span className="rounded-full text-[11px] text-white bg-[#1c9770] px-2 py-0.5 font-medium">Ativo</span>
               </div>
             ))}
           </div>
@@ -88,27 +212,70 @@ const Beneficios = () => {
 
         <section className="mb-4">
           <div className="flex justify-between items-center mb-3">
-            <h2 className="font-bold text-[16px] text-[#1A202C]">Disponíveis no nível {categoria}</h2>
+            <h2 className="font-bold text-[16px] text-[#1A202C]">Disponiveis para resgate</h2>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-            {beneficiosDisponiveis.map(({ id, title, parceiro, bloqueado }) => (
-              <div key={id} className={`bg-white rounded-xl border border-[#E4E7EB] shadow-brand-card p-3 ${bloqueado ? 'opacity-50' : ''}`}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-[14px] text-[#1A202C]">{parceiro}</span>
-                  {bloqueado && <FiLock size={14} color="#9BA3AE" />}
-                </div>
-                <p className="text-[#6B7685] text-[12px]">{title}</p>
-                {bloqueado && (
-                  <p className="text-[#1c9770] text-[12px] font-medium mt-1">
-                    Complete missões para desbloquear
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
+
+          {carregando ? (
+            <div className="bg-white rounded-xl border border-[#E4E7EB] shadow-brand-card p-3 text-[#6B7685] text-[13px]">
+              Carregando beneficios...
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              {beneficios.map((beneficio) => {
+                const resgatado = beneficiosResgatadosIds.has(beneficio.id)
+                const trofeusInsuficientes = trofeus < beneficio.custoTrofeus
+                const disabled = resgatado || resgatandoId === beneficio.id
+                const faltam = Math.max(beneficio.custoTrofeus - trofeus, 0)
+
+                return (
+                  <div key={beneficio.id} className={`bg-white rounded-xl border border-[#E4E7EB] shadow-brand-card p-3 ${resgatado ? 'opacity-75' : ''}`}>
+                    <div className="flex items-center justify-between gap-3 mb-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[rgba(28,151,112,0.1)]">
+                          <FiGift size={17} color="#1c9770" />
+                        </div>
+                        <span className="font-bold text-[14px] text-[#1A202C] truncate">{beneficio.parceiro}</span>
+                      </div>
+                      <span className="shrink-0 flex items-center gap-1 text-[#1c9770] text-[12px] font-bold">
+                        <FaTrophy size={12} />
+                        {beneficio.custoTrofeus.toLocaleString('pt-BR')}
+                      </span>
+                    </div>
+                    <p className="text-[#6B7685] text-[12px] min-h-10">{beneficio.titulo}</p>
+                    <button
+                      className={`mt-3 w-full rounded-xl px-3 py-2 text-[13px] font-bold flex items-center justify-center gap-2 ${
+                        disabled
+                          ? 'bg-[#F0F2F5] text-[#9BA3AE] cursor-not-allowed'
+                          : trofeusInsuficientes
+                            ? 'bg-[#F0F2F5] text-[#9BA3AE] cursor-pointer'
+                          : 'bg-[#1c9770] text-white cursor-pointer'
+                      }`}
+                      disabled={disabled}
+                      onClick={() => resgatarBeneficio(beneficio)}
+                    >
+                      {resgatado && 'Resgatado'}
+                      {!resgatado && trofeusInsuficientes && `Faltam ${faltam.toLocaleString('pt-BR')}`}
+                      {!resgatado && !trofeusInsuficientes && resgatandoId !== beneficio.id && 'Resgatar'}
+                      {!resgatado && !trofeusInsuficientes && resgatandoId === beneficio.id && 'Resgatando...'}
+                      {!disabled && <FiArrowRight size={14} />}
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </section>
 
       </main>
+
+      <ModalConfirmacao
+        aberto={modalBeneficio.aberto}
+        titulo={modalBeneficio.titulo}
+        descricao={modalBeneficio.descricao}
+        textoCancelar="Entendi"
+        mostrarConfirmar={false}
+        onClose={fecharModalBeneficio}
+      />
 
       <Bottomnav activePage="home" />
     </div>
