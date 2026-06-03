@@ -1,8 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Navigate, Routes, Route } from 'react-router-dom'
 import Home from './routes/Home'
 import LGPD from './routes/LGPD'
 import Onboarding from './routes/Onboarding'
 import Cadastro from './routes/Cadastro'
+import Login from './routes/Login'
 import Inicial from './routes/Inicial'
 import Missoes from './routes/Missoes'
 import Ranking from './routes/Ranking'
@@ -14,6 +15,15 @@ import Scan from './routes/Scan'
 import Noticias from './routes/Noticias'
 import Perfil from './routes/Perfil'
 
+const RequireAuth = ({ children }) => {
+  const carteirinha = localStorage.getItem('carteirinha')
+
+  if (!carteirinha) {
+    return <Navigate to="/login" replace />
+  }
+
+  return children
+}
 
 const App = () => {
   return (
@@ -23,16 +33,17 @@ const App = () => {
         <Route path="/lgpd" element={<LGPD />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/cadastro" element={<Cadastro />} />
-        <Route path="/inicial" element={<Inicial />} />
-        <Route path="/missoes" element={<Missoes />} />
-        <Route path="/ranking" element={<Ranking />} />
-        <Route path="/impulso" element={<Impulso />} />
-        <Route path="/beneficios" element={<Beneficios />} />
-        <Route path="/mind" element={<Mind />} />
-        <Route path="/connect" element={<Connect />} />
-        <Route path="/scan" element={<Scan />} />
-        <Route path="/noticias" element={<Noticias />} />
-        <Route path="/perfil" element={<Perfil />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/inicial" element={<RequireAuth><Inicial /></RequireAuth>} />
+        <Route path="/missoes" element={<RequireAuth><Missoes /></RequireAuth>} />
+        <Route path="/ranking" element={<RequireAuth><Ranking /></RequireAuth>} />
+        <Route path="/impulso" element={<RequireAuth><Impulso /></RequireAuth>} />
+        <Route path="/beneficios" element={<RequireAuth><Beneficios /></RequireAuth>} />
+        <Route path="/mind" element={<RequireAuth><Mind /></RequireAuth>} />
+        <Route path="/connect" element={<RequireAuth><Connect /></RequireAuth>} />
+        <Route path="/scan" element={<RequireAuth><Scan /></RequireAuth>} />
+        <Route path="/noticias" element={<RequireAuth><Noticias /></RequireAuth>} />
+        <Route path="/perfil" element={<RequireAuth><Perfil /></RequireAuth>} />
 
       </Routes>
     </Router>

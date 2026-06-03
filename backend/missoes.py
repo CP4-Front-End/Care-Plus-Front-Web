@@ -1,16 +1,10 @@
-import json
 import random
+from storage import carregar_missoes_gerais, carregar_usuarios, salvar_usuarios
 
 def gerar_missoes_gerais(carteirinha=None):
 
     if carteirinha:
-        with open(
-            "usuarios.json",
-            "r",
-            encoding="utf-8"
-        ) as arquivo:
-
-            usuarios = json.load(arquivo)
+        usuarios = carregar_usuarios()
 
         usuario = usuarios.get(carteirinha)
 
@@ -20,13 +14,7 @@ def gerar_missoes_gerais(carteirinha=None):
         if "missoesGeraisAtivas" in usuario and usuario["missoesGeraisAtivas"]:
             return usuario["missoesGeraisAtivas"]
 
-    with open(
-        "missoesGerais.json",
-        "r",
-        encoding="utf-8"
-    ) as arquivo:
-
-        missoes = json.load(arquivo)
+    missoes = carregar_missoes_gerais()
 
     missoes_sorteadas = random.sample(
         missoes,
@@ -40,17 +28,6 @@ def gerar_missoes_gerais(carteirinha=None):
     if carteirinha:
         usuario["missoesGeraisAtivas"] = missoes_sorteadas
 
-        with open(
-            "usuarios.json",
-            "w",
-            encoding="utf-8"
-        ) as arquivo:
-
-            json.dump(
-                usuarios,
-                arquivo,
-                indent=4,
-                ensure_ascii=False
-            )
+        salvar_usuarios(usuarios)
 
     return missoes_sorteadas

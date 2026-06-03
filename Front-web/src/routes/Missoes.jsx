@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FiArrowLeft, FiArrowRight, FiZap, FiTarget, FiHeart, FiSun, FiTrendingUp, FiInfo } from 'react-icons/fi'
+import { FiArrowLeft, FiArrowRight, FiZap, FiTarget, FiTrendingUp, FiInfo } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
 import ModalConfirmacao from '../components/ModalConfirmacao.jsx'
+import { API_URL, buscarUsuarioLogado, redirecionarLogin } from '../services/sessao.js'
 
 
 const Missoes = () => {
@@ -25,12 +26,6 @@ const Missoes = () => {
     atual: '600ml',
     meta: '3l',
   }
-
-  const missoesConect = [
-    { id: 1, title: '10 ciclos de respiração quadrada', icon: FiSun, concluida: false },
-    { id: 2, title: 'Manter BPM abaixo de 100 por 20min em uma corrida', icon: FiHeart, concluida: false },
-    { id: 3, title: 'Queime um total de 700 calorias', icon: FiZap, concluida: false },
-  ]
 
   const [missoesPersonalizadas, setMissoesPersonalizadas] = useState([])
   const [missoesGerais, setMissoesGerais] = useState([])
@@ -64,7 +59,7 @@ const Missoes = () => {
   async function carregarMissoesGerais(carteirinha) {
 
     const resposta = await fetch(
-      `http://127.0.0.1:8000/missoes-gerais?carteirinha=${carteirinha}`
+      `${API_URL}/missoes-gerais?carteirinha=${carteirinha}`
     )
 
     const dados = await resposta.json()
@@ -78,10 +73,13 @@ const Missoes = () => {
 
       const carteirinha = localStorage.getItem("carteirinha")
 
-      if (!carteirinha) return
+      if (!carteirinha) {
+        redirecionarLogin(navigate)
+        return
+      }
 
       const resposta = await fetch(
-        `http://127.0.0.1:8000/missoes/${carteirinha}`
+        `${API_URL}/missoes/${carteirinha}`
       )
 
       const dados = await resposta.json()
@@ -89,11 +87,9 @@ const Missoes = () => {
       setMissoesPersonalizadas(dados)
 
       await carregarMissoesGerais(carteirinha)
-      const respostaUsuario = await fetch(
-        `http://127.0.0.1:8000/usuario/${carteirinha}`
-      )
+      const usuario = await buscarUsuarioLogado(navigate)
 
-      const usuario = await respostaUsuario.json()
+      if (!usuario) return
     
       setStreakDias(usuario.streak || 0)
 
@@ -105,7 +101,7 @@ const Missoes = () => {
 
     carregarMissoes()
 
-  }, [])
+  }, [navigate])
 
   function abrirModal(idMissao, tipo) {
     setMissaoSelecionada(idMissao)
@@ -120,20 +116,21 @@ const Missoes = () => {
 
     const carteirinha = localStorage.getItem("carteirinha")
 
-    await fetch("http://127.0.0.1:8000/concluir-missao-geral", {
+    const resposta = await fetch(`${API_URL}/concluir-missao-geral`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ carteirinha, idMissao, trofeus: missaoConcluida.trofeus })
     })
 
-    const respostaUsuario = await fetch(
-      `http://127.0.0.1:8000/usuario/${carteirinha}`
-    )
+    const dadosMissao = await resposta.json()
 
-    const usuario = await respostaUsuario.json()
-    setStreakDias(usuario.streak || 0)
+    if (!resposta.ok) return
+
+    const usuario = await buscarUsuarioLogado(navigate)
 
     if (!usuario) return
+
+    setStreakDias(usuario.streak || 0)
 
     localStorage.setItem("trofeus", usuario.trofeus)
     window.dispatchEvent(new Event("trofeusAtualizados"))
@@ -141,10 +138,8 @@ const Missoes = () => {
       usuario.missoesConcluidasHoje || 0
     )
 
-    const novasMissoes = missoesGerais.filter(m => m.id !== idMissao)
+    const novasMissoes = dadosMissao.missoesGerais || missoesGerais.filter(m => m.id !== idMissao)
     setMissoesGerais(novasMissoes)
-
-    if (novasMissoes.length === 0) carregarMissoesGerais(carteirinha)
   }
 
   async function concluirMissao(idMissao) {
@@ -154,7 +149,7 @@ const Missoes = () => {
       const carteirinha = localStorage.getItem("carteirinha")
 
       const resposta = await fetch(
-        "http://127.0.0.1:8000/concluir-missao",
+        `${API_URL}/concluir-missao`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -166,22 +161,14 @@ const Missoes = () => {
         throw new Error("Erro ao concluir missão")
       }
 
-      const novaResposta = await fetch(
-        `http://127.0.0.1:8000/missoes/${carteirinha}`
-      )
+      const dados = await resposta.json()
+      setMissoesPersonalizadas(dados.missoes || [])
 
-      const dados = await novaResposta.json()
-
-      setMissoesPersonalizadas(dados)
-
-      const respostaUsuario = await fetch(
-        `http://127.0.0.1:8000/usuario/${carteirinha}`
-      )
-
-      const usuario = await respostaUsuario.json()
-      setStreakDias(usuario.streak || 0)
+      const usuario = await buscarUsuarioLogado(navigate)
 
       if (!usuario) return
+
+      setStreakDias(usuario.streak || 0)
 
       localStorage.setItem("trofeus", usuario.trofeus)
       window.dispatchEvent(new Event("trofeusAtualizados"))

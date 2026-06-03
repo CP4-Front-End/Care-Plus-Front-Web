@@ -10,12 +10,7 @@ import Bottomnav from '../components/Bottomnav.jsx'
 import ModalConfirmacao from '../components/ModalConfirmacao.jsx'
 import mockupMobile from '../assets/mucupe.png'
 import mockupDesktop from '../assets/mucupePC.png'
-
-const API_URL = 'http://127.0.0.1:8000'
-
-function chaveBeneficiosHome(carteirinha) {
-  return `beneficiosHome:${carteirinha || 'visitante'}`
-}
+import { API_URL, buscarUsuarioLogado, carregarBeneficiosDaSessao } from '../services/sessao.js'
 
 const Inicial = () => {
   const navigate = useNavigate()
@@ -31,12 +26,7 @@ const Inicial = () => {
 
   useEffect(() => {
     async function carregarUsuario() {
-      const carteirinha = localStorage.getItem('carteirinha')
-
-      if (!carteirinha) return
-
-      const resposta = await fetch(`${API_URL}/usuario/${carteirinha}`)
-      const dados = await resposta.json()
+      const dados = await buscarUsuarioLogado(navigate)
 
       if (!dados) return
 
@@ -45,24 +35,17 @@ const Inicial = () => {
     }
 
     carregarUsuario()
-  }, [])
+  }, [navigate])
 
   useEffect(() => {
     async function carregarBeneficiosSorteados() {
       const carteirinha = localStorage.getItem('carteirinha')
-      const chaveStorage = chaveBeneficiosHome(carteirinha)
-      const beneficiosSalvos = localStorage.getItem(chaveStorage)
-
-      if (beneficiosSalvos) {
-        setBeneficios(JSON.parse(beneficiosSalvos))
-        return
-      }
 
       try {
-        const resposta = await fetch(`${API_URL}/beneficios-sorteados?quantidade=3`)
-        const dados = await resposta.json()
-        setBeneficios(dados)
-        localStorage.setItem(chaveStorage, JSON.stringify(dados))
+        if (!carteirinha) return
+
+        const dados = await carregarBeneficiosDaSessao(carteirinha, 6)
+        setBeneficios(dados.slice(0, 3))
       } catch {
         setBeneficios([])
       }

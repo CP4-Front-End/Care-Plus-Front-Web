@@ -5,8 +5,7 @@ import { FaTrophy } from 'react-icons/fa'
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
 import ModalConfirmacao from '../components/ModalConfirmacao.jsx'
-
-const API_URL = 'http://127.0.0.1:8000'
+import { API_URL, buscarUsuarioLogado, carregarBeneficiosDaSessao } from '../services/sessao.js'
 
 // Limiares de troféus acumulados por categoria
 const CATEGORIAS = [
@@ -63,17 +62,11 @@ const Beneficios = () => {
       const carteirinha = localStorage.getItem('carteirinha')
 
       try {
-        const chamadas = [
-          fetch(`${API_URL}/beneficios`),
-        ]
+        const usuarioApi = await buscarUsuarioLogado(navigate)
 
-        if (carteirinha) {
-          chamadas.push(fetch(`${API_URL}/usuario/${carteirinha}`))
-        }
+        if (!usuarioApi) return
 
-        const [respostaBeneficios, respostaUsuario] = await Promise.all(chamadas)
-        const beneficiosApi = await respostaBeneficios.json()
-        const usuarioApi = respostaUsuario ? await respostaUsuario.json() : null
+        const beneficiosApi = await carregarBeneficiosDaSessao(carteirinha, 6)
 
         setBeneficios(beneficiosApi)
         setUsuario(usuarioApi)
@@ -88,7 +81,7 @@ const Beneficios = () => {
     }
 
     carregarDados()
-  }, [])
+  }, [navigate])
 
   const trofeus = usuario?.trofeus || 0
   const trofeusAcumulados = usuario?.trofeusAcumulados ?? trofeus

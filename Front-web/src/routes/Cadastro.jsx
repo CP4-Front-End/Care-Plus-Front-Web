@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FiArrowRight, FiArrowLeft, FiUser, FiActivity } from 'react-icons/fi'
+import { FiArrowRight, FiArrowLeft, FiUser } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
+import { API_URL, salvarSessaoUsuario } from '../services/sessao.js'
 
 
 
 const Cadastro = () => {
   const navigate = useNavigate()
-  const [nome, setNome] = useState('')
+  const [erro, setErro] = useState('')
 
   const [formData, setFormData] = useState({
     nome: '',
@@ -146,22 +147,8 @@ const Cadastro = () => {
   }
 
   const handleAvancar = () => {
-    const dadosPasso1 = {
-      peso: formData.peso,
-      altura: formData.altura,
-    }
-    localStorage.setItem(
-  "carteirinha",
-  formData.carteirinha
-)
-
-localStorage.setItem("trofeus", 0)
-
-window.dispatchEvent(
-  new Event("trofeusAtualizados")
-
-)
-setStep(2)
+    setErro('')
+    setStep(2)
   }
 
   const handleSubmit = async () => {
@@ -183,28 +170,31 @@ setStep(2)
       refeicoes: formData.refeicoes,
 
     }
-    const resposta = await fetch(
-      "http://127.0.0.1:8000/cadastro",
-      {
-        method: "POST",
+    try {
+      const resposta = await fetch(
+        `${API_URL}/cadastro`,
+        {
+          method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-        body: JSON.stringify(dadosFinais),
+          body: JSON.stringify(dadosFinais),
+        }
+      )
+
+      const dados = await resposta.json()
+
+      if (!resposta.ok) {
+        throw new Error(dados.detail || 'Nao foi possivel salvar seu cadastro.')
       }
-    )
 
-    const dados = await resposta.json()
-
-    console.log(dados)
-
-    localStorage.setItem(
-      "carteirinha",
-      formData.carteirinha
-    )
-    navigate('/inicial')
+      salvarSessaoUsuario(dados.usuario)
+      navigate('/inicial')
+    } catch (error) {
+      setErro(error.message)
+    }
   }
 
   const isStep1Valid =
@@ -336,6 +326,13 @@ setStep(2)
                 >
                   Continuar <FiArrowRight size={18} color="#fff" />
                 </button>
+
+                <button
+                  className="w-full mt-3 font-bold rounded-xl py-3 flex items-center justify-center gap-2 text-[14px] text-[#1c9770] bg-white border-2 border-[#E4E7EB] cursor-pointer"
+                  onClick={() => navigate('/login')}
+                >
+                  Ja tenho conta
+                </button>
               </section>
             )}
 
@@ -361,6 +358,12 @@ setStep(2)
 
                   </div>
                 ))}
+
+                {erro && (
+                  <div className="rounded-xl p-3 mb-3 bg-[#fff5f5] border border-[#FC8181]">
+                    <p className="text-[13px] text-[#C53030]">{erro}</p>
+                  </div>
+                )}
 
                 <button
                   className={`w-full font-bold rounded-xl py-3 flex items-center justify-center gap-2 text-white text-[14px] cursor-pointer ${isStep2Valid

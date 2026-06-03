@@ -7,6 +7,7 @@ import Bottomnav from '../components/Bottomnav.jsx'
 const Home = () => {
   const navigate = useNavigate()
   const user = { name: 'Renato', points: 0 }
+  const boostCarePath = '/login'
 
   const quickAccessItems = [
     {
@@ -22,7 +23,7 @@ const Home = () => {
       subtitle: 'Missões & Recompensas',
       clickable: true,
       bg: 'bg-[#1c9770]',
-      path: '/lgpd',
+      path: boostCarePath,
     },
   ]
 
@@ -82,7 +83,7 @@ const Home = () => {
         <section className="mb-6">
           <div
             className="bg-gradient-primary rounded-xl p-4 lg:p-6 relative overflow-hidden flex items-center justify-between shadow-brand-banner cursor-pointer hover:-translate-y-0.5 transition-transform duration-200"
-            onClick={() => navigate('/lgpd')}
+            onClick={() => navigate(boostCarePath)}
           >
             <div className="absolute -top-[30px] -right-[30px] w-[140px] h-[140px] bg-white/[0.07] rounded-full" />
 

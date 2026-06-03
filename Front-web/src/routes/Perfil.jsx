@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FiArrowLeft, FiArrowRight, FiUser, FiAward } from 'react-icons/fi'
+import { FiArrowLeft, FiArrowRight, FiUser, FiAward, FiLogOut } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
+import { limparSessaoUsuario } from '../services/sessao.js'
 
 const Perfil = () => {
   const [nome, setNome] = useState('')
@@ -17,11 +18,22 @@ const Perfil = () => {
       const carteirinha =
         localStorage.getItem("carteirinha")
 
+      if (!carteirinha) {
+        navigate('/login')
+        return
+      }
+
       const resposta = await fetch(
         `http://127.0.0.1:8000/usuario/${carteirinha}`
       )
 
       const dados = await resposta.json()
+
+      if (!dados) {
+        limparSessaoUsuario()
+        navigate('/login')
+        return
+      }
 
       setUsuario(dados)
       setMissoesHoje(
@@ -53,7 +65,7 @@ const Perfil = () => {
 
     carregarUsuario()
 
-  }, [])
+  }, [navigate])
 
   useEffect(() => {
 
@@ -62,13 +74,22 @@ const Perfil = () => {
       const carteirinha =
         localStorage.getItem("carteirinha")
 
-      if (!carteirinha) return
+      if (!carteirinha) {
+        navigate('/login')
+        return
+      }
 
       const resposta = await fetch(
         `http://127.0.0.1:8000/usuario/${carteirinha}`
       )
 
       const dados = await resposta.json()
+
+      if (!dados) {
+        limparSessaoUsuario()
+        navigate('/login')
+        return
+      }
 
       setUsuario(dados)
       setMissoesHoje(
@@ -105,7 +126,12 @@ const Perfil = () => {
       )
     }
 
-  }, [])
+  }, [navigate])
+
+  function sairDaConta() {
+    limparSessaoUsuario()
+    navigate('/login')
+  }
 
 
 
@@ -297,6 +323,16 @@ const Perfil = () => {
               <span className="font-bold text-[#1c9770] text-[14px]">{usuario?.trofeus.toLocaleString('pt-BR') || 0} Troféus</span>
             </div>
           </div>
+        </section>
+
+        <section className="mb-4">
+          <button
+            className="w-full rounded-xl py-3 font-bold text-[14px] text-[#6B7685] bg-white border-2 border-[#E4E7EB] flex items-center justify-center gap-2 cursor-pointer"
+            onClick={sairDaConta}
+          >
+            <FiLogOut size={16} />
+            Sair da conta
+          </button>
         </section>
 
         <section className="mb-4">

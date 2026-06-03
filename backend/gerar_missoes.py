@@ -1,12 +1,11 @@
-import json
 import random
 from datetime import date
+from storage import carregar_usuarios, salvar_usuarios
 
 
 def gerar_missoes(carteirinha):
 
-    with open("usuarios.json", "r", encoding="utf-8") as arquivo:
-        usuarios = json.load(arquivo)
+    usuarios = carregar_usuarios()
 
     usuario = usuarios.get(carteirinha)
 
@@ -231,24 +230,20 @@ def gerar_missoes(carteirinha):
 
     usuario["missoesAtivas"] = missoes_sorteadas
 
-    with open("usuarios.json", "w", encoding="utf-8") as arquivo:
-        json.dump(
-            usuarios,
-            arquivo,
-            indent=4,
-            ensure_ascii=False
-    )
+    salvar_usuarios(usuarios)
 
     return missoes_sorteadas
 
 def concluir_missao(carteirinha, id_missao):
 
-    with open("usuarios.json", "r", encoding="utf-8") as arquivo:
-        usuarios = json.load(arquivo)
+    usuarios = carregar_usuarios()
 
     usuario = usuarios[carteirinha]
     usuario.setdefault("trofeus", 0)
     usuario.setdefault("trofeusAcumulados", usuario.get("trofeus", 0))
+    usuario.setdefault("missoesConcluidasHoje", 0)
+    usuario.setdefault("streak", 0)
+    usuario.setdefault("ultimoDiaStreak", "")
 
     missoes = usuario["missoesAtivas"]
 
@@ -261,6 +256,14 @@ def concluir_missao(carteirinha, id_missao):
             usuario["trofeus"] += missao["trofeus"]
             usuario["trofeusAcumulados"] += missao["trofeus"]
             usuario["missoesConcluidasHoje"] += 1
+            hoje = str(date.today())
+
+            if (
+                usuario["missoesConcluidasHoje"] >= 3
+                and usuario.get("ultimoDiaStreak") != hoje
+            ):
+                usuario["streak"] += 1
+                usuario["ultimoDiaStreak"] = hoje
 
         else:
 
@@ -271,14 +274,10 @@ def concluir_missao(carteirinha, id_missao):
 
     usuario["missoesAtivas"] = novas_missoes
 
-    with open("usuarios.json", "w", encoding="utf-8") as arquivo:
-        json.dump(
-            usuarios,
-            arquivo,
-            indent=4,
-            ensure_ascii=False
-    )
+    salvar_usuarios(usuarios)
     if len(usuario["missoesAtivas"]) == 0:
 
-        gerar_missoes(carteirinha)
+        return gerar_missoes(carteirinha)
+
+    return usuario["missoesAtivas"]
 

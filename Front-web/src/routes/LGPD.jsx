@@ -125,9 +125,18 @@ const LGPD = () => {
           </button>
           <button
             className="w-full font-bold rounded-xl py-3 flex items-center justify-center gap-2 text-[15px] text-white bg-[#1c9770] shadow-[0_4px_12px_rgba(28,151,112,0.3)] cursor-pointer"
-            onClick={() => navigate('/Onboarding')}
+            onClick={() => navigate('/onboarding')}
           >
             <FiCheck size={18} /> Concordo
+          </button>
+        </div>
+
+        <div className="lg:max-w-lg lg:mx-auto mt-3">
+          <button
+            className="w-full font-bold rounded-xl py-3 flex items-center justify-center gap-2 text-[15px] text-[#1c9770] bg-white border-2 border-[#E4E7EB] cursor-pointer"
+            onClick={() => navigate('/login')}
+          >
+            Ja tenho conta
           </button>
         </div>
 
