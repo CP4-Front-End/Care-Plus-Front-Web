@@ -130,6 +130,36 @@ body {
   background-size: cover;
 }
 
+.beneficio-card {
+  background-color: #167a5a;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.beneficio-card::before,
+.beneficio-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.beneficio-card::before {
+  background-image: var(--beneficio-bg-image);
+  background-position: center;
+  background-size: cover;
+  transform: scale(1.02);
+}
+
+.beneficio-card::after {
+  background:
+    linear-gradient(180deg, rgba(9, 37, 31, 0.22) 0%, rgba(9, 37, 31, 0.72) 64%, rgba(9, 37, 31, 0.9) 100%),
+    linear-gradient(115deg, rgba(28, 151, 112, 0.42) 0%, rgba(28, 151, 112, 0.08) 56%);
+}
+
+.beneficio-card:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(28, 151, 112, 0.22);
+}
+
 .text-brand-primary    { color: #1c9770; }
 .text-brand-secondary  { color: #93CB52; }
 .text-brand-dark       { color: #1A202C; }

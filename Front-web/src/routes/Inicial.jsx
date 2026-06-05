@@ -15,9 +15,67 @@ import { API_URL, buscarUsuarioLogado, carregarBeneficiosDaSessao } from '../ser
 
 const DIAS_SEMANA_CALENDARIO = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
 const DIAS_FLUX_SEMANA = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D']
+const FOTO_UNSPLASH_BASE = '?auto=format&fit=crop&w=900&q=80'
+const BENEFICIO_FOTOS = {
+  1: `https://images.unsplash.com/photo-1503376780353-7e6692767b70${FOTO_UNSPLASH_BASE}`,
+  2: `https://images.unsplash.com/photo-1505740420928-5e560c06d30e${FOTO_UNSPLASH_BASE}`,
+  3: `https://images.unsplash.com/photo-1498837167922-ddd27525d352${FOTO_UNSPLASH_BASE}`,
+  4: `https://images.unsplash.com/photo-1584515933487-779824d29309${FOTO_UNSPLASH_BASE}`,
+  5: `https://images.unsplash.com/photo-1512621776951-a57141f2eefd${FOTO_UNSPLASH_BASE}`,
+  6: `https://images.unsplash.com/photo-1577805947697-89e18249d767${FOTO_UNSPLASH_BASE}`,
+  7: `https://images.unsplash.com/photo-1534438327276-14e5300c3a48${FOTO_UNSPLASH_BASE}`,
+  8: `https://images.unsplash.com/photo-1523362628745-0c100150b504${FOTO_UNSPLASH_BASE}`,
+  9: `https://images.unsplash.com/photo-1494522855154-9297ac14b55f${FOTO_UNSPLASH_BASE}`,
+  10: `https://images.unsplash.com/photo-1506126613408-eca07ce68773${FOTO_UNSPLASH_BASE}`,
+  11: `https://images.unsplash.com/photo-1599599810769-bcde5a160d32${FOTO_UNSPLASH_BASE}`,
+  12: `https://images.unsplash.com/photo-1542291026-7eec264c27ff${FOTO_UNSPLASH_BASE}`,
+  13: `https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46${FOTO_UNSPLASH_BASE}`,
+  14: `https://images.unsplash.com/photo-1584308666744-24d5c474f2ae${FOTO_UNSPLASH_BASE}`,
+  15: `https://images.unsplash.com/photo-1540555700478-4be289fbecef${FOTO_UNSPLASH_BASE}`,
+  16: `https://images.unsplash.com/photo-1471864190281-a93a3070b6de${FOTO_UNSPLASH_BASE}`,
+  17: `https://images.unsplash.com/photo-1490645935967-10de6ba17061${FOTO_UNSPLASH_BASE}`,
+  18: `https://images.unsplash.com/photo-1523398002811-999ca8dec234${FOTO_UNSPLASH_BASE}`,
+  19: `https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da${FOTO_UNSPLASH_BASE}`,
+  20: `https://images.unsplash.com/photo-1571902943202-507ec2618e8f${FOTO_UNSPLASH_BASE}`,
+}
+
+const BENEFICIO_FOTOS_FALLBACK = [
+  { palavras: ['uber', '99', 'corrida', 'carro'], foto: BENEFICIO_FOTOS[1] },
+  { palavras: ['spotify', 'musica', 'fone'], foto: BENEFICIO_FOTOS[2] },
+  { palavras: ['proteina', 'shake', 'growth', 'max titanium'], foto: BENEFICIO_FOTOS[6] },
+  { palavras: ['consulta', 'medico', 'saude'], foto: BENEFICIO_FOTOS[4] },
+  { palavras: ['ifood', 'comida', 'meal'], foto: BENEFICIO_FOTOS[5] },
+  { palavras: ['academia', 'smart fit', 'gympass'], foto: BENEFICIO_FOTOS[7] },
+  { palavras: ['garrafa', 'termica', 'agua'], foto: BENEFICIO_FOTOS[8] },
+  { palavras: ['headspace', 'meditacao', 'wellness', 'massagem'], foto: BENEFICIO_FOTOS[10] },
+  { palavras: ['snack', 'nuts', 'barra'], foto: BENEFICIO_FOTOS[11] },
+  { palavras: ['decathlon', 'esportiva', 'dry-fit', 'camiseta'], foto: BENEFICIO_FOTOS[12] },
+  { palavras: ['drogasil', 'farmacia', 'multivitaminico'], foto: BENEFICIO_FOTOS[14] },
+  { palavras: ['amazon', 'voucher'], foto: BENEFICIO_FOTOS[19] },
+]
 
 function formatarDataCalendario(ano, mes, dia) {
   return `${ano}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`
+}
+
+function normalizarTextoBeneficio(valor) {
+  return String(valor || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+}
+
+function buscarFotoBeneficio({ id, titulo, parceiro }) {
+  if (BENEFICIO_FOTOS[id]) {
+    return BENEFICIO_FOTOS[id]
+  }
+
+  const texto = normalizarTextoBeneficio(`${titulo} ${parceiro}`)
+  const fallback = BENEFICIO_FOTOS_FALLBACK.find(({ palavras }) =>
+    palavras.some((palavra) => texto.includes(palavra))
+  )
+
+  return fallback?.foto || BENEFICIO_FOTOS[5]
 }
 
 const Inicial = () => {
@@ -425,30 +483,40 @@ const Inicial = () => {
             {beneficios.map(({ id, titulo, parceiro, custoTrofeus }) => {
               const resgatado = beneficiosResgatados.some((beneficio) => beneficio.id === id)
               const resgatando = resgatandoBeneficioId === id
+              const fotoBeneficio = buscarFotoBeneficio({ id, titulo, parceiro })
 
               return (
                 <button
                   key={id}
-                  className={`text-left bg-white rounded-md p-3 border border-[#E4E7EB] shadow-brand-card ${
+                  className={`beneficio-card relative overflow-hidden text-left rounded-md p-3 min-h-[162px] border border-white/20 shadow-brand-tile ${
                     resgatado || resgatando ? 'opacity-75 cursor-not-allowed' : 'cursor-pointer'
                   }`}
+                  style={{
+                    '--beneficio-bg-image': `url(${fotoBeneficio})`,
+                  }}
                   disabled={resgatado || resgatando}
                   onClick={() => resgatarBeneficio({ id, titulo, parceiro, custoTrofeus })}
                 >
-                  <div className="w-9 h-9 rounded-md mb-2 bg-[rgba(28,151,112,0.1)] flex items-center justify-center">
-                    <FiGift size={17} color="#1c9770" />
+                  <div className="relative z-10 flex h-full min-h-[138px] flex-col justify-between gap-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="w-9 h-9 rounded-md bg-white/20 text-white backdrop-blur-sm flex items-center justify-center">
+                        <FiGift size={17} />
+                      </div>
+                      <p className="font-bold text-[12px] flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[#1c9770] shadow-sm">
+                        <FaTrophy size={11} />
+                        {custoTrofeus.toLocaleString('pt-BR')}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-white/75 text-[12px] mb-1 font-medium">{parceiro}</p>
+                      <p className="font-bold text-[15px] text-white leading-snug mb-2">{titulo}</p>
+                      <p className="text-white/80 text-[12px]">
+                        {resgatado && 'Resgatado'}
+                        {!resgatado && resgatando && 'Resgatando...'}
+                        {!resgatado && !resgatando && 'Clique para resgatar'}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-[#6B7685] text-[12px] mb-1">{parceiro}</p>
-                  <p className="font-bold text-[14px] text-[#1A202C] mb-1">{titulo}</p>
-                  <p className="font-bold text-[#1c9770] text-[12px] flex items-center gap-1">
-                    <FaTrophy size={12} />
-                    {custoTrofeus.toLocaleString('pt-BR')} troféus
-                  </p>
-                  <p className="text-[#6B7685] text-[12px] mt-2">
-                    {resgatado && 'Resgatado'}
-                    {!resgatado && resgatando && 'Resgatando...'}
-                    {!resgatado && !resgatando && 'Clique para resgatar'}
-                  </p>
                 </button>
               )
             })}

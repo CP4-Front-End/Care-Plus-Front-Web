@@ -153,21 +153,21 @@ const Perfil = () => {
       id: 1,
       title: 'Mestre da Hidratação',
       desc: 'Complete 5 missões relacionadas à água.',
-      conquistado: true
+      conquistado: false
     },
 
     {
       id: 2,
       title: 'Respire Fundo',
       desc: 'Complete 3 missões de relaxamento ou respiração.',
-      conquistado: true
+      conquistado: false
     },
 
     {
       id: 3,
       title: 'Desconectado',
       desc: 'Complete 5 missões sem redes sociais ou celular.',
-      conquistado: true
+      conquistado: false
     },
 
     {
@@ -293,6 +293,23 @@ const Perfil = () => {
     return map[campo]?.[valor] || '-'
   }
 
+  const informacoesPessoais = [
+    { label: 'Nome', valor: usuario?.nome || nome || '-' },
+    { label: 'Carteirinha', valor: usuario?.carteirinha || '-' },
+    { label: 'Peso', valor: usuario?.peso ? `${usuario.peso} kg` : '-' },
+    { label: 'Altura', valor: usuario?.altura ? `${usuario.altura} cm` : '-' },
+    { label: 'Atividade fÃ­sica', valor: nivelLabel('atividadeFisica', usuario?.atividadeFisica) },
+    { label: 'Tempo sentado', valor: nivelLabel('tempoSentado', usuario?.tempoSentado) },
+    { label: 'DistÃ¢ncia por dia', valor: nivelLabel('distanciaDia', usuario?.distanciaDia) },
+    { label: 'Consumo de Ã¡gua', valor: nivelLabel('agua', usuario?.agua) },
+    { label: 'Qualidade do sono', valor: nivelLabel('sono', usuario?.sono) },
+    { label: 'Tempo no celular', valor: nivelLabel('celular', usuario?.celular) },
+    { label: 'Pausas no dia', valor: nivelLabel('pausas', usuario?.pausas) },
+    { label: 'Consumo de cafeÃ­na', valor: nivelLabel('cafeina', usuario?.cafeina) },
+    { label: 'Tempo ao ar livre', valor: nivelLabel('arLivre', usuario?.arLivre) },
+    { label: 'RefeiÃ§Ãµes por dia', valor: nivelLabel('refeicoes', usuario?.refeicoes) },
+  ]
+
 
   return (
     <div className="min-h-screen bg-[#F4F6F8]">
@@ -398,6 +415,21 @@ const Perfil = () => {
           </div>
           <div className="bg-white rounded-xl border border-[#E4E7EB] shadow-brand-card p-3">
             <div className="flex flex-col gap-3">
+              {informacoesPessoais.map(({ label, valor }, index) => (
+                <div key={label}>
+                  <div className="flex justify-between items-center gap-4">
+                    <span className="text-[#6B7685] text-[14px]">{label}</span>
+                    <span className="font-bold text-[14px] text-[#1A202C] text-right">
+                      {valor}
+                    </span>
+                  </div>
+
+                  {index < informacoesPessoais.length - 1 && (
+                    <hr className="border-[#E4E7EB] m-0 mt-3" />
+                  )}
+                </div>
+              ))}
+              {false && (<>
               <div className="flex justify-between items-center">
                 <span className="text-[#6B7685] text-[14px]">Peso</span>
                 <span className="font-bold text-[14px] text-[#1A202C]">
@@ -446,6 +478,7 @@ const Perfil = () => {
                   {nivelLabel('sono', usuario?.sono)}
                 </span>
               </div>
+              </>)}
 
 
             </div>
