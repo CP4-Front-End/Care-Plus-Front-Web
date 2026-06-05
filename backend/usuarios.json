@@ -480,5 +480,106 @@
                 "id": 3
             }
         ]
+    },
+    "121": {
+        "nome": "LittleGabriel",
+        "carteirinha": "121",
+        "peso": "323",
+        "altura": "3232",
+        "atividadeFisica": "5_7",
+        "tempoSentado": "5_8h",
+        "distanciaDia": "menos_1",
+        "agua": "menos_1",
+        "sono": "menos_5",
+        "celular": "menos_2",
+        "pausas": "mais_6",
+        "cafeina": "0",
+        "arLivre": "0_15",
+        "refeicoes": "3",
+        "trofeus": 95,
+        "trofeusAcumulados": 95,
+        "beneficiosResgatados": [],
+        "beneficiosDisponiveis": [
+            {
+                "id": 15,
+                "titulo": "Desconto de 25% em massagem relaxante",
+                "parceiro": "Parceiro wellness",
+                "custoTrofeus": 700
+            },
+            {
+                "id": 16,
+                "titulo": "Suplemento multivitamínico (1 mês)",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 3,
+                "titulo": "Barrinha de proteína da Growth Supplements",
+                "parceiro": "Growth Supplements",
+                "custoTrofeus": 450
+            },
+            {
+                "id": 2,
+                "titulo": "1 mês grátis de Spotify Premium",
+                "parceiro": "Spotify",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 8,
+                "titulo": "Garrafa térmica esportiva",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 450
+            },
+            {
+                "id": 10,
+                "titulo": "Plano mensal da Headspace (meditação)",
+                "parceiro": "Headspace",
+                "custoTrofeus": 550
+            }
+        ],
+        "missoesConcluidasHoje": 3,
+        "ultimoDiaMissoes": "2026-06-04",
+        "streak": 1,
+        "ultimoDiaStreak": "2026-06-04",
+        "streakDiasAcendidos": [
+            "2026-06-04"
+        ],
+        "missoesAtivas": [
+            {
+                "titulo": "Faça uma pausa para alongamento",
+                "trofeus": 30,
+                "id": 1,
+                "concluida": false
+            },
+            {
+                "titulo": "Mantenha sua rotina ativa hoje",
+                "trofeus": 30,
+                "id": 2,
+                "concluida": false
+            },
+            {
+                "titulo": "Beba pelo menos 2L de água hoje",
+                "trofeus": 40,
+                "id": 3,
+                "concluida": false
+            }
+        ],
+        "missoesGeraisAtivas": [
+            {
+                "missao": "Organizar sua mesa ou espaço de trabalho",
+                "trofeus": 30,
+                "id": 1
+            },
+            {
+                "missao": "Fazer uma pausa consciente e relaxar",
+                "trofeus": 20,
+                "id": 2
+            },
+            {
+                "missao": "Caminhar enquanto pensa ou reflete",
+                "trofeus": 30,
+                "id": 3
+            }
+        ]
     }
 }

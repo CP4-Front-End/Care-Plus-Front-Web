@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FiArrowLeft, FiArrowRight, FiZap, FiTarget, FiTrendingUp, FiInfo } from 'react-icons/fi'
+import { FiArrowLeft, FiArrowRight, FiZap, FiTarget, FiTrendingUp, FiAward } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
 import ModalConfirmacao from '../components/ModalConfirmacao.jsx'
@@ -205,19 +205,33 @@ const Missoes = () => {
         </section>
 
         <section>
-          <div
-            className="bg-[#7AD1C3] rounded-xl border border-[rgba(28,151,112,0.2)] p-4 text-center mb-4 cursor-pointer"
+          <button
+            type="button"
+            className="ranking-cta relative w-full overflow-hidden rounded-xl border border-white/20 p-4 mb-4 text-left cursor-pointer shadow-brand-banner"
             onClick={() => navigate('/ranking')}
           >
-            <div className="rounded-full flex items-center justify-center mx-auto mb-3 w-16 h-16 bg-[rgba(147,203,82,0.15)]">
-              <FiTrendingUp size={28} color="#93CB52" />
+            <div className="relative z-10 flex items-start justify-between gap-4">
+              <div>
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm">
+                  <FiAward size={25} />
+                </div>
+                <h2 className="mb-1 text-[20px] font-bold leading-tight text-white">Ranking</h2>
+                <p className="max-w-[230px] text-[13px] leading-snug text-white/80">
+                  Confira seu desempenho com seus amigos
+                </p>
+              </div>
+
+              <div className="relative z-10 flex flex-col items-end gap-2">
+                <span className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-[13px] font-bold text-[#1c9770] shadow-sm">
+                  <FiZap size={13} />
+                  {streakDias} dias
+                </span>
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm">
+                  <FiTrendingUp size={18} />
+                </span>
+              </div>
             </div>
-            <h2 className="font-bold text-[16px] text-[#1A202C] mb-1">Ranking</h2>
-            <p className="text-[#6B7685] text-[13px] mb-2">Confira seu desenpenho com seus amigos</p>
-            <span className="font-bold inline-block px-3 py-1 rounded-full bg-[rgba(28,151,112,0.1)] text-[#1c9770] text-[13px]">
-              {streakDias} dias
-            </span>
-          </div>
+          </button>
         </section>
 
         <section className="mb-4 mt-4">

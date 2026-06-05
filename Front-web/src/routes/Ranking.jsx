@@ -47,7 +47,7 @@ const Ranking = () => {
   }, [navigate])
 
   const trofeusHistoricos = usuario?.trofeusAcumulados ?? usuario?.trofeus ?? 0
-  const nomeUsuario = usuario?.nome || localStorage.getItem('nome') || 'Voce'
+  const nomeUsuario = usuario?.nome || localStorage.getItem('nome') || 'Você'
   const nivelUsuario = nivelPorTrofeus(trofeusHistoricos)
 
   const rankingData = useMemo(() => {
@@ -100,7 +100,7 @@ const Ranking = () => {
             <h2 className="font-bold text-white text-[20px] mb-1">
               {carregando
                 ? 'Carregando seu ranking...'
-                : `Voce esta em ${usuarioNoRanking?.posicao || 1} lugar!`}
+                : `Você está em ${usuarioNoRanking?.posicao || 1}° lugar!`}
             </h2>
             <p className="text-white opacity-75 text-[13px] mb-2">
               Nivel {nivelUsuario} baseado no total histórico ganho
@@ -143,7 +143,7 @@ const Ranking = () => {
                   {posicao}
                 </div>
                 <p className={`font-medium text-[14px] flex-1 min-w-0 truncate ${atual ? 'text-[#1c9770]' : 'text-[#1A202C]'}`}>
-                  {nome} {atual && '(voce)'}
+                  {nome} {atual && '(você)'}
                 </p>
                 <span className={`font-bold text-[14px] ${atual ? 'text-[#1c9770]' : 'text-[#6B7685]'}`}>
                   {pontos.toLocaleString('pt-BR')} troféus
