@@ -15,6 +15,7 @@ export async function buscarPedometroStep001() {
     type: dados.type || 'Pedometer',
     steps: Number(dados.steps || 0),
     stepsPerMinute: Number(dados.stepsPerMinute || 0),
+    dailyStepsAverage: Number(dados.dailyStepsAverage || 0),
     buttonEvent: dados.buttonEvent || '',
     nfcId: dados.nfcId || '',
     error: dados.error || '',

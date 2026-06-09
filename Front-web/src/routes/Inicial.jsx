@@ -232,7 +232,7 @@ const Inicial = () => {
     }),
   ]
   const passosPedometro = pedometro?.steps ?? 0
-  const mediaPassosPedometro = pedometro?.stepsPerMinute ?? 0
+  const mediaPassosPedometro = pedometro?.dailyStepsAverage ?? 0
   const ultimoEventoBotao = pedometro?.buttonEvent || 'Sem evento'
   const statusPedometro = erroPedometro ? 'offline' : pedometro?.status || 'aguardando'
   const textoAtualizacaoPedometro = pedometroAtualizadoEm
@@ -248,7 +248,7 @@ const Inicial = () => {
       return `${Number(missao.atual || 0).toLocaleString('pt-BR')}ml / ${Number(missao.meta || 0).toLocaleString('pt-BR')}ml`
     }
 
-    if (missao.tipo === 'steps_per_minute') {
+    if (missao.tipo === 'steps_per_minute' || missao.tipo === 'daily_steps_average') {
       return `${Number(missao.atual || 0).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} / ${Number(missao.meta || 0).toLocaleString('pt-BR')} passos/min`
     }
 
@@ -257,7 +257,7 @@ const Inicial = () => {
 
   function escolherIconeMissaoConnect(tipo) {
     if (tipo === 'water') return FiDroplet
-    if (tipo === 'steps_per_minute') return FiTarget
+    if (tipo === 'steps_per_minute' || tipo === 'daily_steps_average') return FiTarget
 
     return FiActivity
   }
@@ -567,7 +567,7 @@ const Inicial = () => {
             </div>
 
             <div className="bg-white rounded-md p-4 border border-[#E4E7EB] shadow-brand-card">
-              <p className="text-[#6B7685] text-[12px] mb-1">Media passos/min</p>
+              <p className="text-[#6B7685] text-[12px] mb-1">Media diaria passos/min</p>
               <p className="font-bold text-[28px] text-[#1A202C] leading-none">
                 {mediaPassosPedometro.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}
               </p>
@@ -608,6 +608,11 @@ const Inicial = () => {
                       <p className="text-[#6B7685] text-[12px] mt-1">
                         {formatarValorMissaoConnect(missao)}
                       </p>
+                      {missao.concluida && missao.resetEm?.label && (
+                        <p className="text-[#1c9770] text-[12px] font-bold mt-1">
+                          Reseta em {missao.resetEm.label}
+                        </p>
+                      )}
                     </div>
                   </div>
 

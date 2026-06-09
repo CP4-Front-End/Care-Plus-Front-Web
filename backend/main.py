@@ -6,7 +6,7 @@ import random
 import socket
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
-from datetime import date
+from datetime import date, datetime, timedelta
 from gerar_missoes import gerar_missoes
 from gerar_missoes import concluir_missao
 from missoes import gerar_missoes_gerais
@@ -26,30 +26,33 @@ FIWARE_PEDOMETER_ENTITY_ID = os.getenv(
 FIWARE_PEDOMETER_DEVICE_ID = os.getenv("FIWARE_PEDOMETER_DEVICE_ID", "step001")
 FIWARE_TIMEOUT = float(os.getenv("FIWARE_TIMEOUT", "5"))
 COPO_AGUA_ML = 220
+META_PASSOS_DIARIA = 5000
+META_AGUA_DIARIA_ML = 3000
+META_MEDIA_PASSOS_DIARIA = round(META_PASSOS_DIARIA / (24 * 60), 1)
 MISSOES_CONNECT = [
     {
         "id": "passos",
-        "titulo": "Dar 5 passos com a pulseira",
+        "titulo": "Dar 5.000 passos no dia",
         "tipo": "steps",
-        "meta": 5,
+        "meta": META_PASSOS_DIARIA,
         "unidade": "passos",
-        "trofeus": 20,
+        "trofeus": 50,
     },
     {
         "id": "agua",
-        "titulo": "Beber 2 copos de agua",
+        "titulo": "Beber 3L de agua",
         "tipo": "water",
-        "meta": COPO_AGUA_ML * 2,
+        "meta": META_AGUA_DIARIA_ML,
         "unidade": "ml",
-        "trofeus": 20,
+        "trofeus": 50,
     },
     {
         "id": "media-passos",
-        "titulo": "Manter media de 2 passos/min",
-        "tipo": "steps_per_minute",
-        "meta": 2,
+        "titulo": "Manter media diaria de passos",
+        "tipo": "daily_steps_average",
+        "meta": META_MEDIA_PASSOS_DIARIA,
         "unidade": "passos/min",
-        "trofeus": 15,
+        "trofeus": 30,
     },
 ]
 
@@ -135,15 +138,20 @@ def buscar_entidade_pedometro():
 
 
 def normalizar_entidade_pedometro(entidade):
+    agora = datetime.now()
+    minutos_dia = max(1, agora.hour * 60 + agora.minute)
+    passos = converter_int(extrair_valor_fiware(entidade, "steps"))
+
     return {
         "status": "online",
         "deviceId": FIWARE_PEDOMETER_DEVICE_ID,
         "entityId": entidade.get("id", FIWARE_PEDOMETER_ENTITY_ID),
         "type": entidade.get("type", "Pedometer"),
-        "steps": converter_int(extrair_valor_fiware(entidade, "steps")),
+        "steps": passos,
         "stepsPerMinute": converter_float(
             extrair_valor_fiware(entidade, "steps_per_minute")
         ),
+        "dailyStepsAverage": round(passos / minutos_dia, 1),
         "buttonEvent": extrair_valor_fiware(entidade, "button_event", ""),
         "buttonEventAt": extrair_timeinstant_fiware(entidade, "button_event"),
         "nfcId": extrair_valor_fiware(entidade, "nfcId", ""),
@@ -159,6 +167,7 @@ def pedometro_offline(detalhe):
         "type": "Pedometer",
         "steps": 0,
         "stepsPerMinute": 0,
+        "dailyStepsAverage": 0,
         "buttonEvent": "",
         "buttonEventAt": "",
         "nfcId": "",
@@ -188,10 +197,12 @@ def preparar_connect_usuario(usuario):
 
 def calcular_missoes_connect(usuario, pedometro):
     concluidas = set(usuario.get("connectMissoesConcluidas", []))
+    reset = tempo_ate_reset_connect()
     valores = {
         "steps": pedometro.get("steps", 0),
         "water": usuario.get("connectWaterMl", 0),
         "steps_per_minute": pedometro.get("stepsPerMinute", 0),
+        "daily_steps_average": pedometro.get("dailyStepsAverage", 0),
     }
     novas_conclusoes = []
     missoes = []
@@ -213,9 +224,31 @@ def calcular_missoes_connect(usuario, pedometro):
             "atual": atual,
             "progresso": progresso,
             "concluida": concluida,
+            "resetEm": reset if concluida else None,
         })
 
     return missoes, novas_conclusoes
+
+
+def tempo_ate_reset_connect():
+    agora = datetime.now()
+    proximo_dia = datetime.combine(date.today() + timedelta(days=1), datetime.min.time())
+    segundos = max(0, int((proximo_dia - agora).total_seconds()))
+
+    return {
+        "seconds": segundos,
+        "label": formatar_duracao_reset(segundos),
+    }
+
+
+def formatar_duracao_reset(segundos):
+    horas = segundos // 3600
+    minutos = (segundos % 3600) // 60
+
+    if horas <= 0:
+        return f"{minutos}min"
+
+    return f"{horas}h {minutos}min"
 
 
 def garantir_beneficios_sessao(

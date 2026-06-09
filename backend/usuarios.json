@@ -712,59 +712,59 @@
         "streakDiasAcendidos": []
     },
     "43": {
-        "nome": "testedf",
+        "nome": "teste",
         "carteirinha": "43",
         "peso": "43",
         "altura": "43",
-        "atividadeFisica": "5_7",
-        "tempoSentado": "5_8h",
+        "atividadeFisica": "3_4",
+        "tempoSentado": "menos_2h",
         "distanciaDia": "menos_1",
         "agua": "2_3",
-        "sono": "mais_9",
-        "celular": "menos_2",
-        "pausas": "4_6",
+        "sono": "menos_5",
+        "celular": "2_5",
+        "pausas": "mais_6",
         "cafeina": "1_2",
-        "arLivre": "15_30",
-        "refeicoes": "3",
-        "trofeus": 20,
-        "trofeusAcumulados": 20,
+        "arLivre": "30_60",
+        "refeicoes": "1_2",
+        "trofeus": 50,
+        "trofeusAcumulados": 50,
         "beneficiosResgatados": [],
         "beneficiosDisponiveis": [
             {
-                "id": 11,
-                "titulo": "Kit de snacks saudáveis (barra + nuts)",
+                "id": 16,
+                "titulo": "Suplemento multivitamínico (1 mês)",
                 "parceiro": "Care Plus",
                 "custoTrofeus": 500
+            },
+            {
+                "id": 8,
+                "titulo": "Garrafa térmica esportiva",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 450
+            },
+            {
+                "id": 10,
+                "titulo": "Plano mensal da Headspace (meditação)",
+                "parceiro": "Headspace",
+                "custoTrofeus": 550
+            },
+            {
+                "id": 3,
+                "titulo": "Barrinha de proteína da Growth Supplements",
+                "parceiro": "Growth Supplements",
+                "custoTrofeus": 450
+            },
+            {
+                "id": 6,
+                "titulo": "Shake proteico da Max Titanium",
+                "parceiro": "Max Titanium",
+                "custoTrofeus": 400
             },
             {
                 "id": 14,
                 "titulo": "Voucher de R$30 em farmácia Drogasil",
                 "parceiro": "Drogasil",
                 "custoTrofeus": 650
-            },
-            {
-                "id": 5,
-                "titulo": "Cupom de R$20 no iFood",
-                "parceiro": "iFood",
-                "custoTrofeus": 500
-            },
-            {
-                "id": 1,
-                "titulo": "Desconto de 20% em corridas da Uber",
-                "parceiro": "Uber",
-                "custoTrofeus": 400
-            },
-            {
-                "id": 13,
-                "titulo": "Fone esportivo Bluetooth",
-                "parceiro": "Care Plus",
-                "custoTrofeus": 800
-            },
-            {
-                "id": 7,
-                "titulo": "Desconto de 25% em academia Smart Fit",
-                "parceiro": "Smart Fit",
-                "custoTrofeus": 700
             }
         ],
         "missoesConcluidasHoje": 1,
@@ -773,10 +773,47 @@
         "ultimoDiaStreak": "",
         "streakDiasAcendidos": [],
         "connectDia": "2026-06-09",
-        "connectWaterMl": 0,
-        "connectUltimoEventoAgua": "",
+        "connectWaterMl": 3300,
+        "connectUltimoEventoAgua": "2026-06-09T21:34:05.778Z",
         "connectMissoesConcluidas": [
-            "passos"
+            "agua"
+        ],
+        "missoesAtivas": [
+            {
+                "titulo": "Durma pelo menos 7h hoje",
+                "trofeus": 50,
+                "id": 1,
+                "concluida": false
+            },
+            {
+                "titulo": "Continue se hidratando bem",
+                "trofeus": 20,
+                "id": 2,
+                "concluida": false
+            },
+            {
+                "titulo": "Ótimo controle de tela",
+                "trofeus": 20,
+                "id": 3,
+                "concluida": false
+            }
+        ],
+        "missoesGeraisAtivas": [
+            {
+                "missao": "Comer uma fruta hoje",
+                "trofeus": 30,
+                "id": 1
+            },
+            {
+                "missao": "Fazer um pequeno alongamento antes de dormir",
+                "trofeus": 30,
+                "id": 2
+            },
+            {
+                "missao": "Fazer uma caminhada leve de 5 minutos",
+                "trofeus": 30,
+                "id": 3
+            }
         ]
     },
     "343": {

@@ -20,13 +20,6 @@ const Missoes = () => {
 
 
 
-  const desafioAtual = {
-    title: 'Beba 3 litros de água',
-    progress: 20,
-    atual: '600ml',
-    meta: '3l',
-  }
-
   const [missoesPersonalizadas, setMissoesPersonalizadas] = useState([])
   const [missoesGerais, setMissoesGerais] = useState([])
   const [missoesConnect, setMissoesConnect] = useState([])
@@ -212,7 +205,7 @@ const Missoes = () => {
       return `${Number(missao.atual || 0).toLocaleString('pt-BR')}ml / ${Number(missao.meta || 0).toLocaleString('pt-BR')}ml`
     }
 
-    if (missao.tipo === 'steps_per_minute') {
+    if (missao.tipo === 'steps_per_minute' || missao.tipo === 'daily_steps_average') {
       return `${Number(missao.atual || 0).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} / ${Number(missao.meta || 0).toLocaleString('pt-BR')} passos/min`
     }
 
@@ -221,7 +214,7 @@ const Missoes = () => {
 
   function escolherIconeConnect(tipo) {
     if (tipo === 'water') return FiDroplet
-    if (tipo === 'steps_per_minute') return FiTrendingUp
+    if (tipo === 'steps_per_minute' || tipo === 'daily_steps_average') return FiTrendingUp
 
     return FiActivity
   }
@@ -271,28 +264,6 @@ const Missoes = () => {
             </div>
           </button>
         </section>
-
-        <section className="mb-4 mt-4">
-          <div className="bg-white rounded-xl border border-[#E4E7EB] p-3">
-            <div className="flex justify-between items-start mb-2">
-              <div>
-                <span className="text-[12px] text-[#6B7685] font-medium">Desafio atual</span>
-                <h2 className="font-bold text-[16px] text-[#1A202C] mt-1">{desafioAtual.title}</h2>
-              </div>
-              <span className="font-bold text-[13px] text-[#1c9770]">{desafioAtual.progress}%</span>
-            </div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-[12px] text-[#6B7685]">{desafioAtual.atual} / {desafioAtual.meta}</span>
-            </div>
-            <div className="rounded-full bg-[#E4E7EB] h-1.5 overflow-hidden">
-              <div
-                className="bg-[#1c9770] rounded-full h-1.5"
-                style={{ width: `${desafioAtual.progress}%` }}
-              />
-            </div>
-          </div>
-        </section>
-
         <section className="mb-4">
           <div className="bg-white rounded-xl border border-[#E4E7EB] p-3">
             <div className="flex justify-between items-center mb-3">
@@ -378,6 +349,11 @@ const Missoes = () => {
                     <p className="text-[#6B7685] text-[12px] mt-1">
                       {formatarValorConnect(missao)}
                     </p>
+                    {missao.concluida && missao.resetEm?.label && (
+                      <p className="text-[#1c9770] text-[12px] font-bold mt-1">
+                        Reseta em {missao.resetEm.label}
+                      </p>
+                    )}
                     <div className="rounded-full bg-[#E4E7EB] h-1.5 overflow-hidden mt-2">
                       <div
                         className={`rounded-full h-1.5 ${missao.concluida ? 'bg-[#93CB52]' : 'bg-[#1c9770]'}`}
