@@ -1,6 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+import json
+import os
 import random
+import socket
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 from gerar_missoes import gerar_missoes
 from gerar_missoes import concluir_missao
 from missoes import gerar_missoes_gerais
@@ -10,6 +15,15 @@ from storage import carregar_beneficios, carregar_usuarios, salvar_usuarios
 app = FastAPI()
 
 QUANTIDADE_BENEFICIOS_SESSAO = 6
+FIWARE_URL = os.getenv("FIWARE_URL", "http://34.95.202.198").rstrip("/")
+FIWARE_SERVICE = os.getenv("FIWARE_SERVICE", "smart")
+FIWARE_SERVICEPATH = os.getenv("FIWARE_SERVICEPATH", "/")
+FIWARE_PEDOMETER_ENTITY_ID = os.getenv(
+    "FIWARE_PEDOMETER_ENTITY_ID",
+    "urn:ngsi-ld:Pedometer:001"
+)
+FIWARE_PEDOMETER_DEVICE_ID = os.getenv("FIWARE_PEDOMETER_DEVICE_ID", "step001")
+FIWARE_TIMEOUT = float(os.getenv("FIWARE_TIMEOUT", "5"))
 
 
 def normalizar_texto(valor):
@@ -27,6 +41,57 @@ def preparar_usuario(usuario):
     preparar_progresso_usuario(usuario)
 
     return usuario
+
+
+def extrair_valor_fiware(entidade, atributo, padrao=None):
+    dado = entidade.get(atributo, padrao)
+
+    if isinstance(dado, dict):
+        return dado.get("value", padrao)
+
+    return dado
+
+
+def converter_int(valor, padrao=0):
+    try:
+        return int(valor)
+    except (TypeError, ValueError):
+        return padrao
+
+
+def converter_float(valor, padrao=0):
+    try:
+        return float(valor)
+    except (TypeError, ValueError):
+        return padrao
+
+
+def buscar_entidade_pedometro():
+    url = f"{FIWARE_URL}:1026/v2/entities/{FIWARE_PEDOMETER_ENTITY_ID}"
+    requisicao = Request(
+        url,
+        headers={
+            "fiware-service": FIWARE_SERVICE,
+            "fiware-servicepath": FIWARE_SERVICEPATH,
+            "Accept": "application/json",
+        },
+        method="GET",
+    )
+
+    try:
+        with urlopen(requisicao, timeout=FIWARE_TIMEOUT) as resposta:
+            return json.loads(resposta.read().decode("utf-8"))
+    except HTTPError as erro:
+        detalhe = erro.read().decode("utf-8", errors="replace")
+        raise HTTPException(
+            status_code=erro.code,
+            detail=detalhe or "Nao foi possivel consultar o Orion."
+        ) from erro
+    except (TimeoutError, socket.timeout, URLError) as erro:
+        raise HTTPException(
+            status_code=504,
+            detail="FIWARE indisponivel ou sem resposta no momento."
+        ) from erro
 
 
 def garantir_beneficios_sessao(
@@ -84,6 +149,38 @@ app.add_middleware(
 @app.get("/")
 def home():
     return {"mensagem": "Backend funcionando"}
+
+
+@app.get("/fiware/pedometer/step001")
+def buscar_pedometro_step001():
+    try:
+        entidade = buscar_entidade_pedometro()
+    except HTTPException as erro:
+        return {
+            "status": "offline",
+            "deviceId": FIWARE_PEDOMETER_DEVICE_ID,
+            "entityId": FIWARE_PEDOMETER_ENTITY_ID,
+            "type": "Pedometer",
+            "steps": 0,
+            "stepsPerMinute": 0,
+            "buttonEvent": "",
+            "nfcId": "",
+            "error": erro.detail,
+        }
+
+    return {
+        "status": "online",
+        "deviceId": FIWARE_PEDOMETER_DEVICE_ID,
+        "entityId": entidade.get("id", FIWARE_PEDOMETER_ENTITY_ID),
+        "type": entidade.get("type", "Pedometer"),
+        "steps": converter_int(extrair_valor_fiware(entidade, "steps")),
+        "stepsPerMinute": converter_float(
+            extrair_valor_fiware(entidade, "steps_per_minute")
+        ),
+        "buttonEvent": extrair_valor_fiware(entidade, "button_event", ""),
+        "nfcId": extrair_valor_fiware(entidade, "nfcId", ""),
+        "error": "",
+    }
 
 
 @app.post("/cadastro")

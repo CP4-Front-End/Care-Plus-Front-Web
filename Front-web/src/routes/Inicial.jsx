@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  FiArrowRight, FiZap, FiTarget, FiStar,
-  FiHeart, FiWifi, FiFileText, FiUser, FiGift
+  FiActivity, FiArrowRight, FiCpu, FiFileText, FiGift,
+  FiHeart, FiRefreshCw, FiTarget, FiUser, FiWifi
 } from 'react-icons/fi'
 import { FaFire, FaTrophy } from 'react-icons/fa'
 import TopBar from '../components/TopBar.jsx'
@@ -12,9 +12,12 @@ import mockupMobile from '../assets/mucupe.png'
 import mockupDesktop from '../assets/mucupePC.png'
 import flux from '../assets/flux.png'
 import { API_URL, buscarUsuarioLogado, carregarBeneficiosDaSessao } from '../services/sessao.js'
+import { buscarPedometroStep001 } from '../services/fiware.js'
 
 const DIAS_SEMANA_CALENDARIO = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
 const DIAS_FLUX_SEMANA = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D']
+const META_PASSOS_DIARIA = 10000
+const INTERVALO_PEDOMETRO_MS = 10000
 const FOTO_UNSPLASH_BASE = '?auto=format&fit=crop&w=900&q=80'
 const BENEFICIO_FOTOS = {
   1: `https://images.unsplash.com/photo-1503376780353-7e6692767b70${FOTO_UNSPLASH_BASE}`,
@@ -92,6 +95,27 @@ const Inicial = () => {
     titulo: '',
     descricao: '',
   })
+  const [pedometro, setPedometro] = useState(null)
+  const [carregandoPedometro, setCarregandoPedometro] = useState(true)
+  const [erroPedometro, setErroPedometro] = useState('')
+  const [pedometroAtualizadoEm, setPedometroAtualizadoEm] = useState(null)
+
+  const carregarPedometro = useCallback(async (mostrarLoading = false) => {
+    if (mostrarLoading) {
+      setCarregandoPedometro(true)
+    }
+
+    try {
+      const dados = await buscarPedometroStep001()
+      setPedometro(dados)
+      setErroPedometro(dados.error || '')
+      setPedometroAtualizadoEm(new Date())
+    } catch (erro) {
+      setErroPedometro(erro.message)
+    } finally {
+      setCarregandoPedometro(false)
+    }
+  }, [])
 
   useEffect(() => {
     async function carregarUsuario() {
@@ -138,11 +162,20 @@ const Inicial = () => {
     }
   }, [])
 
-  const missoesAtivas = [
-    { id: 1, title: 'Beber 3 litros de água', progress: 60, icon: FiZap },
-    { id: 2, title: 'Andar 3km no dia', progress: 30, icon: FiTarget },
-    { id: 3, title: '30min de bike', progress: 0, icon: FiStar },
-  ]
+  useEffect(() => {
+    const carregamentoInicial = window.setTimeout(() => {
+      carregarPedometro(true)
+    }, 0)
+
+    const intervalo = window.setInterval(() => {
+      carregarPedometro(false)
+    }, INTERVALO_PEDOMETRO_MS)
+
+    return () => {
+      window.clearTimeout(carregamentoInicial)
+      window.clearInterval(intervalo)
+    }
+  }, [carregarPedometro])
 
   const quickMenuItems = [
     { id: 'missoes', label: 'Missões', icon: FiTarget, path: '/missoes', iconColor: '#1c9770', bgColor: 'bg-[rgba(28,151,112,0.1)]' },
@@ -178,6 +211,23 @@ const Inicial = () => {
       }
     }),
   ]
+  const passosPedometro = pedometro?.steps ?? 0
+  const passosRestantesPedometro = Math.max(META_PASSOS_DIARIA - passosPedometro, 0)
+  const progressoPedometro = Math.min(
+    100,
+    Math.round((passosPedometro / META_PASSOS_DIARIA) * 100)
+  )
+  const mediaPassosPedometro = pedometro?.stepsPerMinute ?? 0
+  const ultimoEventoBotao = pedometro?.buttonEvent || 'Sem evento'
+  const nfcVinculado = pedometro?.nfcId || 'Nao vinculado'
+  const statusPedometro = erroPedometro ? 'offline' : pedometro?.status || 'aguardando'
+  const textoAtualizacaoPedometro = pedometroAtualizadoEm
+    ? `Atualizado ${pedometroAtualizadoEm.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    })}`
+    : 'Aguardando leitura'
 
   function abrirModalBeneficio(titulo, descricao) {
     setModalBeneficio({
@@ -433,39 +483,114 @@ const Inicial = () => {
         </section>
 
         <section className="mb-4">
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="font-bold text-[16px] text-[#1A202C]">Missões ativas</h2>
+          <div className="flex justify-between items-center gap-3 mb-3">
+            <div>
+              <p className="text-[#6B7685] text-[11px] uppercase font-bold tracking-[1px]">
+                Pulseira conectada
+              </p>
+              <h2 className="font-bold text-[16px] text-[#1A202C]">step001 em tempo real</h2>
+            </div>
             <button
-              className="flex items-center gap-1 text-[13px] text-[#1c9770] bg-transparent border-0 p-0 cursor-pointer"
-              onClick={() => navigate('/missoes')}
+              type="button"
+              className="flex items-center gap-1.5 text-[13px] text-[#1c9770] bg-white border border-[rgba(28,151,112,0.2)] rounded-md px-3 py-2 cursor-pointer disabled:opacity-70"
+              onClick={() => carregarPedometro(true)}
+              disabled={carregandoPedometro}
             >
-              Ver mais <FiArrowRight size={13} color="#1c9770" />
+              <FiRefreshCw
+                size={13}
+                color="#1c9770"
+                className={carregandoPedometro ? 'animate-spin' : ''}
+              />
+              Atualizar
             </button>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-            {missoesAtivas.map(({ id, title, progress, icon: Icon }) => (
-              <div
-                key={id}
-                className="bg-white rounded-md p-3 flex items-center gap-3 border border-[#E4E7EB] shadow-brand-card"
-              >
-                <div className="w-10 h-10 rounded-md flex items-center justify-center shrink-0 bg-[rgba(28,151,112,0.1)]">
-                  <Icon size={18} color="#1c9770" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-[14px] text-[#1A202C] mb-1">{title}</p>
-                  <div className="rounded-full bg-[#E4E7EB] h-1.5 overflow-hidden">
-                    <div
-                      className={`rounded-full h-1.5 ${progress === 100 ? 'bg-[#93CB52]' : 'bg-[#1c9770]'}`}
-                      style={{ width: `${progress}%` }}
-                    />
+          {erroPedometro && (
+            <div className="mb-3 rounded-md border border-[#F6AD55]/40 bg-[#F6AD55]/10 px-3 py-2">
+              <p className="text-[#6B7685] text-[12px]">
+                Nao foi possivel ler o FIWARE agora. {erroPedometro}
+              </p>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+            <div className="md:col-span-2 bg-white rounded-md p-4 border border-[#E4E7EB] shadow-brand-card">
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-md flex items-center justify-center shrink-0 bg-[rgba(28,151,112,0.1)]">
+                    <FiActivity size={20} color="#1c9770" />
+                  </div>
+                  <div>
+                    <p className="text-[#6B7685] text-[12px]">Passos registrados hoje</p>
+                    <h3 className="font-bold text-[32px] text-[#1A202C] leading-none">
+                      {carregandoPedometro && !pedometro
+                        ? 'Carregando...'
+                        : passosPedometro.toLocaleString('pt-BR')}
+                    </h3>
                   </div>
                 </div>
-                <span className="font-bold text-[#1c9770] shrink-0 text-[12px]">{progress}%</span>
+                <span className="font-bold text-[#1c9770] text-[13px] shrink-0">
+                  {progressoPedometro}%
+                </span>
               </div>
-            ))}
-          </div>
 
+              <div className="rounded-full bg-[#E4E7EB] h-2 overflow-hidden">
+                <div
+                  className="bg-[#1c9770] rounded-full h-2"
+                  style={{ width: `${progressoPedometro}%` }}
+                />
+              </div>
+              <p className="text-[#6B7685] text-[12px] mt-2">
+                {passosRestantesPedometro === 0
+                  ? 'Meta diaria atingida.'
+                  : `Faltam ${passosRestantesPedometro.toLocaleString('pt-BR')} passos para a meta de ${META_PASSOS_DIARIA.toLocaleString('pt-BR')}.`}
+              </p>
+            </div>
+
+            <div className="bg-white rounded-md p-4 border border-[#E4E7EB] shadow-brand-card">
+              <div className="w-10 h-10 rounded-md flex items-center justify-center bg-[rgba(122,209,195,0.15)] mb-3">
+                <FiTarget size={18} color="#1c9770" />
+              </div>
+              <p className="text-[#6B7685] text-[12px] mb-1">Media passos/min</p>
+              <p className="font-bold text-[24px] text-[#1A202C]">
+                {mediaPassosPedometro.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}
+              </p>
+            </div>
+
+            <div className="bg-white rounded-md p-4 border border-[#E4E7EB] shadow-brand-card">
+              <div className="w-10 h-10 rounded-md flex items-center justify-center bg-[rgba(147,203,82,0.15)] mb-3">
+                <FiCpu size={18} color="#1c9770" />
+              </div>
+              <p className="text-[#6B7685] text-[12px] mb-1">Ultimo botao</p>
+              <p className="font-bold text-[17px] text-[#1A202C] break-words">
+                {ultimoEventoBotao}
+              </p>
+            </div>
+
+            <div className="bg-white rounded-md p-4 border border-[#E4E7EB] shadow-brand-card">
+              <p className="text-[#6B7685] text-[12px] mb-1">NFC vinculado</p>
+              <p className="font-bold text-[15px] text-[#1A202C] break-all">{nfcVinculado}</p>
+            </div>
+
+            <div className="md:col-span-1 xl:col-span-3 bg-white rounded-md p-4 border border-[#E4E7EB] shadow-brand-card flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div>
+                <p className="text-[#6B7685] text-[12px] mb-1">Entidade Orion</p>
+                <p className="font-bold text-[13px] text-[#1A202C] break-all">
+                  {pedometro?.entityId || 'urn:ngsi-ld:Pedometer:001'}
+                </p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className={`rounded-full px-3 py-1 text-[12px] font-bold ${
+                  statusPedometro === 'online'
+                    ? 'bg-[rgba(28,151,112,0.1)] text-[#1c9770]'
+                    : 'bg-[#F0F2F5] text-[#6B7685]'
+                }`}>
+                  {statusPedometro}
+                </span>
+                <span className="text-[#6B7685] text-[12px]">{textoAtualizacaoPedometro}</span>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className="mb-4">
