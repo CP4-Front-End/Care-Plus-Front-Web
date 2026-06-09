@@ -122,7 +122,11 @@ const Inicial = () => {
 
       if (dados.usuario) {
         localStorage.setItem('trofeus', dados.usuario.trofeus || 0)
-        window.dispatchEvent(new Event('trofeusAtualizados'))
+
+        if ((dados.novasConclusoes || []).length > 0) {
+          window.dispatchEvent(new Event('trofeusAtualizados'))
+        }
+
         setStreakDias(dados.usuario.streak || 0)
         setStreakDiasAcendidos(dados.usuario.streakDiasAcendidos || [])
       }

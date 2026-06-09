@@ -4,6 +4,8 @@ import { FiArrowLeft, FiZap, FiTrendingUp, FiStar, FiAward } from 'react-icons/f
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
 import flux from '../assets/flux.png'
+import { API_URL } from '../services/sessao.js'
+import { buscarMissoesConnect } from '../services/fiware.js'
 
 const Impulso = () => {
   const navigate = useNavigate()
@@ -28,10 +30,21 @@ const Impulso = () => {
 
       if (!carteirinha) return
 
-      const resposta = await fetch(
-        `http://127.0.0.1:8000/usuario/${carteirinha}`
-      )
+      try {
+        const dadosConnect = await buscarMissoesConnect(carteirinha)
 
+        if (dadosConnect.usuario) {
+          localStorage.setItem("trofeus", dadosConnect.usuario.trofeus || 0)
+
+          if ((dadosConnect.novasConclusoes || []).length > 0) {
+            window.dispatchEvent(new Event("trofeusAtualizados"))
+          }
+        }
+      } catch {
+        // Se o FIWARE estiver fora, o Impulso continua exibindo o progresso salvo.
+      }
+
+      const resposta = await fetch(`${API_URL}/usuario/${carteirinha}`)
       const usuario = await resposta.json()
 
       if (!usuario) return

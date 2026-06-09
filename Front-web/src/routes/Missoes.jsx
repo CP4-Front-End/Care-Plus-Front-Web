@@ -97,7 +97,10 @@ const Missoes = () => {
 
         if (dadosConnect.usuario) {
           localStorage.setItem("trofeus", dadosConnect.usuario.trofeus || 0)
-          window.dispatchEvent(new Event("trofeusAtualizados"))
+
+          if ((dadosConnect.novasConclusoes || []).length > 0) {
+            window.dispatchEvent(new Event("trofeusAtualizados"))
+          }
         }
       } catch (erro) {
         setErroConnect(erro.message)

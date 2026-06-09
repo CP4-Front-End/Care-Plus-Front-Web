@@ -383,22 +383,22 @@
         "streakDiasAcendidos": []
     },
     "323": {
-        "nome": "fodase",
+        "nome": "Ardito",
         "carteirinha": "323",
         "peso": "32",
         "altura": "32",
-        "atividadeFisica": "3_4",
-        "tempoSentado": "2_5h",
-        "distanciaDia": "mais_6",
+        "atividadeFisica": "5_7",
+        "tempoSentado": "5_8h",
+        "distanciaDia": "3_6",
         "agua": "1_2",
-        "sono": "7_9",
-        "celular": "2_5",
-        "pausas": "mais_6",
+        "sono": "5_7",
+        "celular": "5_8",
+        "pausas": "0",
         "cafeina": "3_5",
-        "arLivre": "mais_60",
+        "arLivre": "0_15",
         "refeicoes": "1_2",
-        "trofeus": 0,
-        "trofeusAcumulados": 0,
+        "trofeus": 75,
+        "trofeusAcumulados": 75,
         "beneficiosResgatados": [],
         "beneficiosDisponiveis": [
             {
@@ -438,11 +438,13 @@
                 "custoTrofeus": 400
             }
         ],
-        "missoesConcluidasHoje": 0,
-        "ultimoDiaMissoes": "2026-06-05",
-        "streak": 0,
-        "ultimoDiaStreak": "",
-        "streakDiasAcendidos": [],
+        "missoesConcluidasHoje": 4,
+        "ultimoDiaMissoes": "2026-06-09",
+        "streak": 1,
+        "ultimoDiaStreak": "2026-06-09",
+        "streakDiasAcendidos": [
+            "2026-06-09"
+        ],
         "missoesAtivas": [
             {
                 "titulo": "Tente alcançar 3km hoje",
@@ -465,11 +467,6 @@
         ],
         "missoesGeraisAtivas": [
             {
-                "missao": "Agradecer por algo positivo no dia",
-                "trofeus": 20,
-                "id": 1
-            },
-            {
                 "missao": "Fazer um pequeno alongamento antes de dormir",
                 "trofeus": 30,
                 "id": 2
@@ -479,6 +476,14 @@
                 "trofeus": 20,
                 "id": 3
             }
+        ],
+        "connectDia": "2026-06-09",
+        "connectWaterMl": 440,
+        "connectUltimoEventoAgua": "2026-06-09T21:24:56.250Z",
+        "connectMissoesConcluidas": [
+            "agua",
+            "media-passos",
+            "passos"
         ]
     },
     "121": {
@@ -912,6 +917,43 @@
             "passos",
             "agua",
             "media-passos"
+        ],
+        "missoesAtivas": [
+            {
+                "titulo": "Ótimo controle de tela",
+                "trofeus": 20,
+                "id": 1,
+                "concluida": false
+            },
+            {
+                "titulo": "Mantenha sua rotina ativa hoje",
+                "trofeus": 30,
+                "id": 2,
+                "concluida": false
+            },
+            {
+                "titulo": "Excelente contato com ambiente externo",
+                "trofeus": 20,
+                "id": 3,
+                "concluida": false
+            }
+        ],
+        "missoesGeraisAtivas": [
+            {
+                "missao": "Alongar o pescoço e ombros",
+                "trofeus": 20,
+                "id": 1
+            },
+            {
+                "missao": "Beber mais um copo de água antes da próxima refeição",
+                "trofeus": 20,
+                "id": 2
+            },
+            {
+                "missao": "Comer uma fruta hoje",
+                "trofeus": 30,
+                "id": 3
+            }
         ]
     }
 }

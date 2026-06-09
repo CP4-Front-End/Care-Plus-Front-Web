@@ -4,6 +4,7 @@ import { FiArrowLeft, FiAward } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
 import { buscarUsuarioLogado } from '../services/sessao.js'
+import { buscarMissoesConnect } from '../services/fiware.js'
 
 const USUARIOS_SIMULADOS = [
   { id: 'maria', nome: 'Maria', pontos: 1200 },
@@ -33,6 +34,24 @@ const Ranking = () => {
   useEffect(() => {
     async function carregarUsuario() {
       try {
+        const carteirinha = localStorage.getItem('carteirinha')
+
+        if (carteirinha) {
+          try {
+            const dadosConnect = await buscarMissoesConnect(carteirinha)
+
+            if (dadosConnect.usuario) {
+              localStorage.setItem('trofeus', dadosConnect.usuario.trofeus || 0)
+
+              if ((dadosConnect.novasConclusoes || []).length > 0) {
+                window.dispatchEvent(new Event('trofeusAtualizados'))
+              }
+            }
+          } catch {
+            // O ranking usa o progresso salvo quando o FIWARE nao responde.
+          }
+        }
+
         const dados = await buscarUsuarioLogado(navigate)
 
         if (!dados) return
