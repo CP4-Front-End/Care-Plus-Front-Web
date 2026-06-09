@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  FiActivity, FiArrowRight, FiCpu, FiFileText, FiGift,
+  FiActivity, FiArrowRight, FiDroplet, FiFileText, FiGift,
   FiHeart, FiRefreshCw, FiTarget, FiUser, FiWifi
 } from 'react-icons/fi'
 import { FaFire, FaTrophy } from 'react-icons/fa'
@@ -12,11 +12,10 @@ import mockupMobile from '../assets/mucupe.png'
 import mockupDesktop from '../assets/mucupePC.png'
 import flux from '../assets/flux.png'
 import { API_URL, buscarUsuarioLogado, carregarBeneficiosDaSessao } from '../services/sessao.js'
-import { buscarPedometroStep001 } from '../services/fiware.js'
+import { buscarMissoesConnect } from '../services/fiware.js'
 
 const DIAS_SEMANA_CALENDARIO = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
 const DIAS_FLUX_SEMANA = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D']
-const META_PASSOS_DIARIA = 10000
 const INTERVALO_PEDOMETRO_MS = 10000
 const FOTO_UNSPLASH_BASE = '?auto=format&fit=crop&w=900&q=80'
 const BENEFICIO_FOTOS = {
@@ -96,6 +95,9 @@ const Inicial = () => {
     descricao: '',
   })
   const [pedometro, setPedometro] = useState(null)
+  const [missoesConnect, setMissoesConnect] = useState([])
+  const [aguaMl, setAguaMl] = useState(0)
+  const [copoAguaMl, setCopoAguaMl] = useState(220)
   const [carregandoPedometro, setCarregandoPedometro] = useState(true)
   const [erroPedometro, setErroPedometro] = useState('')
   const [pedometroAtualizadoEm, setPedometroAtualizadoEm] = useState(null)
@@ -106,10 +108,24 @@ const Inicial = () => {
     }
 
     try {
-      const dados = await buscarPedometroStep001()
-      setPedometro(dados)
-      setErroPedometro(dados.error || '')
+      const carteirinha = localStorage.getItem('carteirinha')
+
+      if (!carteirinha) return
+
+      const dados = await buscarMissoesConnect(carteirinha)
+      setPedometro(dados.pedometro)
+      setMissoesConnect(dados.missoes || [])
+      setAguaMl(dados.aguaMl || 0)
+      setCopoAguaMl(dados.copoAguaMl || 220)
+      setErroPedometro(dados.pedometro?.error || '')
       setPedometroAtualizadoEm(new Date())
+
+      if (dados.usuario) {
+        localStorage.setItem('trofeus', dados.usuario.trofeus || 0)
+        window.dispatchEvent(new Event('trofeusAtualizados'))
+        setStreakDias(dados.usuario.streak || 0)
+        setStreakDiasAcendidos(dados.usuario.streakDiasAcendidos || [])
+      }
     } catch (erro) {
       setErroPedometro(erro.message)
     } finally {
@@ -212,14 +228,8 @@ const Inicial = () => {
     }),
   ]
   const passosPedometro = pedometro?.steps ?? 0
-  const passosRestantesPedometro = Math.max(META_PASSOS_DIARIA - passosPedometro, 0)
-  const progressoPedometro = Math.min(
-    100,
-    Math.round((passosPedometro / META_PASSOS_DIARIA) * 100)
-  )
   const mediaPassosPedometro = pedometro?.stepsPerMinute ?? 0
   const ultimoEventoBotao = pedometro?.buttonEvent || 'Sem evento'
-  const nfcVinculado = pedometro?.nfcId || 'Nao vinculado'
   const statusPedometro = erroPedometro ? 'offline' : pedometro?.status || 'aguardando'
   const textoAtualizacaoPedometro = pedometroAtualizadoEm
     ? `Atualizado ${pedometroAtualizadoEm.toLocaleTimeString('pt-BR', {
@@ -228,6 +238,25 @@ const Inicial = () => {
       second: '2-digit',
     })}`
     : 'Aguardando leitura'
+
+  function formatarValorMissaoConnect(missao) {
+    if (missao.tipo === 'water') {
+      return `${Number(missao.atual || 0).toLocaleString('pt-BR')}ml / ${Number(missao.meta || 0).toLocaleString('pt-BR')}ml`
+    }
+
+    if (missao.tipo === 'steps_per_minute') {
+      return `${Number(missao.atual || 0).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} / ${Number(missao.meta || 0).toLocaleString('pt-BR')} passos/min`
+    }
+
+    return `${Number(missao.atual || 0).toLocaleString('pt-BR')} / ${Number(missao.meta || 0).toLocaleString('pt-BR')} passos`
+  }
+
+  function escolherIconeMissaoConnect(tipo) {
+    if (tipo === 'water') return FiDroplet
+    if (tipo === 'steps_per_minute') return FiTarget
+
+    return FiActivity
+  }
 
   function abrirModalBeneficio(titulo, descricao) {
     setModalBeneficio({
@@ -513,82 +542,112 @@ const Inicial = () => {
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
-            <div className="md:col-span-2 bg-white rounded-md p-4 border border-[#E4E7EB] shadow-brand-card">
-              <div className="flex items-start justify-between gap-3 mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-md flex items-center justify-center shrink-0 bg-[rgba(28,151,112,0.1)]">
-                    <FiActivity size={20} color="#1c9770" />
-                  </div>
-                  <div>
-                    <p className="text-[#6B7685] text-[12px]">Passos registrados hoje</p>
-                    <h3 className="font-bold text-[32px] text-[#1A202C] leading-none">
-                      {carregandoPedometro && !pedometro
-                        ? 'Carregando...'
-                        : passosPedometro.toLocaleString('pt-BR')}
-                    </h3>
-                  </div>
-                </div>
-                <span className="font-bold text-[#1c9770] text-[13px] shrink-0">
-                  {progressoPedometro}%
-                </span>
-              </div>
-
-              <div className="rounded-full bg-[#E4E7EB] h-2 overflow-hidden">
-                <div
-                  className="bg-[#1c9770] rounded-full h-2"
-                  style={{ width: `${progressoPedometro}%` }}
-                />
-              </div>
-              <p className="text-[#6B7685] text-[12px] mt-2">
-                {passosRestantesPedometro === 0
-                  ? 'Meta diaria atingida.'
-                  : `Faltam ${passosRestantesPedometro.toLocaleString('pt-BR')} passos para a meta de ${META_PASSOS_DIARIA.toLocaleString('pt-BR')}.`}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-3">
+            <div className="bg-white rounded-md p-4 border border-[#E4E7EB] shadow-brand-card">
+              <p className="text-[#6B7685] text-[12px] mb-1">Passos hoje</p>
+              <p className="font-bold text-[28px] text-[#1A202C] leading-none">
+                {carregandoPedometro && !pedometro
+                  ? 'Carregando...'
+                  : passosPedometro.toLocaleString('pt-BR')}
               </p>
             </div>
 
             <div className="bg-white rounded-md p-4 border border-[#E4E7EB] shadow-brand-card">
-              <div className="w-10 h-10 rounded-md flex items-center justify-center bg-[rgba(122,209,195,0.15)] mb-3">
-                <FiTarget size={18} color="#1c9770" />
-              </div>
+              <p className="text-[#6B7685] text-[12px] mb-1">Agua confirmada</p>
+              <p className="font-bold text-[28px] text-[#1A202C] leading-none">
+                {aguaMl.toLocaleString('pt-BR')}ml
+              </p>
+              <p className="text-[#6B7685] text-[12px] mt-1">
+                {copoAguaMl}ml por toque
+              </p>
+            </div>
+
+            <div className="bg-white rounded-md p-4 border border-[#E4E7EB] shadow-brand-card">
               <p className="text-[#6B7685] text-[12px] mb-1">Media passos/min</p>
-              <p className="font-bold text-[24px] text-[#1A202C]">
+              <p className="font-bold text-[28px] text-[#1A202C] leading-none">
                 {mediaPassosPedometro.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}
               </p>
-            </div>
-
-            <div className="bg-white rounded-md p-4 border border-[#E4E7EB] shadow-brand-card">
-              <div className="w-10 h-10 rounded-md flex items-center justify-center bg-[rgba(147,203,82,0.15)] mb-3">
-                <FiCpu size={18} color="#1c9770" />
-              </div>
-              <p className="text-[#6B7685] text-[12px] mb-1">Ultimo botao</p>
-              <p className="font-bold text-[17px] text-[#1A202C] break-words">
-                {ultimoEventoBotao}
+              <p className="text-[#6B7685] text-[12px] mt-1">
+                Ultimo botao: {ultimoEventoBotao}
               </p>
             </div>
+          </div>
 
-            <div className="bg-white rounded-md p-4 border border-[#E4E7EB] shadow-brand-card">
-              <p className="text-[#6B7685] text-[12px] mb-1">NFC vinculado</p>
-              <p className="font-bold text-[15px] text-[#1A202C] break-all">{nfcVinculado}</p>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+            {missoesConnect.map((missao) => {
+              const Icon = escolherIconeMissaoConnect(missao.tipo)
+
+              return (
+                <div
+                  key={missao.id}
+                  className={`bg-white rounded-md p-3 flex flex-col gap-3 border shadow-brand-card ${
+                    missao.concluida
+                      ? 'border-[rgba(28,151,112,0.35)] bg-[rgba(28,151,112,0.03)]'
+                      : 'border-[#E4E7EB]'
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 ${
+                      missao.concluida ? 'bg-[#1c9770]' : 'bg-[rgba(28,151,112,0.1)]'
+                    }`}>
+                      <Icon size={18} color={missao.concluida ? '#fff' : '#1c9770'} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="font-bold text-[14px] text-[#1A202C] leading-snug">
+                          {missao.titulo}
+                        </p>
+                        <span className="text-[#1c9770] text-[12px] font-bold shrink-0">
+                          {missao.trofeus} trofeus
+                        </span>
+                      </div>
+                      <p className="text-[#6B7685] text-[12px] mt-1">
+                        {formatarValorMissaoConnect(missao)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="rounded-full bg-[#E4E7EB] h-2 overflow-hidden">
+                      <div
+                        className={`rounded-full h-2 ${missao.concluida ? 'bg-[#93CB52]' : 'bg-[#1c9770]'}`}
+                        style={{ width: `${missao.progresso}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="font-bold text-[#1c9770] text-[12px]">
+                        {missao.progresso}%
+                      </span>
+                      <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${
+                        missao.concluida
+                          ? 'bg-[rgba(147,203,82,0.18)] text-[#167a5a]'
+                          : 'bg-[#F0F2F5] text-[#6B7685]'
+                      }`}>
+                        {missao.concluida ? 'Concluida' : 'Em progresso'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="mt-3 bg-white rounded-md p-3 border border-[#E4E7EB] shadow-brand-card flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div>
+              <p className="text-[#6B7685] text-[12px] mb-1">Entidade Orion</p>
+              <p className="font-bold text-[13px] text-[#1A202C] break-all">
+                {pedometro?.entityId || 'urn:ngsi-ld:Pedometer:001'}
+              </p>
             </div>
-
-            <div className="md:col-span-1 xl:col-span-3 bg-white rounded-md p-4 border border-[#E4E7EB] shadow-brand-card flex flex-col md:flex-row md:items-center justify-between gap-3">
-              <div>
-                <p className="text-[#6B7685] text-[12px] mb-1">Entidade Orion</p>
-                <p className="font-bold text-[13px] text-[#1A202C] break-all">
-                  {pedometro?.entityId || 'urn:ngsi-ld:Pedometer:001'}
-                </p>
-              </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <span className={`rounded-full px-3 py-1 text-[12px] font-bold ${
-                  statusPedometro === 'online'
-                    ? 'bg-[rgba(28,151,112,0.1)] text-[#1c9770]'
-                    : 'bg-[#F0F2F5] text-[#6B7685]'
-                }`}>
-                  {statusPedometro}
-                </span>
-                <span className="text-[#6B7685] text-[12px]">{textoAtualizacaoPedometro}</span>
-              </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className={`rounded-full px-3 py-1 text-[12px] font-bold ${
+                statusPedometro === 'online'
+                  ? 'bg-[rgba(28,151,112,0.1)] text-[#1c9770]'
+                  : 'bg-[#F0F2F5] text-[#6B7685]'
+              }`}>
+                {statusPedometro}
+              </span>
+              <span className="text-[#6B7685] text-[12px]">{textoAtualizacaoPedometro}</span>
             </div>
           </div>
         </section>

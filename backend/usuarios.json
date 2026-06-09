@@ -721,8 +721,8 @@
         "cafeina": "1_2",
         "arLivre": "15_30",
         "refeicoes": "3",
-        "trofeus": 0,
-        "trofeusAcumulados": 0,
+        "trofeus": 20,
+        "trofeusAcumulados": 20,
         "beneficiosResgatados": [],
         "beneficiosDisponiveis": [
             {
@@ -762,10 +762,156 @@
                 "custoTrofeus": 700
             }
         ],
-        "missoesConcluidasHoje": 0,
+        "missoesConcluidasHoje": 1,
         "ultimoDiaMissoes": "2026-06-09",
         "streak": 0,
         "ultimoDiaStreak": "",
-        "streakDiasAcendidos": []
+        "streakDiasAcendidos": [],
+        "connectDia": "2026-06-09",
+        "connectWaterMl": 0,
+        "connectUltimoEventoAgua": "",
+        "connectMissoesConcluidas": [
+            "passos"
+        ]
+    },
+    "343": {
+        "nome": "teste",
+        "carteirinha": "343",
+        "peso": "43",
+        "altura": "43",
+        "atividadeFisica": "5_7",
+        "tempoSentado": "2_5h",
+        "distanciaDia": "mais_6",
+        "agua": "menos_1",
+        "sono": "7_9",
+        "celular": "2_5",
+        "pausas": "0",
+        "cafeina": "0",
+        "arLivre": "30_60",
+        "refeicoes": "3",
+        "trofeus": 20,
+        "trofeusAcumulados": 20,
+        "beneficiosResgatados": [],
+        "beneficiosDisponiveis": [
+            {
+                "id": 11,
+                "titulo": "Kit de snacks saudáveis (barra + nuts)",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 15,
+                "titulo": "Desconto de 25% em massagem relaxante",
+                "parceiro": "Parceiro wellness",
+                "custoTrofeus": 700
+            },
+            {
+                "id": 14,
+                "titulo": "Voucher de R$30 em farmácia Drogasil",
+                "parceiro": "Drogasil",
+                "custoTrofeus": 650
+            },
+            {
+                "id": 12,
+                "titulo": "Desconto de 20% na Decathlon",
+                "parceiro": "Decathlon",
+                "custoTrofeus": 550
+            },
+            {
+                "id": 6,
+                "titulo": "Shake proteico da Max Titanium",
+                "parceiro": "Max Titanium",
+                "custoTrofeus": 400
+            },
+            {
+                "id": 2,
+                "titulo": "1 mês grátis de Spotify Premium",
+                "parceiro": "Spotify",
+                "custoTrofeus": 500
+            }
+        ],
+        "missoesConcluidasHoje": 1,
+        "ultimoDiaMissoes": "2026-06-09",
+        "streak": 0,
+        "ultimoDiaStreak": "",
+        "streakDiasAcendidos": [],
+        "connectDia": "2026-06-09",
+        "connectWaterMl": 220,
+        "connectUltimoEventoAgua": "2026-06-09T21:05:12.220Z",
+        "connectMissoesConcluidas": [
+            "passos"
+        ]
+    },
+    "21": {
+        "nome": "ufgsuyfg",
+        "carteirinha": "21",
+        "peso": "21",
+        "altura": "21",
+        "atividadeFisica": "5_7",
+        "tempoSentado": "mais_8h",
+        "distanciaDia": "mais_6",
+        "agua": "1_2",
+        "sono": "mais_9",
+        "celular": "menos_2",
+        "pausas": "0",
+        "cafeina": "0",
+        "arLivre": "30_60",
+        "refeicoes": "1_2",
+        "trofeus": 55,
+        "trofeusAcumulados": 55,
+        "beneficiosResgatados": [],
+        "beneficiosDisponiveis": [
+            {
+                "id": 18,
+                "titulo": "Camiseta esportiva dry-fit",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 19,
+                "titulo": "Voucher de R$25 na Amazon",
+                "parceiro": "Amazon",
+                "custoTrofeus": 750
+            },
+            {
+                "id": 20,
+                "titulo": "Plano básico do Gympass (1 semana)",
+                "parceiro": "Gympass",
+                "custoTrofeus": 800
+            },
+            {
+                "id": 8,
+                "titulo": "Garrafa térmica esportiva",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 450
+            },
+            {
+                "id": 4,
+                "titulo": "Desconto de 30% em consulta na Dr. Consulta",
+                "parceiro": "Dr. Consulta",
+                "custoTrofeus": 600
+            },
+            {
+                "id": 5,
+                "titulo": "Cupom de R$20 no iFood",
+                "parceiro": "iFood",
+                "custoTrofeus": 500
+            }
+        ],
+        "missoesConcluidasHoje": 3,
+        "ultimoDiaMissoes": "2026-06-09",
+        "streak": 1,
+        "ultimoDiaStreak": "2026-06-09",
+        "streakDiasAcendidos": [
+            "2026-06-09"
+        ],
+        "connectDia": "2026-06-09",
+        "connectWaterMl": 440,
+        "connectUltimoEventoAgua": "2026-06-09T21:07:13.728Z",
+        "connectMissoesConcluidas": [
+            "passos",
+            "agua",
+            "media-passos"
+        ]
     }
 }

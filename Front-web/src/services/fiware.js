@@ -20,3 +20,14 @@ export async function buscarPedometroStep001() {
     error: dados.error || '',
   }
 }
+
+export async function buscarMissoesConnect(carteirinha) {
+  const resposta = await fetch(`${API_URL}/fiware/missoes-connect/${carteirinha}`)
+  const dados = await resposta.json().catch(() => ({}))
+
+  if (!resposta.ok) {
+    throw new Error(dados.detail || 'Nao foi possivel carregar as missoes Connect+.')
+  }
+
+  return dados
+}

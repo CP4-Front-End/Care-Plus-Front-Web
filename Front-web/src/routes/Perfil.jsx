@@ -311,6 +311,8 @@ const Perfil = () => {
   ]
 
 
+  const mostrarDadosLegados = false
+
   return (
     <div className="min-h-screen bg-[#F4F6F8]">
       <TopBar showPoints={true} />
@@ -429,7 +431,7 @@ const Perfil = () => {
                   )}
                 </div>
               ))}
-              {false && (<>
+              {mostrarDadosLegados && (<>
               <div className="flex justify-between items-center">
                 <span className="text-[#6B7685] text-[14px]">Peso</span>
                 <span className="font-bold text-[14px] text-[#1A202C]">

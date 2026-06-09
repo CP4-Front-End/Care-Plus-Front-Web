@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FiArrowLeft, FiArrowRight, FiZap, FiTarget, FiTrendingUp, FiAward } from 'react-icons/fi'
+import { FiActivity, FiArrowLeft, FiArrowRight, FiDroplet, FiZap, FiTarget, FiTrendingUp, FiAward } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
 import ModalConfirmacao from '../components/ModalConfirmacao.jsx'
 import { API_URL, buscarUsuarioLogado, redirecionarLogin } from '../services/sessao.js'
+import { buscarMissoesConnect } from '../services/fiware.js'
 
 
 const Missoes = () => {
 
   const navigate = useNavigate()
-  const [expandedDesafio, setExpandedDesafio] = useState(false)
   const [modalAberto, setModalAberto] = useState(false)
   const [missaoSelecionada, setMissaoSelecionada] = useState(null)
   const [tipoMissao, setTipoMissao] = useState("")
@@ -29,6 +29,8 @@ const Missoes = () => {
 
   const [missoesPersonalizadas, setMissoesPersonalizadas] = useState([])
   const [missoesGerais, setMissoesGerais] = useState([])
+  const [missoesConnect, setMissoesConnect] = useState([])
+  const [erroConnect, setErroConnect] = useState('')
   const [missoesHoje, setMissoesHoje] = useState(0)
 
 
@@ -87,6 +89,20 @@ const Missoes = () => {
       setMissoesPersonalizadas(dados)
 
       await carregarMissoesGerais(carteirinha)
+
+      try {
+        const dadosConnect = await buscarMissoesConnect(carteirinha)
+        setMissoesConnect(dadosConnect.missoes || [])
+        setErroConnect('')
+
+        if (dadosConnect.usuario) {
+          localStorage.setItem("trofeus", dadosConnect.usuario.trofeus || 0)
+          window.dispatchEvent(new Event("trofeusAtualizados"))
+        }
+      } catch (erro) {
+        setErroConnect(erro.message)
+      }
+
       const usuario = await buscarUsuarioLogado(navigate)
 
       if (!usuario) return
@@ -186,6 +202,25 @@ const Missoes = () => {
     if (concluida) return 'bg-[#1c9770] text-white border-2 border-transparent'
     if (desbloqueada) return 'bg-[rgba(28,151,112,0.15)] text-[#1c9770] border-2 border-[#1c9770]'
     return 'bg-[#E4E7EB] text-[#9BA3AE] border-2 border-transparent'
+  }
+
+  function formatarValorConnect(missao) {
+    if (missao.tipo === 'water') {
+      return `${Number(missao.atual || 0).toLocaleString('pt-BR')}ml / ${Number(missao.meta || 0).toLocaleString('pt-BR')}ml`
+    }
+
+    if (missao.tipo === 'steps_per_minute') {
+      return `${Number(missao.atual || 0).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} / ${Number(missao.meta || 0).toLocaleString('pt-BR')} passos/min`
+    }
+
+    return `${Number(missao.atual || 0).toLocaleString('pt-BR')} / ${Number(missao.meta || 0).toLocaleString('pt-BR')} passos`
+  }
+
+  function escolherIconeConnect(tipo) {
+    if (tipo === 'water') return FiDroplet
+    if (tipo === 'steps_per_minute') return FiTrendingUp
+
+    return FiActivity
   }
 
   return (
@@ -296,6 +331,67 @@ const Missoes = () => {
             <p className="text-[#6B7685] text-[12px] text-center mt-3">
               Acesse o app diariamente para liberar o Impulso+ e receber recompensas
             </p>
+          </div>
+        </section>
+
+        <section className="mb-4">
+          <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">
+            Missões Connect+
+          </h2>
+
+          {erroConnect && (
+            <div className="mb-2 rounded-xl border border-[#F6AD55]/40 bg-[#F6AD55]/10 p-3">
+              <p className="text-[#6B7685] text-[12px]">{erroConnect}</p>
+            </div>
+          )}
+
+          <div className="flex flex-col gap-2">
+            {missoesConnect.map((missao) => {
+              const Icon = escolherIconeConnect(missao.tipo)
+
+              return (
+                <div
+                  key={missao.id}
+                  className={`bg-white rounded-xl border p-3 flex items-center gap-3 ${
+                    missao.concluida
+                      ? 'border-[rgba(28,151,112,0.35)] bg-[rgba(28,151,112,0.03)]'
+                      : 'border-[#E4E7EB]'
+                  }`}
+                >
+                  <div className={`rounded-xl flex items-center justify-center shrink-0 w-10 h-10 ${
+                    missao.concluida ? 'bg-[#1c9770]' : 'bg-[rgba(28,151,112,0.08)]'
+                  }`}>
+                    <Icon size={18} color={missao.concluida ? '#fff' : '#1c9770'} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start gap-3">
+                      <p className="text-[13px] text-[#1A202C] font-medium">
+                        {missao.titulo}
+                      </p>
+                      <span className="text-[#1c9770] text-[12px] font-bold shrink-0">
+                        {missao.trofeus} troféus
+                      </span>
+                    </div>
+                    <p className="text-[#6B7685] text-[12px] mt-1">
+                      {formatarValorConnect(missao)}
+                    </p>
+                    <div className="rounded-full bg-[#E4E7EB] h-1.5 overflow-hidden mt-2">
+                      <div
+                        className={`rounded-full h-1.5 ${missao.concluida ? 'bg-[#93CB52]' : 'bg-[#1c9770]'}`}
+                        style={{ width: `${missao.progresso}%` }}
+                      />
+                    </div>
+                  </div>
+                  <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold shrink-0 ${
+                    missao.concluida
+                      ? 'bg-[rgba(147,203,82,0.18)] text-[#167a5a]'
+                      : 'bg-[#F0F2F5] text-[#6B7685]'
+                  }`}>
+                    {missao.concluida ? 'Concluída' : `${missao.progresso}%`}
+                  </span>
+                </div>
+              )
+            })}
           </div>
         </section>
 
