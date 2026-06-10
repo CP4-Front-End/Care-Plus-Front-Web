@@ -29,6 +29,17 @@ COPO_AGUA_ML = 220
 META_PASSOS_DIARIA = 5000
 META_AGUA_DIARIA_ML = 3000
 META_MEDIA_PASSOS_DIARIA = round(META_PASSOS_DIARIA / (24 * 60), 1)
+LUMINARIA_MISSOES_AMARELO = 3
+LUMINARIA_MISSOES_AZUL = 6
+LUMINARIA_MISSOES_VERDE = 9
+LUMINARIA_PASSOS_AMARELO = 20
+LUMINARIA_PASSOS_AZUL = 40
+LUMINARIA_PASSOS_VERDE = 60
+LUMINARIA_EVENTOS_VALIDOS = {
+    "missao_progresso",
+    "missao_concluida",
+    "agua_confirmada",
+}
 MISSOES_CONNECT = [
     {
         "id": "passos",
@@ -187,10 +198,14 @@ def preparar_connect_usuario(usuario):
         usuario["connectWaterMl"] = 0
         usuario["connectUltimoEventoAgua"] = ""
         usuario["connectMissoesConcluidas"] = []
+        usuario["luminariaEventosConfirmados"] = 0
+        usuario["luminariaUltimoEvento"] = ""
 
     usuario.setdefault("connectWaterMl", 0)
     usuario.setdefault("connectUltimoEventoAgua", "")
     usuario.setdefault("connectMissoesConcluidas", [])
+    usuario.setdefault("luminariaEventosConfirmados", 0)
+    usuario.setdefault("luminariaUltimoEvento", "")
 
     return usuario
 
@@ -228,6 +243,50 @@ def calcular_missoes_connect(usuario, pedometro):
         })
 
     return missoes, novas_conclusoes
+
+
+def nivel_luminaria_por_missoes(total_missoes):
+    if total_missoes >= LUMINARIA_MISSOES_VERDE:
+        return 3
+    if total_missoes >= LUMINARIA_MISSOES_AZUL:
+        return 2
+    if total_missoes >= LUMINARIA_MISSOES_AMARELO:
+        return 1
+    return 0
+
+
+def nivel_luminaria_por_passos(passos):
+    if passos >= LUMINARIA_PASSOS_VERDE:
+        return 3
+    if passos >= LUMINARIA_PASSOS_AZUL:
+        return 2
+    if passos >= LUMINARIA_PASSOS_AMARELO:
+        return 1
+    return 0
+
+
+def calcular_estado_luminaria(usuario, pedometro):
+    total_eventos = usuario.get("luminariaEventosConfirmados", 0)
+    passos = pedometro.get("steps", 0)
+    nivel_missoes = nivel_luminaria_por_missoes(total_eventos)
+    nivel_passos = nivel_luminaria_por_passos(passos)
+    nivel = max(nivel_missoes, nivel_passos)
+
+    estados = {
+        0: {"cor": "apagada", "hex": "#9BA3AE", "label": "Apagada"},
+        1: {"cor": "amarela", "hex": "#F6C90E", "label": "Amarela"},
+        2: {"cor": "azul", "hex": "#3B82F6", "label": "Azul"},
+        3: {"cor": "verde", "hex": "#1c9770", "label": "Verde"},
+    }
+
+    return {
+        **estados[nivel],
+        "nivel": nivel,
+        "missoesConfirmadas": total_eventos,
+        "eventosConfirmados": total_eventos,
+        "passos": passos,
+        "fonte": "missoes" if nivel_missoes >= nivel_passos else "passos",
+    }
 
 
 def tempo_ate_reset_connect():
@@ -341,11 +400,20 @@ def buscar_missoes_connect(carteirinha: str):
         usuario["connectWaterMl"] += COPO_AGUA_ML
         usuario["connectUltimoEventoAgua"] = pedometro["buttonEventAt"]
 
+    if (
+        pedometro["buttonEvent"] in LUMINARIA_EVENTOS_VALIDOS
+        and pedometro["buttonEventAt"]
+        and pedometro["buttonEventAt"] != usuario.get("luminariaUltimoEvento")
+    ):
+        usuario["luminariaEventosConfirmados"] += 1
+        usuario["luminariaUltimoEvento"] = pedometro["buttonEventAt"]
+
     missoes, novas_conclusoes = calcular_missoes_connect(usuario, pedometro)
     salvar_usuarios(usuarios)
 
     return {
         "pedometro": pedometro,
+        "luminaria": calcular_estado_luminaria(usuario, pedometro),
         "aguaMl": usuario.get("connectWaterMl", 0),
         "copoAguaMl": COPO_AGUA_ML,
         "missoes": missoes,

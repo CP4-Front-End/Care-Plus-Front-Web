@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   FiActivity, FiArrowRight, FiDroplet, FiFileText, FiGift,
-  FiHeart, FiRefreshCw, FiTarget, FiUser, FiWifi
+  FiHeart, FiRefreshCw, FiSun, FiTarget, FiUser, FiWifi
 } from 'react-icons/fi'
 import { FaFire, FaTrophy } from 'react-icons/fa'
 import TopBar from '../components/TopBar.jsx'
@@ -95,6 +95,12 @@ const Inicial = () => {
     descricao: '',
   })
   const [pedometro, setPedometro] = useState(null)
+  const [luminaria, setLuminaria] = useState({
+    label: 'Apagada',
+    hex: '#9BA3AE',
+    nivel: 0,
+    fonte: 'passos',
+  })
   const [missoesConnect, setMissoesConnect] = useState([])
   const [aguaMl, setAguaMl] = useState(0)
   const [copoAguaMl, setCopoAguaMl] = useState(220)
@@ -114,6 +120,12 @@ const Inicial = () => {
 
       const dados = await buscarMissoesConnect(carteirinha)
       setPedometro(dados.pedometro)
+      setLuminaria(dados.luminaria || {
+        label: 'Apagada',
+        hex: '#9BA3AE',
+        nivel: 0,
+        fonte: 'passos',
+      })
       setMissoesConnect(dados.missoes || [])
       setAguaMl(dados.aguaMl || 0)
       setCopoAguaMl(dados.copoAguaMl || 220)
@@ -235,6 +247,9 @@ const Inicial = () => {
   const mediaPassosPedometro = pedometro?.dailyStepsAverage ?? 0
   const ultimoEventoBotao = pedometro?.buttonEvent || 'Sem evento'
   const statusPedometro = erroPedometro ? 'offline' : pedometro?.status || 'aguardando'
+  const textoFonteLuminaria = luminaria.fonte === 'missoes'
+    ? `${luminaria.eventosConfirmados || luminaria.missoesConfirmadas || 0} confirmações`
+    : `${Number(luminaria.passos || 0).toLocaleString('pt-BR')} passos`
   const textoAtualizacaoPedometro = pedometroAtualizadoEm
     ? `Atualizado ${pedometroAtualizadoEm.toLocaleTimeString('pt-BR', {
       hour: '2-digit',
@@ -404,6 +419,26 @@ const Inicial = () => {
                   <p className="text-[#6B7685] text-[12px] leading-snug">
                     Não deixe o Flux apagar hoje!
                   </p>
+                  <div className="mt-3 inline-flex items-center gap-2 rounded-md border border-[#E4E7EB] bg-white px-3 py-2">
+                    <span
+                      className="flex h-9 w-9 items-center justify-center rounded-full"
+                      style={{
+                        color: luminaria.hex,
+                        backgroundColor: `${luminaria.hex}18`,
+                        boxShadow: luminaria.nivel > 0 ? `0 0 18px ${luminaria.hex}80` : 'none',
+                      }}
+                    >
+                      <FiSun size={18} />
+                    </span>
+                    <div>
+                      <p className="text-[#6B7685] text-[10px] uppercase font-bold tracking-[0.8px]">
+                        Luminaria
+                      </p>
+                      <p className="text-[#1A202C] text-[12px] font-bold">
+                        {luminaria.label}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -417,6 +452,29 @@ const Inicial = () => {
                 <p className="text-[#6B7685] text-[13px] lg:text-[16px] mb-3 lg:mb-6 lg:max-w-xl">
                   Não deixe o Flux apagar hoje!
                 </p>
+                <div className="flex items-center gap-3 rounded-md border border-[#E4E7EB] bg-white/85 p-3 shadow-brand-card">
+                  <span
+                    className="flex h-12 w-12 items-center justify-center rounded-full"
+                    style={{
+                      color: luminaria.hex,
+                      backgroundColor: `${luminaria.hex}18`,
+                      boxShadow: luminaria.nivel > 0 ? `0 0 24px ${luminaria.hex}80` : 'none',
+                    }}
+                  >
+                    <FiSun size={24} />
+                  </span>
+                  <div>
+                    <p className="text-[#6B7685] text-[11px] uppercase font-bold tracking-[1px]">
+                      Estado da luminaria
+                    </p>
+                    <p className="text-[#1A202C] text-[16px] font-bold">
+                      {luminaria.label}
+                    </p>
+                    <p className="text-[#6B7685] text-[12px]">
+                      Baseado em {textoFonteLuminaria}
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <div className="w-full flex justify-center md:hidden">
