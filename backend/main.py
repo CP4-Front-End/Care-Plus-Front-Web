@@ -32,13 +32,19 @@ META_MEDIA_PASSOS_DIARIA = round(META_PASSOS_DIARIA / (24 * 60), 1)
 LUMINARIA_MISSOES_AMARELO = 3
 LUMINARIA_MISSOES_AZUL = 6
 LUMINARIA_MISSOES_VERDE = 9
-LUMINARIA_PASSOS_AMARELO = 20
-LUMINARIA_PASSOS_AZUL = 40
-LUMINARIA_PASSOS_VERDE = 60
+LUMINARIA_PASSOS_AMARELO = 5000
+LUMINARIA_PASSOS_AZUL = 7500
+LUMINARIA_PASSOS_VERDE = 10000
 LUMINARIA_EVENTOS_VALIDOS = {
     "missao_progresso",
     "missao_concluida",
     "agua_confirmada",
+}
+LUMINARIA_ESTADOS = {
+    0: {"cor": "apagada", "hex": "#9BA3AE", "label": "Apagada"},
+    1: {"cor": "amarela", "hex": "#F6C90E", "label": "Amarela"},
+    2: {"cor": "azul", "hex": "#3B82F6", "label": "Azul"},
+    3: {"cor": "verde", "hex": "#1c9770", "label": "Verde"},
 }
 MISSOES_CONNECT = [
     {
@@ -94,6 +100,23 @@ def extrair_valor_fiware(entidade, atributo, padrao=None):
     return dado
 
 
+def extrair_primeiro_valor_fiware(entidade, atributos, padrao=None):
+    for atributo in atributos:
+        if atributo in entidade:
+            return extrair_valor_fiware(entidade, atributo, padrao)
+
+    return padrao
+
+
+def extrair_primeiro_timeinstant_fiware(entidade, atributos):
+    for atributo in atributos:
+        timeinstant = extrair_timeinstant_fiware(entidade, atributo)
+        if timeinstant:
+            return timeinstant
+
+    return ""
+
+
 def extrair_timeinstant_fiware(entidade, atributo):
     dado = entidade.get(atributo)
 
@@ -118,6 +141,18 @@ def converter_float(valor, padrao=0):
         return float(valor)
     except (TypeError, ValueError):
         return padrao
+
+
+def timeinstant_eh_de_hoje(valor):
+    if not valor:
+        return True
+
+    try:
+        data_evento = datetime.fromisoformat(valor.replace("Z", "+00:00"))
+    except ValueError:
+        return True
+
+    return data_evento.astimezone().date() == date.today()
 
 
 def buscar_entidade_pedometro():
@@ -165,6 +200,19 @@ def normalizar_entidade_pedometro(entidade):
         "dailyStepsAverage": round(passos / minutos_dia, 1),
         "buttonEvent": extrair_valor_fiware(entidade, "button_event", ""),
         "buttonEventAt": extrair_timeinstant_fiware(entidade, "button_event"),
+        "lumColor": extrair_primeiro_valor_fiware(entidade, ["lum_color", "lc"], ""),
+        "lumLevel": converter_int(
+            extrair_primeiro_valor_fiware(entidade, ["lum_level", "ln"]),
+            -1,
+        ),
+        "lumEvents": converter_int(
+            extrair_primeiro_valor_fiware(entidade, ["lum_events", "le"]),
+            0,
+        ),
+        "lumLevelAt": extrair_primeiro_timeinstant_fiware(
+            entidade,
+            ["lum_level", "ln"],
+        ),
         "nfcId": extrair_valor_fiware(entidade, "nfcId", ""),
         "error": "",
     }
@@ -181,6 +229,10 @@ def pedometro_offline(detalhe):
         "dailyStepsAverage": 0,
         "buttonEvent": "",
         "buttonEventAt": "",
+        "lumColor": "",
+        "lumLevel": -1,
+        "lumEvents": 0,
+        "lumLevelAt": "",
         "nfcId": "",
         "error": detalhe,
     }
@@ -266,26 +318,35 @@ def nivel_luminaria_por_passos(passos):
 
 
 def calcular_estado_luminaria(usuario, pedometro):
+    reset = tempo_ate_reset_connect()
+    nivel_fisico = pedometro.get("lumLevel", -1)
+    if nivel_fisico >= 0 and timeinstant_eh_de_hoje(pedometro.get("lumLevelAt")):
+        nivel = min(3, nivel_fisico)
+        eventos = pedometro.get("lumEvents", 0)
+        return {
+            **LUMINARIA_ESTADOS[nivel],
+            "nivel": nivel,
+            "missoesConfirmadas": eventos,
+            "eventosConfirmados": eventos,
+            "passos": pedometro.get("steps", 0),
+            "fonte": "luminaria",
+            "resetEm": reset,
+        }
+
     total_eventos = usuario.get("luminariaEventosConfirmados", 0)
     passos = pedometro.get("steps", 0)
     nivel_missoes = nivel_luminaria_por_missoes(total_eventos)
     nivel_passos = nivel_luminaria_por_passos(passos)
     nivel = max(nivel_missoes, nivel_passos)
 
-    estados = {
-        0: {"cor": "apagada", "hex": "#9BA3AE", "label": "Apagada"},
-        1: {"cor": "amarela", "hex": "#F6C90E", "label": "Amarela"},
-        2: {"cor": "azul", "hex": "#3B82F6", "label": "Azul"},
-        3: {"cor": "verde", "hex": "#1c9770", "label": "Verde"},
-    }
-
     return {
-        **estados[nivel],
+        **LUMINARIA_ESTADOS[nivel],
         "nivel": nivel,
         "missoesConfirmadas": total_eventos,
         "eventosConfirmados": total_eventos,
         "passos": passos,
         "fonte": "missoes" if nivel_missoes >= nivel_passos else "passos",
+        "resetEm": reset,
     }
 
 

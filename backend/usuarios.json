@@ -64,7 +64,75 @@
         "connectWaterMl": 440,
         "connectUltimoEventoAgua": "2026-06-10T01:39:07.472Z",
         "connectMissoesConcluidas": [],
-        "luminariaEventosConfirmados": 6,
-        "luminariaUltimoEvento": "2026-06-10T01:39:07.472Z"
+        "luminariaEventosConfirmados": 7,
+        "luminariaUltimoEvento": "2026-06-10T01:50:39.883Z"
+    },
+    "45": {
+        "nome": "fg",
+        "carteirinha": "45",
+        "peso": "54",
+        "altura": "54",
+        "atividadeFisica": "0",
+        "tempoSentado": "2_5h",
+        "distanciaDia": "mais_6",
+        "agua": "mais_3",
+        "sono": "7_9",
+        "celular": "2_5",
+        "pausas": "1_3",
+        "cafeina": "1_2",
+        "arLivre": "0_15",
+        "refeicoes": "1_2",
+        "trofeus": 0,
+        "trofeusAcumulados": 0,
+        "beneficiosResgatados": [],
+        "beneficiosDisponiveis": [
+            {
+                "id": 15,
+                "titulo": "Desconto de 25% em massagem relaxante",
+                "parceiro": "Parceiro wellness",
+                "custoTrofeus": 700
+            },
+            {
+                "id": 16,
+                "titulo": "Suplemento multivitamínico (1 mês)",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 2,
+                "titulo": "1 mês grátis de Spotify Premium",
+                "parceiro": "Spotify",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 6,
+                "titulo": "Shake proteico da Max Titanium",
+                "parceiro": "Max Titanium",
+                "custoTrofeus": 400
+            },
+            {
+                "id": 18,
+                "titulo": "Camiseta esportiva dry-fit",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 20,
+                "titulo": "Plano básico do Gympass (1 semana)",
+                "parceiro": "Gympass",
+                "custoTrofeus": 800
+            }
+        ],
+        "missoesConcluidasHoje": 0,
+        "ultimoDiaMissoes": "2026-06-09",
+        "streak": 0,
+        "ultimoDiaStreak": "",
+        "streakDiasAcendidos": [],
+        "connectDia": "2026-06-09",
+        "connectWaterMl": 440,
+        "connectUltimoEventoAgua": "2026-06-10T02:30:49.657Z",
+        "connectMissoesConcluidas": [],
+        "luminariaEventosConfirmados": 10,
+        "luminariaUltimoEvento": "2026-06-10T02:30:49.657Z"
     }
 }

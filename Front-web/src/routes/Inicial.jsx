@@ -247,9 +247,14 @@ const Inicial = () => {
   const mediaPassosPedometro = pedometro?.dailyStepsAverage ?? 0
   const ultimoEventoBotao = pedometro?.buttonEvent || 'Sem evento'
   const statusPedometro = erroPedometro ? 'offline' : pedometro?.status || 'aguardando'
-  const textoFonteLuminaria = luminaria.fonte === 'missoes'
-    ? `${luminaria.eventosConfirmados || luminaria.missoesConfirmadas || 0} confirmações`
-    : `${Number(luminaria.passos || 0).toLocaleString('pt-BR')} passos`
+  const textoFonteLuminaria = luminaria.fonte === 'luminaria'
+    ? `estado real do LUM (${luminaria.eventosConfirmados || 0} eventos)`
+    : luminaria.fonte === 'missoes'
+      ? `${luminaria.eventosConfirmados || luminaria.missoesConfirmadas || 0} confirmações`
+      : `${Number(luminaria.passos || 0).toLocaleString('pt-BR')} passos`
+  const textoResetLuminaria = luminaria.resetEm?.label
+    ? `Reseta em ${luminaria.resetEm.label}`
+    : ''
   const textoAtualizacaoPedometro = pedometroAtualizadoEm
     ? `Atualizado ${pedometroAtualizadoEm.toLocaleTimeString('pt-BR', {
       hour: '2-digit',
@@ -437,6 +442,11 @@ const Inicial = () => {
                       <p className="text-[#1A202C] text-[12px] font-bold">
                         {luminaria.label}
                       </p>
+                      {textoResetLuminaria && (
+                        <p className="text-[#6B7685] text-[10px]">
+                          {textoResetLuminaria}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -473,6 +483,11 @@ const Inicial = () => {
                     <p className="text-[#6B7685] text-[12px]">
                       Baseado em {textoFonteLuminaria}
                     </p>
+                    {textoResetLuminaria && (
+                      <p className="text-[#6B7685] text-[12px]">
+                        {textoResetLuminaria}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
