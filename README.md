@@ -81,14 +81,15 @@ src/
 Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/seu-repositorio.git
+git clone https://github.com/CarePlusCDF/Care-Plus-Front-Web.git
 ```
-
 Acesse a pasta do projeto:
 
 ```bash
 cd front-web
 ```
+
+**Frontend**
 
 Instale as dependências:
 
@@ -100,6 +101,32 @@ Execute em modo de desenvolvimento:
 
 ```bash
 npm run dev
+```
+
+**Backend**
+
+Acesse a pasta do backend:
+
+```bash
+cd backend
+```
+
+Instale as dependências:
+
+```bash
+pip install -r requirements.txt
+```
+
+Execute a API:
+
+```bash
+uvicorn main:app --reload
+```
+
+A API estará disponível em:
+
+```bash
+http://localhost:8000
 ```
 
 ## Integrantes
