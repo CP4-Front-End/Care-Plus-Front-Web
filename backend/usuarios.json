@@ -19,14 +19,20 @@
         "beneficiosResgatados": [],
         "beneficiosDisponiveis": [
             {
-                "id": 7,
-                "titulo": "Desconto de 25% em academia Smart Fit",
-                "parceiro": "Smart Fit",
-                "custoTrofeus": 700
+                "id": 11,
+                "titulo": "Kit de snacks saudáveis (barra + nuts)",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 500
             },
             {
-                "id": 18,
-                "titulo": "Camiseta esportiva dry-fit",
+                "id": 14,
+                "titulo": "Voucher de R$30 em farmácia Drogasil",
+                "parceiro": "Drogasil",
+                "custoTrofeus": 650
+            },
+            {
+                "id": 16,
+                "titulo": "Suplemento multivitamínico (1 mês)",
                 "parceiro": "Care Plus",
                 "custoTrofeus": 500
             },
@@ -37,22 +43,16 @@
                 "custoTrofeus": 500
             },
             {
-                "id": 15,
-                "titulo": "Desconto de 25% em massagem relaxante",
-                "parceiro": "Parceiro wellness",
-                "custoTrofeus": 700
-            },
-            {
-                "id": 6,
-                "titulo": "Shake proteico da Max Titanium",
-                "parceiro": "Max Titanium",
+                "id": 1,
+                "titulo": "Desconto de 20% em corridas da Uber",
+                "parceiro": "Uber",
                 "custoTrofeus": 400
             },
             {
-                "id": 3,
-                "titulo": "Barrinha de proteína da Growth Supplements",
-                "parceiro": "Growth Supplements",
-                "custoTrofeus": 450
+                "id": 17,
+                "titulo": "Desconto de 20% em nutricionista",
+                "parceiro": "Parceiro saúde",
+                "custoTrofeus": 650
             }
         ],
         "missoesConcluidasHoje": 0,
@@ -134,5 +134,110 @@
         "connectMissoesConcluidas": [],
         "luminariaEventosConfirmados": 10,
         "luminariaUltimoEvento": "2026-06-10T02:30:49.657Z"
+    },
+    "0101": {
+        "nome": "Renato",
+        "carteirinha": "0101",
+        "peso": "80",
+        "altura": "175",
+        "atividadeFisica": "1_2",
+        "tempoSentado": "5_8h",
+        "distanciaDia": "1_3",
+        "agua": "menos_1",
+        "sono": "5_7",
+        "celular": "mais_8",
+        "pausas": "0",
+        "cafeina": "1_2",
+        "arLivre": "mais_60",
+        "refeicoes": "1_2",
+        "trofeus": 0,
+        "trofeusAcumulados": 0,
+        "beneficiosResgatados": [],
+        "beneficiosDisponiveis": [
+            {
+                "id": 7,
+                "titulo": "Desconto de 25% em academia Smart Fit",
+                "parceiro": "Smart Fit",
+                "custoTrofeus": 700
+            },
+            {
+                "id": 11,
+                "titulo": "Kit de snacks saudáveis (barra + nuts)",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 14,
+                "titulo": "Voucher de R$30 em farmácia Drogasil",
+                "parceiro": "Drogasil",
+                "custoTrofeus": 650
+            },
+            {
+                "id": 18,
+                "titulo": "Camiseta esportiva dry-fit",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 3,
+                "titulo": "Barrinha de proteína da Growth Supplements",
+                "parceiro": "Growth Supplements",
+                "custoTrofeus": 450
+            },
+            {
+                "id": 4,
+                "titulo": "Desconto de 30% em consulta na Dr. Consulta",
+                "parceiro": "Dr. Consulta",
+                "custoTrofeus": 600
+            }
+        ],
+        "missoesConcluidasHoje": 0,
+        "ultimoDiaMissoes": "2026-06-14",
+        "streak": 0,
+        "ultimoDiaStreak": "",
+        "streakDiasAcendidos": [],
+        "connectDia": "2026-06-14",
+        "connectWaterMl": 0,
+        "connectUltimoEventoAgua": "",
+        "connectMissoesConcluidas": [],
+        "luminariaEventosConfirmados": 1,
+        "luminariaUltimoEvento": "2026-06-11T23:27:48.283Z",
+        "missoesAtivas": [
+            {
+                "titulo": "Bom controle de cafeína",
+                "trofeus": 20,
+                "id": 1,
+                "concluida": false
+            },
+            {
+                "titulo": "Reduza 1h de tela hoje",
+                "trofeus": 50,
+                "id": 2,
+                "concluida": false
+            },
+            {
+                "titulo": "Excelente contato com ambiente externo",
+                "trofeus": 20,
+                "id": 3,
+                "concluida": false
+            }
+        ],
+        "missoesGeraisAtivas": [
+            {
+                "missao": "Reduzir o brilho da tela por um tempo",
+                "trofeus": 15,
+                "id": 1
+            },
+            {
+                "missao": "Ficar 5 minutos em silêncio sem distrações",
+                "trofeus": 30,
+                "id": 2
+            },
+            {
+                "missao": "Fazer uma pausa de 5 minutos sem telas",
+                "trofeus": 30,
+                "id": 3
+            }
+        ]
     }
 }
