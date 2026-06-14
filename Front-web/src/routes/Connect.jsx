@@ -366,7 +366,10 @@ const Connect = () => {
                     <FiTag size={18} color="#1c9770" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-bold text-[14px] text-[#1A202C] font-mono">{item.nfcId}</p>
+                    {item.nome && (
+                      <p className="font-bold text-[14px] text-[#1A202C]">{item.nome}</p>
+                    )}
+                    <p className="text-[#6B7685] text-[12px] font-mono mt-0.5">{item.nfcId}</p>
                     <p className="text-[#6B7685] text-[12px] mt-0.5">
                       {item.recvTime
                         ? new Date(item.recvTime).toLocaleString('pt-BR', {

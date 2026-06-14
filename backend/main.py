@@ -793,12 +793,11 @@ def concluir_missao_geral(data: dict):
     }
 
 
-@app.get("/fiware/nfc/historico")
-def buscar_historico_nfc(lastN: int = 10):
+def buscar_historico_atributo(atributo: str, lastN: int):
     url = (
         f"{FIWARE_URL}:8666/STH/v1/contextEntities"
         f"/type/Pedometer/id/{FIWARE_PEDOMETER_ENTITY_ID}"
-        f"/attributes/nfcId?lastN={lastN}"
+        f"/attributes/{atributo}?lastN={lastN}"
     )
     requisicao = Request(
         url,
@@ -809,28 +808,53 @@ def buscar_historico_nfc(lastN: int = 10):
         },
         method="GET",
     )
-
     try:
         with urlopen(requisicao, timeout=FIWARE_TIMEOUT) as resposta:
             dados = json.loads(resposta.read().decode("utf-8"))
+        return dados["contextResponses"][0]["contextElement"]["attributes"][0]["values"]
     except HTTPError as erro:
         raise HTTPException(status_code=erro.code, detail="Erro ao consultar STH-Comet.")
     except (TimeoutError, socket.timeout, URLError):
         raise HTTPException(status_code=504, detail="STH-Comet indisponível.")
+    except Exception:
+        return []
 
+
+def ts_para_segundos(ts: str) -> float:
     try:
-        valores = (
-            dados["contextResponses"][0]["contextElement"]["attributes"][0]["values"]
-        )
-    except (KeyError, IndexError):
+        return datetime.fromisoformat(ts.replace("Z", "+00:00")).timestamp()
+    except Exception:
+        return 0.0
+
+
+@app.get("/fiware/nfc/historico")
+def buscar_historico_nfc(lastN: int = 10):
+    valores_nfc  = buscar_historico_atributo("nfcId", lastN)
+    valores_nome = buscar_historico_atributo("name",  lastN * 2)
+
+    if not valores_nfc:
         return {"historico": []}
 
-    historico = [
-        {
-            "nfcId": item.get("attrValue", ""),
-            "recvTime": item.get("recvTime", ""),
-        }
-        for item in reversed(valores)
+    # Indexa nomes por timestamp para cruzamento
+    nomes_por_ts = [
+        (ts_para_segundos(v.get("recvTime", "")), v.get("attrValue", ""))
+        for v in valores_nome
     ]
+
+    def nome_mais_proximo(ts_nfc: float) -> str:
+        if not nomes_por_ts:
+            return ""
+        return min(nomes_por_ts, key=lambda x: abs(x[0] - ts_nfc))[1]
+
+    historico = []
+    for item in reversed(valores_nfc):
+        ts_str = item.get("recvTime", "")
+        ts_seg = ts_para_segundos(ts_str)
+        nome   = nome_mais_proximo(ts_seg)
+        historico.append({
+            "nfcId":    item.get("attrValue", ""),
+            "nome":     nome,
+            "recvTime": ts_str,
+        })
 
     return {"historico": historico}
