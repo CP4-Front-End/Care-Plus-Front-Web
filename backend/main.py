@@ -12,7 +12,8 @@ from gerar_missoes import concluir_missao
 from missoes import gerar_missoes_gerais
 from progresso import preparar_progresso_usuario, registrar_missao_concluida
 from storage import carregar_beneficios, carregar_usuarios, salvar_usuarios
-
+from dotenv import load_dotenv
+load_dotenv()
 app = FastAPI()
 
 QUANTIDADE_BENEFICIOS_SESSAO = 6
@@ -24,7 +25,7 @@ FIWARE_PEDOMETER_ENTITY_ID = os.getenv(
     "urn:ngsi-ld:Pedometer:001"
 )
 FIWARE_PEDOMETER_DEVICE_ID = os.getenv("FIWARE_PEDOMETER_DEVICE_ID", "step001")
-FIWARE_TIMEOUT = float(os.getenv("FIWARE_TIMEOUT", "5"))
+FIWARE_TIMEOUT = float(os.getenv("FIWARE_TIMEOUT", "10"))
 COPO_AGUA_ML = 220
 META_PASSOS_DIARIA = 5000
 META_AGUA_DIARIA_ML = 3000
@@ -214,6 +215,7 @@ def normalizar_entidade_pedometro(entidade):
             ["lum_level", "ln"],
         ),
         "nfcId": extrair_valor_fiware(entidade, "nfcId", ""),
+        "name": extrair_valor_fiware(entidade, "name", ""),
         "error": "",
     }
 
@@ -710,3 +712,46 @@ def concluir_missao_geral(data: dict):
         "status": "ok",
         "missoesGerais": novas_missoes
     }
+
+
+@app.get("/fiware/nfc/historico")
+def buscar_historico_nfc(lastN: int = 10):
+    url = (
+        f"{FIWARE_URL}:8666/STH/v1/contextEntities"
+        f"/type/Pedometer/id/{FIWARE_PEDOMETER_ENTITY_ID}"
+        f"/attributes/nfcId?lastN={lastN}"
+    )
+    requisicao = Request(
+        url,
+        headers={
+            "fiware-service": FIWARE_SERVICE,
+            "fiware-servicepath": FIWARE_SERVICEPATH,
+            "Accept": "application/json",
+        },
+        method="GET",
+    )
+
+    try:
+        with urlopen(requisicao, timeout=FIWARE_TIMEOUT) as resposta:
+            dados = json.loads(resposta.read().decode("utf-8"))
+    except HTTPError as erro:
+        raise HTTPException(status_code=erro.code, detail="Erro ao consultar STH-Comet.")
+    except (TimeoutError, socket.timeout, URLError):
+        raise HTTPException(status_code=504, detail="STH-Comet indisponivel.")
+
+    try:
+        valores = (
+            dados["contextResponses"][0]["contextElement"]["attributes"][0]["values"]
+        )
+    except (KeyError, IndexError):
+        return {"historico": []}
+
+    historico = [
+        {
+            "nfcId": item.get("attrValue", ""),
+            "recvTime": item.get("recvTime", ""),
+        }
+        for item in reversed(valores)
+    ]
+
+    return {"historico": historico}

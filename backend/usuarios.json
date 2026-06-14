@@ -19,53 +19,53 @@
         "beneficiosResgatados": [],
         "beneficiosDisponiveis": [
             {
-                "id": 20,
-                "titulo": "Plano básico do Gympass (1 semana)",
-                "parceiro": "Gympass",
-                "custoTrofeus": 800
+                "id": 7,
+                "titulo": "Desconto de 25% em academia Smart Fit",
+                "parceiro": "Smart Fit",
+                "custoTrofeus": 700
             },
             {
-                "id": 11,
-                "titulo": "Kit de snacks saudáveis (barra + nuts)",
+                "id": 18,
+                "titulo": "Camiseta esportiva dry-fit",
                 "parceiro": "Care Plus",
                 "custoTrofeus": 500
             },
             {
-                "id": 19,
-                "titulo": "Voucher de R$25 na Amazon",
-                "parceiro": "Amazon",
-                "custoTrofeus": 750
-            },
-            {
-                "id": 16,
-                "titulo": "Suplemento multivitamínico (1 mês)",
-                "parceiro": "Care Plus",
+                "id": 5,
+                "titulo": "Cupom de R$20 no iFood",
+                "parceiro": "iFood",
                 "custoTrofeus": 500
             },
             {
-                "id": 13,
-                "titulo": "Fone esportivo Bluetooth",
-                "parceiro": "Care Plus",
-                "custoTrofeus": 800
+                "id": 15,
+                "titulo": "Desconto de 25% em massagem relaxante",
+                "parceiro": "Parceiro wellness",
+                "custoTrofeus": 700
             },
             {
                 "id": 6,
                 "titulo": "Shake proteico da Max Titanium",
                 "parceiro": "Max Titanium",
                 "custoTrofeus": 400
+            },
+            {
+                "id": 3,
+                "titulo": "Barrinha de proteína da Growth Supplements",
+                "parceiro": "Growth Supplements",
+                "custoTrofeus": 450
             }
         ],
         "missoesConcluidasHoje": 0,
-        "ultimoDiaMissoes": "2026-06-09",
+        "ultimoDiaMissoes": "2026-06-14",
         "streak": 0,
         "ultimoDiaStreak": "",
         "streakDiasAcendidos": [],
-        "connectDia": "2026-06-09",
-        "connectWaterMl": 440,
-        "connectUltimoEventoAgua": "2026-06-10T01:39:07.472Z",
+        "connectDia": "2026-06-14",
+        "connectWaterMl": 0,
+        "connectUltimoEventoAgua": "",
         "connectMissoesConcluidas": [],
-        "luminariaEventosConfirmados": 7,
-        "luminariaUltimoEvento": "2026-06-10T01:50:39.883Z"
+        "luminariaEventosConfirmados": 1,
+        "luminariaUltimoEvento": "2026-06-11T23:27:48.283Z"
     },
     "45": {
         "nome": "fg",

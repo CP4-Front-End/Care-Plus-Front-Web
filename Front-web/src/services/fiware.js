@@ -18,6 +18,7 @@ export async function buscarPedometroStep001() {
     dailyStepsAverage: Number(dados.dailyStepsAverage || 0),
     buttonEvent: dados.buttonEvent || '',
     nfcId: dados.nfcId || '',
+    name: dados.name || '',
     error: dados.error || '',
   }
 }
@@ -31,4 +32,15 @@ export async function buscarMissoesConnect(carteirinha) {
   }
 
   return dados
+}
+
+export async function buscarHistoricoNFC(lastN = 10) {
+  const resposta = await fetch(`${API_URL}/fiware/nfc/historico?lastN=${lastN}`)
+  const dados = await resposta.json().catch(() => ({}))
+
+  if (!resposta.ok) {
+    throw new Error(dados.detail || 'Nao foi possivel carregar o historico NFC.')
+  }
+
+  return dados.historico || []
 }

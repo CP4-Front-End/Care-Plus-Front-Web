@@ -11,12 +11,13 @@ import {
   FiSun,
   FiTrendingUp,
   FiWifi,
+  FiTag,
 } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
 import Flux from '../assets/img.png'
 import FluxPC from '../assets/imgPC.png'
-import { buscarMissoesConnect } from '../services/fiware.js'
+import { buscarMissoesConnect, buscarHistoricoNFC } from '../services/fiware.js'
 
 const conquistasMockadas = [
   { id: 1, title: 'Mestre dos Passos', desc: 'De 10.000 passos em um dia.', icon: FiActivity },
@@ -59,6 +60,7 @@ const Connect = () => {
   const [carregando, setCarregando] = useState(true)
   const [erro, setErro] = useState('')
   const [atualizadoEm, setAtualizadoEm] = useState(null)
+  const [historicoNFC, setHistoricoNFC] = useState([])
 
   const carregarConnect = useCallback(async (mostrarLoading = false) => {
     if (mostrarLoading) setCarregando(true)
@@ -80,6 +82,11 @@ const Connect = () => {
       setCopoAguaMl(dados.copoAguaMl || 220)
       setErro(dados.pedometro?.error || '')
       setAtualizadoEm(new Date())
+
+      try {
+        const hist = await buscarHistoricoNFC(10)
+        setHistoricoNFC(hist)
+      } catch (_) {}
 
       if (dados.usuario) {
         localStorage.setItem('trofeus', dados.usuario.trofeus || 0)
@@ -119,6 +126,7 @@ const Connect = () => {
   }, [missoesConnect])
 
   const passosHoje = pedometro?.steps ?? 0
+  const nomePulseira = pedometro?.name || ''
   const mediaDiaria = pedometro?.dailyStepsAverage ?? 0
   const statusPedometro = erro ? 'offline' : pedometro?.status || 'aguardando'
   const resetLabel = luminaria.resetEm?.label || missoesConnect.find((missao) => missao.resetEm?.label)?.resetEm?.label || ''
@@ -194,6 +202,9 @@ const Connect = () => {
                 <p className="text-[#6B7685] text-[12px] mb-1">Status da pulseira</p>
                 <p className="font-bold text-[18px] text-[#1A202C] capitalize">{statusPedometro}</p>
                 <p className="text-[#6B7685] text-[12px] mt-1">{pedometro?.deviceId || 'step001'}</p>
+                {nomePulseira ? (
+                  <p className="text-[#1c9770] text-[12px] font-bold mt-1">Conectado em: {nomePulseira}</p>
+                ) : null}
               </div>
 
               <div className="rounded-md border border-[#E4E7EB] bg-[#F8FAFB] p-3">
@@ -334,6 +345,39 @@ const Connect = () => {
               </div>
             ))}
           </div>
+        </section>
+
+        <section className="mb-4">
+          <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">Historico de Vinculos NFC</h2>
+          {historicoNFC.length === 0 ? (
+            <div className="bg-white rounded-md border border-[#E4E7EB] shadow-brand-card p-4 text-center text-[#6B7685] text-[13px]">
+              Nenhum vinculo registrado ainda.
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {historicoNFC.map((item, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-md border border-[#E4E7EB] shadow-brand-card p-3 flex items-center gap-3"
+                >
+                  <div className="w-10 h-10 rounded-md flex items-center justify-center shrink-0 bg-[rgba(28,151,112,0.08)]">
+                    <FiTag size={18} color="#1c9770" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-bold text-[14px] text-[#1A202C] font-mono">{item.nfcId}</p>
+                    <p className="text-[#6B7685] text-[12px] mt-0.5">
+                      {item.recvTime
+                        ? new Date(item.recvTime).toLocaleString('pt-BR', {
+                            day: '2-digit', month: '2-digit', year: 'numeric',
+                            hour: '2-digit', minute: '2-digit',
+                          })
+                        : '—'}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
         <section>
