@@ -55,12 +55,12 @@ const Cadastro = () => {
 
     {
       field: "distanciaDia",
-      pergunta: "Qual a distância média que você percorre por dia?",
+      pergunta: "Qual é a distância média que você percorre por dia?",
       opcoes: [
-        { value: "menos_1", label: "Menos de 1km" },
-        { value: "1_3", label: "1 a 3km" },
-        { value: "3_6", label: "3 a 6km" },
-        { value: "mais_6", label: "Mais de 6km" },
+        { value: "menos_1", label: "Menos de 1 km" },
+        { value: "1_3", label: "1 a 3 km" },
+        { value: "3_6", label: "3 a 6 km" },
+        { value: "mais_6", label: "Mais de 6 km" },
       ]
     },
 
@@ -68,10 +68,10 @@ const Cadastro = () => {
       field: "agua",
       pergunta: "Quantos litros de água você bebe por dia?",
       opcoes: [
-        { value: "menos_1", label: "Menos de 1L" },
-        { value: "1_2", label: "1 a 2L" },
-        { value: "2_3", label: "2 a 3L" },
-        { value: "mais_3", label: "Mais de 3L" },
+        { value: "menos_1", label: "Menos de 1 L" },
+        { value: "1_2", label: "1 a 2 L" },
+        { value: "2_3", label: "2 a 3 L" },
+        { value: "mais_3", label: "Mais de 3 L" },
       ]
     },
 
@@ -110,7 +110,7 @@ const Cadastro = () => {
 
     {
       field: "cafeina",
-      pergunta: "Quantos copos de cafeína você consome por dia?",
+      pergunta: "Quantos copos de bebidas com cafeína você consome por dia?",
       opcoes: [
         { value: "0", label: "Nenhum" },
         { value: "1_2", label: "1 a 2 copos" },
@@ -187,7 +187,7 @@ const Cadastro = () => {
       const dados = await resposta.json()
 
       if (!resposta.ok) {
-        throw new Error(dados.detail || 'Nao foi possivel salvar seu cadastro.')
+        throw new Error(dados.detail || 'Não foi possível salvar seu cadastro.')
       }
 
       salvarSessaoUsuario(dados.usuario)
@@ -331,7 +331,7 @@ const Cadastro = () => {
                   className="w-full mt-3 font-bold rounded-xl py-3 flex items-center justify-center gap-2 text-[14px] text-[#1c9770] bg-white border-2 border-[#E4E7EB] cursor-pointer"
                   onClick={() => navigate('/login')}
                 >
-                  Ja tenho conta
+                  Já tenho conta
                 </button>
               </section>
             )}

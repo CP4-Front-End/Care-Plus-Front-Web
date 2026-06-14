@@ -69,13 +69,13 @@ def gerar_missoes(carteirinha):
     # distância
     if distancia == "menos_1":
         missoes.append({
-            "titulo": "Caminhe pelo menos 1km hoje",
+            "titulo": "Caminhe pelo menos 1 km hoje",
             "trofeus": 40
         })
 
     elif distancia == "1_3":
         missoes.append({
-            "titulo": "Tente alcançar 3km hoje",
+            "titulo": "Tente alcançar 3 km hoje",
             "trofeus": 30
         })
 
@@ -88,13 +88,13 @@ def gerar_missoes(carteirinha):
     # água
     if agua == "menos_1":
         missoes.append({
-            "titulo": "Beba pelo menos 2L de água hoje",
+            "titulo": "Beba pelo menos 2 L de água hoje",
             "trofeus": 40
         })
 
     elif agua == "1_2":
         missoes.append({
-            "titulo": "Tente atingir 3L de água hoje",
+            "titulo": "Tente atingir 3 L de água hoje",
             "trofeus": 30
         })
 
@@ -183,13 +183,13 @@ def gerar_missoes(carteirinha):
     # ar livre
     if ar_livre == "0_15":
         missoes.append({
-            "titulo": "Passe pelo menos 15min ao ar livre",
+            "titulo": "Passe pelo menos 15 min ao ar livre",
             "trofeus": 40
         })
 
     elif ar_livre == "15_30":
         missoes.append({
-            "titulo": "Tente passar 30min fora hoje",
+            "titulo": "Tente passar 30 min fora hoje",
             "trofeus": 30
         })
 

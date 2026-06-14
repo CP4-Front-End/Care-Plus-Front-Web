@@ -71,7 +71,7 @@ export async function carregarBeneficiosDaSessao(carteirinha, quantidade = 6) {
   const dados = await resposta.json()
 
   if (!resposta.ok) {
-    throw new Error(dados.detail || 'Nao foi possivel carregar os beneficios.')
+    throw new Error(dados.detail || 'Não foi possível carregar os benefícios.')
   }
 
   marcarBeneficiosSessaoAtiva(carteirinha)

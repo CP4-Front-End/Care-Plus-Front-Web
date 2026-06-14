@@ -147,7 +147,7 @@ const Beneficios = () => {
       const dados = await resposta.json()
 
       if (!resposta.ok) {
-        throw new Error(dados.detail || 'Nao foi possivel resgatar este beneficio.')
+        throw new Error(dados.detail || 'Não foi possível resgatar este benefício.')
       }
 
       setUsuario(dados.usuario)
@@ -178,7 +178,7 @@ const Beneficios = () => {
           >
             <FiArrowLeft size={20} />
           </button>
-          <h1 className="font-bold text-[20px] text-[#1A202C]">Beneficios</h1>
+          <h1 className="font-bold text-[20px] text-[#1A202C]">Benefícios</h1>
         </section>
 
         <section className="mb-4">
@@ -223,11 +223,11 @@ const Beneficios = () => {
         </section>
 
         <section className="mb-4">
-          <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">Beneficios ativos</h2>
+          <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">Benefícios ativos</h2>
           <div className="flex flex-col gap-2">
             {beneficiosAtivos.length === 0 && (
               <div className="bg-white rounded-xl border border-[#E4E7EB] shadow-brand-card p-3 text-[#6B7685] text-[13px]">
-                Nenhum beneficio resgatado ainda.
+                Nenhum benefício resgatado ainda.
               </div>
             )}
 
@@ -239,7 +239,7 @@ const Beneficios = () => {
                 <div className="flex-1">
                   <p className="font-bold text-[14px] text-[#1A202C]">{titulo}</p>
                   <p className="text-[#6B7685] text-[12px]">
-                    {parceiro} • {custoTrofeus.toLocaleString('pt-BR')} trofeus
+                    {parceiro} • {custoTrofeus.toLocaleString('pt-BR')} troféus
                   </p>
                 </div>
                 <span className="rounded-full text-[11px] text-white bg-[#1c9770] px-2 py-0.5 font-medium">Ativo</span>
@@ -250,12 +250,12 @@ const Beneficios = () => {
 
         <section className="mb-4">
           <div className="flex justify-between items-center mb-3">
-            <h2 className="font-bold text-[16px] text-[#1A202C]">Disponiveis para resgate</h2>
+            <h2 className="font-bold text-[16px] text-[#1A202C]">Disponíveis para resgate</h2>
           </div>
 
           {carregando ? (
             <div className="bg-white rounded-xl border border-[#E4E7EB] shadow-brand-card p-3 text-[#6B7685] text-[13px]">
-              Carregando beneficios...
+              Carregando benefícios...
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">

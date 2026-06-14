@@ -134,5 +134,73 @@
         "connectMissoesConcluidas": [],
         "luminariaEventosConfirmados": 10,
         "luminariaUltimoEvento": "2026-06-10T02:30:49.657Z"
+    },
+    "21": {
+        "nome": "joao",
+        "carteirinha": "21",
+        "peso": "2",
+        "altura": "2",
+        "atividadeFisica": "3_4",
+        "tempoSentado": "menos_2h",
+        "distanciaDia": "mais_6",
+        "agua": "1_2",
+        "sono": "7_9",
+        "celular": "menos_2",
+        "pausas": "4_6",
+        "cafeina": "0",
+        "arLivre": "30_60",
+        "refeicoes": "4_5",
+        "trofeus": 0,
+        "trofeusAcumulados": 0,
+        "beneficiosResgatados": [],
+        "beneficiosDisponiveis": [
+            {
+                "id": 19,
+                "titulo": "Voucher de R$25 na Amazon",
+                "parceiro": "Amazon",
+                "custoTrofeus": 750
+            },
+            {
+                "id": 13,
+                "titulo": "Fone esportivo Bluetooth",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 800
+            },
+            {
+                "id": 17,
+                "titulo": "Desconto de 20% em nutricionista",
+                "parceiro": "Parceiro saúde",
+                "custoTrofeus": 650
+            },
+            {
+                "id": 3,
+                "titulo": "Barrinha de proteína da Growth Supplements",
+                "parceiro": "Growth Supplements",
+                "custoTrofeus": 450
+            },
+            {
+                "id": 1,
+                "titulo": "Desconto de 20% em corridas da Uber",
+                "parceiro": "Uber",
+                "custoTrofeus": 400
+            },
+            {
+                "id": 2,
+                "titulo": "1 mês grátis de Spotify Premium",
+                "parceiro": "Spotify",
+                "custoTrofeus": 500
+            }
+        ],
+        "missoesConcluidasHoje": 0,
+        "ultimoDiaMissoes": "2026-06-14",
+        "streak": 0,
+        "ultimoDiaStreak": "",
+        "streakDiasAcendidos": [],
+        "connectDia": "2026-06-14",
+        "connectWaterMl": 0,
+        "connectUltimoEventoAgua": "",
+        "connectMissoesConcluidas": [],
+        "luminariaEventosConfirmados": 1,
+        "luminariaUltimoEvento": "2026-06-11T23:27:48.283Z"
     }
 }

@@ -45,7 +45,7 @@ const LGPD = () => {
             Termo de Consentimento
           </h1>
           <p className="text-[#6B7685] text-[14px]">
-            Na Care Plus levamos a sério o tratamento de dados dos nossos usuários.
+            Na Care Plus, levamos a sério o tratamento de dados dos nossos usuários.
           </p>
         </section>
 
@@ -136,7 +136,7 @@ const LGPD = () => {
             className="w-full font-bold rounded-xl py-3 flex items-center justify-center gap-2 text-[15px] text-[#1c9770] bg-white border-2 border-[#E4E7EB] cursor-pointer"
             onClick={() => navigate('/login')}
           >
-            Ja tenho conta
+            Já tenho conta
           </button>
         </div>
 

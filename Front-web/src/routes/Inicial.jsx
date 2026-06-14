@@ -437,7 +437,7 @@ const Inicial = () => {
                     </span>
                     <div>
                       <p className="text-[#6B7685] text-[10px] uppercase font-bold tracking-[0.8px]">
-                        Luminaria
+                        Luminária
                       </p>
                       <p className="text-[#1A202C] text-[12px] font-bold">
                         {luminaria.label}
@@ -475,7 +475,7 @@ const Inicial = () => {
                   </span>
                   <div>
                     <p className="text-[#6B7685] text-[11px] uppercase font-bold tracking-[1px]">
-                      Estado da luminaria
+                      Estado da luminária
                     </p>
                     <p className="text-[#1A202C] text-[16px] font-bold">
                       {luminaria.label}
@@ -518,7 +518,7 @@ const Inicial = () => {
                 <div className="flex items-center justify-between gap-3 mb-3">
                   <div>
                     <p className="text-[#6B7685] text-[11px] uppercase font-bold tracking-[1px]">
-                      Calendario do fogo
+                      Calendário do Flux
                     </p>
                     <h3 className="text-[#1A202C] text-[14px] lg:text-[16px] font-bold capitalize">
                       {nomeMes}
@@ -614,7 +614,7 @@ const Inicial = () => {
           {erroPedometro && (
             <div className="mb-3 rounded-md border border-[#F6AD55]/40 bg-[#F6AD55]/10 px-3 py-2">
               <p className="text-[#6B7685] text-[12px]">
-                Nao foi possivel ler o FIWARE agora. {erroPedometro}
+                Não foi possível ler o FIWARE agora. {erroPedometro}
               </p>
             </div>
           )}
@@ -630,7 +630,7 @@ const Inicial = () => {
             </div>
 
             <div className="bg-white rounded-md p-4 border border-[#E4E7EB] shadow-brand-card">
-              <p className="text-[#6B7685] text-[12px] mb-1">Agua confirmada</p>
+              <p className="text-[#6B7685] text-[12px] mb-1">Água confirmada</p>
               <p className="font-bold text-[28px] text-[#1A202C] leading-none">
                 {aguaMl.toLocaleString('pt-BR')}ml
               </p>
@@ -640,12 +640,12 @@ const Inicial = () => {
             </div>
 
             <div className="bg-white rounded-md p-4 border border-[#E4E7EB] shadow-brand-card">
-              <p className="text-[#6B7685] text-[12px] mb-1">Media diaria passos/min</p>
+              <p className="text-[#6B7685] text-[12px] mb-1">Média diária de passos/min</p>
               <p className="font-bold text-[28px] text-[#1A202C] leading-none">
                 {mediaPassosPedometro.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}
               </p>
               <p className="text-[#6B7685] text-[12px] mt-1">
-                Ultimo botao: {ultimoEventoBotao}
+                Último botão: {ultimoEventoBotao}
               </p>
             </div>
           </div>
@@ -675,7 +675,7 @@ const Inicial = () => {
                           {missao.titulo}
                         </p>
                         <span className="text-[#1c9770] text-[12px] font-bold shrink-0">
-                          {missao.trofeus} trofeus
+                          {missao.trofeus} troféus
                         </span>
                       </div>
                       <p className="text-[#6B7685] text-[12px] mt-1">
@@ -705,7 +705,7 @@ const Inicial = () => {
                           ? 'bg-[rgba(147,203,82,0.18)] text-[#167a5a]'
                           : 'bg-[#F0F2F5] text-[#6B7685]'
                       }`}>
-                        {missao.concluida ? 'Concluida' : 'Em progresso'}
+                        {missao.concluida ? 'Concluída' : 'Em progresso'}
                       </span>
                     </div>
                   </div>

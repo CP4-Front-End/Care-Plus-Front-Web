@@ -43,7 +43,7 @@ const Login = () => {
       const dados = await resposta.json()
 
       if (!resposta.ok) {
-        throw new Error(dados.detail || 'Nao foi possivel entrar.')
+        throw new Error(dados.detail || 'Não foi possível entrar.')
       }
 
       salvarSessaoUsuario(dados.usuario)
@@ -75,10 +75,10 @@ const Login = () => {
                 <p className="text-[#6B7685] text-[14px]">Acesso existente</p>
               </div>
               <h1 className="font-bold text-[22px] text-[#1A202C] mb-1">
-                Voce ja tem conta?
+                Você já tem conta?
               </h1>
               <p className="text-[#6B7685] text-[14px]">
-                Se ja tiver cadastro, entre com nome e carteirinha. Se for novo, crie sua conta para responder o formulario.
+                Se já tiver cadastro, entre com seu nome e sua carteirinha. Se for novo, crie sua conta para responder ao formulário.
               </p>
             </section>
 
@@ -89,7 +89,7 @@ const Login = () => {
                 </div>
                 <h2 className="font-bold text-white text-[20px] mb-1">Sua conta, seu progresso</h2>
                 <p className="text-white/80 text-[13px]">
-                  Trofeus, missoes, streak e beneficios ativos voltam junto com voce.
+                  Troféus, missões, streak e benefícios ativos voltam junto com você.
                 </p>
               </div>
             </section>
@@ -158,7 +158,7 @@ const Login = () => {
                 className="w-full mt-3 font-bold rounded-xl py-3 flex items-center justify-center gap-2 text-[14px] text-[#1c9770] bg-white border-2 border-[#E4E7EB] cursor-pointer"
                 onClick={() => navigate('/lgpd')}
               >
-                Ainda nao tenho conta
+                Ainda não tenho conta
               </button>
             </section>
 

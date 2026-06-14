@@ -24,7 +24,7 @@ const Mind = () => {
     {
       id: 2,
       title: 'Crise de ansiedade?',
-      desc: 'Veja a técnica 5 4 3 2 1 para amenizar crises.',
+      desc: 'Veja a técnica 5-4-3-2-1 para amenizar crises.',
       conteudo:
         'A técnica 5-4-3-2-1 ajuda a reduzir crises de ansiedade trazendo sua atenção para o presente. Observe: 5 coisas que vê, 4 que pode tocar, 3 que consegue ouvir, 2 que consegue sentir o cheiro e 1 que consegue provar. Isso ajuda o cérebro a sair do estado de alerta intenso.'
     },
@@ -94,7 +94,7 @@ const Mind = () => {
                 </div>
                 <p className="font-bold text-[14px] text-[#1A202C] mb-1">Pronto atendimento</p>
                 <p className="text-[#6B7685] text-[12px]">
-                  Serviço de psicólogo online, pronto atendimento a qualquer hora e lugar.
+                  Serviço de psicologia online, com atendimento imediato a qualquer hora e em qualquer lugar.
                 </p>
               </div>
             </a>

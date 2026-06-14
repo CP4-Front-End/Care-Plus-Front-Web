@@ -16,6 +16,7 @@ const Impulso = () => {
   const indiceDia = diaAtual === 0
     ? 6
     : diaAtual - 1
+  const missoesRestantes = Math.max(3 - missoesHoje, 0)
 
 
 
@@ -120,7 +121,7 @@ const Impulso = () => {
             <p className="text-[#6B7685] text-[14px] mb-1">Próxima recompensa em</p>
 
             <span className="font-bold text-[#1c9770] text-[24px]">
-              {Math.max(3 - missoesHoje, 0)} missão(ões)
+              {missoesRestantes} {missoesRestantes === 1 ? 'missão' : 'missões'}
             </span>
 
 

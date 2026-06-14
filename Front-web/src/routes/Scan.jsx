@@ -13,27 +13,7 @@ import {
 } from 'react-icons/fi'
 import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
-
-const RECOMPENSAS_VISUAIS = [
-  {
-    tipo: 'escudo',
-    titulo: 'Escudo de streak',
-    descricao: 'Protecao visual para manter seu streak seguro por um dia.',
-    destaque: '1 escudo',
-  },
-  {
-    tipo: 'multiplicador',
-    titulo: 'Multiplicador de missoes',
-    descricao: 'Bonus visual de uma hora para turbinar suas missoes.',
-    destaque: '2x por 1 hora',
-  },
-  {
-    tipo: 'skip',
-    titulo: 'Skip de missao',
-    descricao: 'Passe visual para pular uma missao quando quiser.',
-    destaque: '1 skip',
-  },
-]
+import { API_URL } from '../services/sessao.js'
 
 function dataHoje() {
   const hoje = new Date()
@@ -77,18 +57,6 @@ function carregarScanDiarioSalvo() {
   }
 }
 
-function sortearRecompensa() {
-  const recompensaTrofeus = {
-    tipo: 'trofeus',
-    titulo: 'Trofeus surpresa',
-    descricao: 'Trofeus visuais recebidos na caixa surpresa de hoje.',
-    destaque: `+${Math.floor(Math.random() * 11) + 20} trofeus`,
-  }
-  const recompensas = [recompensaTrofeus, ...RECOMPENSAS_VISUAIS]
-
-  return recompensas[Math.floor(Math.random() * recompensas.length)]
-}
-
 function IconeRecompensa({ tipo, size = 34, color = '#1c9770' }) {
   if (tipo === 'escudo') return <FiShield size={size} color={color} />
   if (tipo === 'multiplicador') return <FiClock size={size} color={color} />
@@ -103,6 +71,8 @@ const Scan = () => {
   const points = 1500
   const [scanDiario, setScanDiario] = useState(carregarScanDiarioSalvo)
   const [modalAberto, setModalAberto] = useState(false)
+  const [abrindoCaixa, setAbrindoCaixa] = useState(false)
+  const [erroRecompensa, setErroRecompensa] = useState('')
   const { scanFeito, mostrarRecompensa, caixaAberta, recompensa } = scanDiario
 
   const handleScan = () => {
@@ -131,29 +101,54 @@ const Scan = () => {
     }, 1000)
   }
 
-  const abrirCaixaSurpresa = () => {
-    if (caixaAberta) {
+  const abrirCaixaSurpresa = async () => {
+    if (caixaAberta && recompensa?.registrada) {
       setModalAberto(true)
       return
     }
 
-    const premio = sortearRecompensa()
+    const carteirinha = localStorage.getItem('carteirinha')
 
-    setScanDiario({
-      scanFeito: true,
-      mostrarRecompensa: true,
-      caixaAberta: true,
-      recompensa: premio,
-    })
-    setModalAberto(true)
-    localStorage.setItem(
-      chaveScanDiario(),
-      JSON.stringify({
+    if (!carteirinha || abrindoCaixa) return
+
+    setAbrindoCaixa(true)
+    setErroRecompensa('')
+
+    try {
+      const resposta = await fetch(`${API_URL}/recompensa-scan`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ carteirinha }),
+      })
+      const dados = await resposta.json()
+
+      if (!resposta.ok) {
+        throw new Error(dados.detail || 'Não foi possível abrir a caixa surpresa.')
+      }
+
+      const premio = {
+        ...dados.recompensa,
+        registrada: true,
+      }
+      const novoEstado = {
         scanFeito: true,
+        mostrarRecompensa: true,
         caixaAberta: true,
         recompensa: premio,
-      })
-    )
+      }
+
+      setScanDiario(novoEstado)
+      localStorage.setItem(chaveScanDiario(), JSON.stringify(novoEstado))
+      localStorage.setItem('trofeus', dados.usuario.trofeus)
+      window.dispatchEvent(new Event('trofeusAtualizados'))
+      setModalAberto(true)
+    } catch (erro) {
+      setErroRecompensa(erro.message)
+    } finally {
+      setAbrindoCaixa(false)
+    }
   }
 
   return (
@@ -169,7 +164,7 @@ const Scan = () => {
           >
             <FiArrowLeft size={20} />
           </button>
-          <h1 className="font-bold text-[20px] text-[#1A202C]">Scan Diario</h1>
+          <h1 className="font-bold text-[20px] text-[#1A202C]">Scan Diário</h1>
         </section>
 
         {!scanFeito && (
@@ -179,7 +174,7 @@ const Scan = () => {
                 <div className="w-16 h-16 rounded-full bg-white/25 flex items-center justify-center mx-auto mb-3">
                   <FiCamera size={32} color="#fff" />
                 </div>
-                <h2 className="font-bold text-white text-[20px] mb-1">Realize seu Scan diario</h2>
+                <h2 className="font-bold text-white text-[20px] mb-1">Realize seu Scan diário</h2>
                 <p className="text-white opacity-75 text-[13px]">
                   Ganhe uma caixa surpresa ao completar o scan de hoje.
                 </p>
@@ -190,7 +185,7 @@ const Scan = () => {
               <div className="bg-white rounded-xl border border-[#E4E7EB] shadow-brand-card p-3">
                 <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">Como funciona a caixa surpresa?</h2>
                 <p className="text-[#6B7685] text-[14px]">
-                  Todo dia ao entrar no app, voce pode realizar um Scan que identifica idade da pele, rugas, olheiras e outros indicadores. Ao realizar essa mini consulta voce ganha uma caixa surpresa podendo ganhar desde escudos e multiplicadores ate descontos e beneficios com nossas marcas parceiras.
+                  Todos os dias, ao entrar no app, você pode realizar um Scan que identifica a idade da pele, rugas, olheiras e outros indicadores. Ao concluir essa miniconsulta, você recebe uma caixa surpresa com prêmios que vão de escudos e multiplicadores a descontos e benefícios de nossas marcas parceiras.
                 </p>
               </div>
             </section>
@@ -225,7 +220,7 @@ const Scan = () => {
                 </div>
                 <h2 className="font-bold text-white text-[20px] mb-1">Scan realizado!</h2>
                 <p className="text-white opacity-75 text-[13px]">
-                  Sua caixa surpresa diaria ja esta liberada.
+                  Sua caixa surpresa diária já está liberada.
                 </p>
               </div>
             </section>
@@ -237,8 +232,13 @@ const Scan = () => {
                 </div>
                 <h2 className="font-bold text-[16px] text-[#1A202C] mb-1">Sua recompensa</h2>
                 <p className="text-[#6B7685] text-[14px] mb-3">
-                  A caixa surpresa pode liberar trofeus, escudos, multiplicadores ou um skip de missao. Por enquanto os premios sao apenas visuais.
+                  A caixa surpresa pode liberar troféus, escudos, multiplicadores ou um skip de missão. Os troféus são creditados diretamente na sua conta.
                 </p>
+                {erroRecompensa && (
+                  <p className="text-[#C53030] text-[13px] mb-3">
+                    {erroRecompensa}
+                  </p>
+                )}
                 <button
                   className={`rounded-xl py-2 px-4 font-bold text-[14px] text-white shadow-brand-primary inline-flex items-center gap-2 ${
                     caixaAberta
@@ -246,9 +246,14 @@ const Scan = () => {
                       : 'bg-[#1c9770] cursor-pointer'
                   }`}
                   onClick={abrirCaixaSurpresa}
+                  disabled={abrindoCaixa}
                 >
                   <FiGift size={16} color="#fff" />
-                  {caixaAberta ? 'Ver prêmio de hoje' : 'Abrir caixa surpresa'}
+                  {abrindoCaixa
+                    ? 'Abrindo...'
+                    : caixaAberta
+                      ? 'Ver prêmio de hoje'
+                      : 'Abrir caixa surpresa'}
                 </button>
               </div>
             </section>
@@ -258,7 +263,7 @@ const Scan = () => {
                 className="w-full rounded-xl py-3 font-bold text-[14px] text-[#1c9770] border border-[rgba(28,151,112,0.2)] bg-white cursor-pointer"
                 onClick={() => navigate('/inicial')}
               >
-                Voltar para o inicio
+                Voltar para o início
               </button>
             </section>
           </>

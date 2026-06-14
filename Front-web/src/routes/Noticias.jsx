@@ -24,8 +24,8 @@ const Noticias = () => {
     },
     {
       id: 3,
-      titulo: 'Brasil é destaque em encontro latino americano sobre tuberculose',
-      resumo: 'Ministério da Saúde participou da 12ª Reunião da Sociedade Latino Americana de Tuberculose e Outras Micobacterioses, realizada em Montevidéu.',
+      titulo: 'Brasil é destaque em encontro latino-americano sobre tuberculose',
+      resumo: 'O Ministério da Saúde participou da 12ª Reunião da Sociedade Latino-Americana de Tuberculose e Outras Micobacterioses, realizada em Montevidéu.',
       tag: 'Internacional',
       tagClass: 'bg-[rgba(28,151,112,0.1)] text-[#1c9770]',
     },

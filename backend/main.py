@@ -58,7 +58,7 @@ MISSOES_CONNECT = [
     },
     {
         "id": "agua",
-        "titulo": "Beber 3L de agua",
+        "titulo": "Beber 3 L de água",
         "tipo": "water",
         "meta": META_AGUA_DIARIA_ML,
         "unidade": "ml",
@@ -66,11 +66,31 @@ MISSOES_CONNECT = [
     },
     {
         "id": "media-passos",
-        "titulo": "Manter media diaria de passos",
+        "titulo": "Manter média diária de passos",
         "tipo": "daily_steps_average",
         "meta": META_MEDIA_PASSOS_DIARIA,
         "unidade": "passos/min",
         "trofeus": 30,
+    },
+]
+RECOMPENSAS_SCAN_VISUAIS = [
+    {
+        "tipo": "escudo",
+        "titulo": "Escudo de streak",
+        "descricao": "Proteção visual para manter seu streak seguro por um dia.",
+        "destaque": "1 escudo",
+    },
+    {
+        "tipo": "multiplicador",
+        "titulo": "Multiplicador de missões",
+        "descricao": "Bônus visual de uma hora para turbinar suas missões.",
+        "destaque": "2x por 1 hora",
+    },
+    {
+        "tipo": "skip",
+        "titulo": "Skip de missão",
+        "descricao": "Passe visual para pular uma missão quando quiser.",
+        "destaque": "1 skip",
     },
 ]
 
@@ -90,6 +110,26 @@ def preparar_usuario(usuario):
     preparar_progresso_usuario(usuario)
 
     return usuario
+
+
+def sortear_recompensa_scan():
+    indice_recompensa = random.randrange(len(RECOMPENSAS_SCAN_VISUAIS) + 1)
+
+    if indice_recompensa == 0:
+        quantidade = random.randint(20, 30)
+
+        return {
+            "tipo": "trofeus",
+            "titulo": "Troféus surpresa",
+            "descricao": "Troféus creditados na sua conta pela caixa surpresa de hoje.",
+            "destaque": f"+{quantidade} troféus",
+            "valorTrofeus": quantidade,
+        }
+
+    return {
+        **RECOMPENSAS_SCAN_VISUAIS[indice_recompensa - 1],
+        "valorTrofeus": 0,
+    }
 
 
 def extrair_valor_fiware(entidade, atributo, padrao=None):
@@ -175,12 +215,12 @@ def buscar_entidade_pedometro():
         detalhe = erro.read().decode("utf-8", errors="replace")
         raise HTTPException(
             status_code=erro.code,
-            detail=detalhe or "Nao foi possivel consultar o Orion."
+            detail=detalhe or "Não foi possível consultar o Orion."
         ) from erro
     except (TimeoutError, socket.timeout, URLError) as erro:
         raise HTTPException(
             status_code=504,
-            detail="FIWARE indisponivel ou sem resposta no momento."
+            detail="FIWARE indisponível ou sem resposta no momento."
         ) from erro
 
 
@@ -446,7 +486,7 @@ def buscar_missoes_connect(carteirinha: str):
     usuario = usuarios.get(carteirinha)
 
     if not usuario:
-        raise HTTPException(status_code=404, detail="Usuario nao encontrado")
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
     preparar_connect_usuario(usuario)
 
@@ -506,6 +546,8 @@ def cadastro(dados: dict):
             "streakDiasAcendidos",
             "missoesAtivas",
             "missoesGeraisAtivas",
+            "scanRecompensaDia",
+            "scanRecompensa",
         ]
 
         for campo in campos_de_progresso:
@@ -533,7 +575,7 @@ def cadastro(dados: dict):
 
     return {
         "status": "ok",
-        "mensagem": "Usuario salvo",
+        "mensagem": "Usuário salvo",
         "usuario": dados
     }
 
@@ -547,10 +589,10 @@ def login(dados: dict):
     usuario = preparar_usuario(usuarios.get(carteirinha))
 
     if not usuario:
-        raise HTTPException(status_code=404, detail="Usuario nao encontrado")
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
     if normalizar_texto(usuario.get("nome")) != normalizar_texto(nome):
-        raise HTTPException(status_code=401, detail="Nome ou carteirinha invalidos")
+        raise HTTPException(status_code=401, detail="Nome ou carteirinha inválidos")
 
     garantir_beneficios_sessao(
         usuario,
@@ -589,7 +631,7 @@ def buscar_beneficios_sorteados(
         usuario = preparar_usuario(usuarios.get(carteirinha))
 
         if not usuario:
-            raise HTTPException(status_code=404, detail="Usuario nao encontrado")
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
         beneficios_sessao = garantir_beneficios_sessao(
             usuario,
@@ -617,7 +659,7 @@ def resgatar_beneficio(data: dict):
     usuario = preparar_usuario(usuarios.get(carteirinha))
 
     if not usuario:
-        raise HTTPException(status_code=404, detail="Usuario nao encontrado")
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
     beneficio = next(
         (item for item in beneficios if item["id"] == id_beneficio),
@@ -625,7 +667,7 @@ def resgatar_beneficio(data: dict):
     )
 
     if not beneficio:
-        raise HTTPException(status_code=404, detail="Beneficio nao encontrado")
+        raise HTTPException(status_code=404, detail="Benefício não encontrado")
 
     beneficios_resgatados = usuario.setdefault("beneficiosResgatados", [])
     ja_resgatado = any(
@@ -634,10 +676,10 @@ def resgatar_beneficio(data: dict):
     )
 
     if ja_resgatado:
-        raise HTTPException(status_code=400, detail="Beneficio ja resgatado")
+        raise HTTPException(status_code=400, detail="Benefício já resgatado")
 
     if usuario.get("trofeus", 0) < beneficio["custoTrofeus"]:
-        raise HTTPException(status_code=400, detail="Trofeus insuficientes")
+        raise HTTPException(status_code=400, detail="Troféus insuficientes")
 
     usuario["trofeus"] -= beneficio["custoTrofeus"]
     beneficios_resgatados.append(beneficio)
@@ -647,6 +689,43 @@ def resgatar_beneficio(data: dict):
         "status": "ok",
         "usuario": usuario,
         "beneficio": beneficio
+    }
+
+
+@app.post("/recompensa-scan")
+def abrir_recompensa_scan(data: dict):
+    usuarios = carregar_usuarios()
+    carteirinha = str(data.get("carteirinha", "")).strip()
+    usuario = preparar_usuario(usuarios.get(carteirinha))
+
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+    hoje = str(date.today())
+
+    if (
+        usuario.get("scanRecompensaDia") == hoje
+        and usuario.get("scanRecompensa")
+    ):
+        return {
+            "status": "ok",
+            "recompensa": usuario["scanRecompensa"],
+            "usuario": usuario,
+        }
+
+    recompensa = sortear_recompensa_scan()
+    valor_trofeus = recompensa.get("valorTrofeus", 0)
+
+    usuario["trofeus"] += valor_trofeus
+    usuario["trofeusAcumulados"] += valor_trofeus
+    usuario["scanRecompensaDia"] = hoje
+    usuario["scanRecompensa"] = recompensa
+    salvar_usuarios(usuarios)
+
+    return {
+        "status": "ok",
+        "recompensa": recompensa,
+        "usuario": usuario,
     }
 
 
@@ -683,7 +762,7 @@ def concluir_missao_geral(data: dict):
     usuario = preparar_usuario(usuarios.get(carteirinha))
 
     if not usuario:
-        raise HTTPException(status_code=404, detail="Usuario nao encontrado")
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
     id_missao = data.get("idMissao")
     trofeus = data.get("trofeus", 0)
@@ -737,7 +816,7 @@ def buscar_historico_nfc(lastN: int = 10):
     except HTTPError as erro:
         raise HTTPException(status_code=erro.code, detail="Erro ao consultar STH-Comet.")
     except (TimeoutError, socket.timeout, URLError):
-        raise HTTPException(status_code=504, detail="STH-Comet indisponivel.")
+        raise HTTPException(status_code=504, detail="STH-Comet indisponível.")
 
     try:
         valores = (

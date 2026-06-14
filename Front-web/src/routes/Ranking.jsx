@@ -48,7 +48,7 @@ const Ranking = () => {
               }
             }
           } catch {
-            // O ranking usa o progresso salvo quando o FIWARE nao responde.
+            // O ranking usa o progresso salvo quando o FIWARE não responde.
           }
         }
 
@@ -122,7 +122,7 @@ const Ranking = () => {
                 : `Você está em ${usuarioNoRanking?.posicao || 1}° lugar!`}
             </h2>
             <p className="text-white opacity-75 text-[13px] mb-2">
-              Nivel {nivelUsuario} baseado no total histórico ganho
+              Nível {nivelUsuario}, com base no total histórico acumulado
             </p>
             <span className="font-bold inline-block px-3 py-1 rounded-full bg-white text-[#1c9770] text-[14px]">
               {trofeusHistoricos.toLocaleString('pt-BR')} troféus históricos

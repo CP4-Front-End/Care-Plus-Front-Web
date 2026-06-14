@@ -298,16 +298,16 @@ const Perfil = () => {
     { label: 'Carteirinha', valor: usuario?.carteirinha || '-' },
     { label: 'Peso', valor: usuario?.peso ? `${usuario.peso} kg` : '-' },
     { label: 'Altura', valor: usuario?.altura ? `${usuario.altura} cm` : '-' },
-    { label: 'Atividade fÃ­sica', valor: nivelLabel('atividadeFisica', usuario?.atividadeFisica) },
+    { label: 'Atividade física', valor: nivelLabel('atividadeFisica', usuario?.atividadeFisica) },
     { label: 'Tempo sentado', valor: nivelLabel('tempoSentado', usuario?.tempoSentado) },
-    { label: 'DistÃ¢ncia por dia', valor: nivelLabel('distanciaDia', usuario?.distanciaDia) },
-    { label: 'Consumo de Ã¡gua', valor: nivelLabel('agua', usuario?.agua) },
+    { label: 'Distância por dia', valor: nivelLabel('distanciaDia', usuario?.distanciaDia) },
+    { label: 'Consumo de água', valor: nivelLabel('agua', usuario?.agua) },
     { label: 'Qualidade do sono', valor: nivelLabel('sono', usuario?.sono) },
     { label: 'Tempo no celular', valor: nivelLabel('celular', usuario?.celular) },
     { label: 'Pausas no dia', valor: nivelLabel('pausas', usuario?.pausas) },
-    { label: 'Consumo de cafeÃ­na', valor: nivelLabel('cafeina', usuario?.cafeina) },
+    { label: 'Consumo de cafeína', valor: nivelLabel('cafeina', usuario?.cafeina) },
     { label: 'Tempo ao ar livre', valor: nivelLabel('arLivre', usuario?.arLivre) },
-    { label: 'RefeiÃ§Ãµes por dia', valor: nivelLabel('refeicoes', usuario?.refeicoes) },
+    { label: 'Refeições por dia', valor: nivelLabel('refeicoes', usuario?.refeicoes) },
   ]
 
 

@@ -5,7 +5,7 @@ export async function buscarPedometroStep001() {
   const dados = await resposta.json().catch(() => ({}))
 
   if (!resposta.ok) {
-    throw new Error(dados.detail || 'Nao foi possivel carregar a pulseira.')
+    throw new Error(dados.detail || 'Não foi possível carregar a pulseira.')
   }
 
   return {
@@ -28,7 +28,7 @@ export async function buscarMissoesConnect(carteirinha) {
   const dados = await resposta.json().catch(() => ({}))
 
   if (!resposta.ok) {
-    throw new Error(dados.detail || 'Nao foi possivel carregar as missoes Connect+.')
+    throw new Error(dados.detail || 'Não foi possível carregar as missões Connect+.')
   }
 
   return dados
@@ -39,7 +39,7 @@ export async function buscarHistoricoNFC(lastN = 10) {
   const dados = await resposta.json().catch(() => ({}))
 
   if (!resposta.ok) {
-    throw new Error(dados.detail || 'Nao foi possivel carregar o historico NFC.')
+    throw new Error(dados.detail || 'Não foi possível carregar o histórico NFC.')
   }
 
   return dados.historico || []
