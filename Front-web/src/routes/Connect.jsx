@@ -20,10 +20,10 @@ import FluxPC from '../assets/imgPC.png'
 import { buscarMissoesConnect, buscarHistoricoNFC } from '../services/fiware.js'
 
 const conquistasMockadas = [
-  { id: 1, title: 'Mestre dos Passos', desc: 'Dê 10.000 passos em um dia.', icon: FiActivity },
+  { id: 1, title: 'Mestre dos Passos', desc: 'De 10.000 passos em um dia.', icon: FiActivity },
   { id: 2, title: 'Caminhante', desc: 'Complete a meta de passos por 3 dias seguidos.', icon: FiTrendingUp },
-  { id: 3, title: 'Rei das Garrafinhas', desc: 'Beba 3 L de água diariamente por 3 dias.', icon: FiDroplet },
-  { id: 4, title: 'Hidratado', desc: 'Registre todos os copos de água do dia.', icon: FiAward },
+  { id: 3, title: 'Rei das Garrafinhas', desc: 'Beba 3L de agua diarios por 3 dias.', icon: FiDroplet },
+  { id: 4, title: 'Hidratado', desc: 'Registre todos os copos de agua do dia.', icon: FiAward },
 ]
 
 function formatarValorMissao(missao) {
@@ -86,9 +86,7 @@ const Connect = () => {
       try {
         const hist = await buscarHistoricoNFC(10)
         setHistoricoNFC(hist)
-      } catch {
-        setHistoricoNFC([])
-      }
+      } catch (_) {}
 
       if (dados.usuario) {
         localStorage.setItem('trofeus', dados.usuario.trofeus || 0)
@@ -170,7 +168,7 @@ const Connect = () => {
                 </div>
                 <div>
                   <p className="text-[#6B7685] text-[11px] uppercase font-bold tracking-[1px]">
-                    Pulseira e luminária
+                    Pulseira e luminaria
                   </p>
                   <h2 className="font-bold text-[#1A202C] text-[18px]">step001 em tempo real</h2>
                   <p className="text-[#6B7685] text-[12px]">Atualizado {textoAtualizacao}</p>
@@ -194,7 +192,7 @@ const Connect = () => {
             {erro && (
               <div className="mb-3 rounded-md border border-[#F6AD55]/40 bg-[#F6AD55]/10 px-3 py-2">
                 <p className="text-[#6B7685] text-[12px]">
-                  Não foi possível ler o FIWARE agora. {erro}
+                  Nao foi possivel ler o FIWARE agora. {erro}
                 </p>
               </div>
             )}
@@ -215,12 +213,12 @@ const Connect = () => {
                   {carregando && !pedometro ? 'Carregando...' : passosHoje.toLocaleString('pt-BR')}
                 </p>
                 <p className="text-[#6B7685] text-[12px] mt-1">
-                  Média de {mediaDiaria.toLocaleString('pt-BR', { maximumFractionDigits: 1 })} passos/min
+                  Media {mediaDiaria.toLocaleString('pt-BR', { maximumFractionDigits: 1 })} passos/min
                 </p>
               </div>
 
               <div className="rounded-md border border-[#E4E7EB] bg-[#F8FAFB] p-3">
-                <p className="text-[#6B7685] text-[12px] mb-1">Água confirmada</p>
+                <p className="text-[#6B7685] text-[12px] mb-1">Agua confirmada</p>
                 <p className="font-bold text-[24px] text-[#1A202C] leading-none">
                   {aguaMl.toLocaleString('pt-BR')}ml
                 </p>
@@ -239,11 +237,11 @@ const Connect = () => {
                   >
                     <FiSun size={15} />
                   </span>
-                  <p className="text-[#6B7685] text-[12px]">Luminária</p>
+                  <p className="text-[#6B7685] text-[12px]">Luminaria</p>
                 </div>
                 <p className="font-bold text-[18px] text-[#1A202C]">{luminaria.label}</p>
                 <p className="text-[#6B7685] text-[12px] mt-1">
-                  {resetLabel ? `Reseta em ${resetLabel}` : 'Reset diário aguardando'}
+                  {resetLabel ? `Reseta em ${resetLabel}` : 'Reset diario aguardando'}
                 </p>
               </div>
             </div>
@@ -252,7 +250,7 @@ const Connect = () => {
 
         <section className="mb-4">
           <div className="flex items-center justify-between gap-3 mb-3">
-            <h2 className="font-bold text-[16px] text-[#1A202C]">Missões Connect+</h2>
+            <h2 className="font-bold text-[16px] text-[#1A202C]">Missoes Connect+</h2>
             {resetLabel && (
               <span className="inline-flex items-center gap-1 rounded-full bg-[rgba(28,151,112,0.1)] px-3 py-1 text-[12px] font-bold text-[#1c9770]">
                 <FiClock size={13} />
@@ -286,7 +284,7 @@ const Connect = () => {
                           {missao.titulo}
                         </p>
                         <span className="text-[#1c9770] text-[12px] font-bold shrink-0">
-                          {missao.trofeus} troféus
+                          {missao.trofeus} trofeus
                         </span>
                       </div>
                       <p className="text-[#6B7685] text-[12px] mt-1">
@@ -311,7 +309,7 @@ const Connect = () => {
                         ? 'bg-[rgba(147,203,82,0.18)] text-[#167a5a]'
                         : 'bg-[#F0F2F5] text-[#6B7685]'
                     }`}>
-                      {missao.concluida ? 'Concluída' : 'Em progresso'}
+                      {missao.concluida ? 'Concluida' : 'Em progresso'}
                     </span>
                   </div>
 
@@ -350,10 +348,10 @@ const Connect = () => {
         </section>
 
         <section className="mb-4">
-          <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">Histórico de vínculos NFC</h2>
+          <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">Historico de Vinculos NFC</h2>
           {historicoNFC.length === 0 ? (
             <div className="bg-white rounded-md border border-[#E4E7EB] shadow-brand-card p-4 text-center text-[#6B7685] text-[13px]">
-              Nenhum vínculo registrado ainda.
+              Nenhum vinculo registrado ainda.
             </div>
           ) : (
             <div className="flex flex-col gap-2">
@@ -390,7 +388,7 @@ const Connect = () => {
             <div>
               <p className="font-bold text-[12px] text-[#1c9770]">Em breve</p>
               <p className="text-[#6B7685] text-[12px]">
-                Novas leituras da pulseira a caminho: frequência cardíaca, sono e muito mais.
+                Novas leituras da pulseira a caminho: frequencia cardiaca, sono e muito mais.
               </p>
             </div>
             <FiArrowRight size={16} color="#1c9770" />
