@@ -307,5 +307,110 @@
                 "id": 3
             }
         ]
+    },
+    "271206": {
+        "nome": "João Pedro ",
+        "carteirinha": "271206",
+        "peso": "84",
+        "altura": "184",
+        "atividadeFisica": "1_2",
+        "tempoSentado": "menos_2h",
+        "distanciaDia": "1_3",
+        "agua": "menos_1",
+        "sono": "mais_9",
+        "celular": "menos_2",
+        "pausas": "1_3",
+        "cafeina": "0",
+        "arLivre": "30_60",
+        "refeicoes": "3",
+        "trofeus": 595,
+        "trofeusAcumulados": 595,
+        "beneficiosResgatados": [],
+        "beneficiosDisponiveis": [
+            {
+                "id": 9,
+                "titulo": "Desconto de R$15 em corrida 99",
+                "parceiro": "99",
+                "custoTrofeus": 400
+            },
+            {
+                "id": 19,
+                "titulo": "Voucher de R$25 na Amazon",
+                "parceiro": "Amazon",
+                "custoTrofeus": 750
+            },
+            {
+                "id": 2,
+                "titulo": "1 mês grátis de Spotify Premium",
+                "parceiro": "Spotify",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 7,
+                "titulo": "Desconto de 25% em academia Smart Fit",
+                "parceiro": "Smart Fit",
+                "custoTrofeus": 700
+            },
+            {
+                "id": 16,
+                "titulo": "Suplemento multivitamínico (1 mês)",
+                "parceiro": "Care Plus",
+                "custoTrofeus": 500
+            },
+            {
+                "id": 4,
+                "titulo": "Desconto de 30% em consulta na Dr. Consulta",
+                "parceiro": "Dr. Consulta",
+                "custoTrofeus": 600
+            }
+        ],
+        "missoesConcluidasHoje": 22,
+        "ultimoDiaMissoes": "2026-06-15",
+        "streak": 1,
+        "ultimoDiaStreak": "2026-06-15",
+        "streakDiasAcendidos": [
+            "2026-06-15"
+        ],
+        "connectDia": "2026-06-15",
+        "connectWaterMl": 220,
+        "connectUltimoEventoAgua": "2026-06-16T02:07:57.678Z",
+        "connectMissoesConcluidas": [],
+        "luminariaEventosConfirmados": 2,
+        "luminariaUltimoEvento": "2026-06-16T02:33:54.168Z",
+        "missoesAtivas": [
+            {
+                "titulo": "Ótimo controle de tela",
+                "trofeus": 20,
+                "id": 1,
+                "concluida": false
+            },
+            {
+                "titulo": "Continue se movimentando ao longo do dia",
+                "trofeus": 20,
+                "id": 2,
+                "concluida": false
+            },
+            {
+                "titulo": "Excelente contato com ambiente externo",
+                "trofeus": 20,
+                "id": 3,
+                "concluida": false
+            }
+        ],
+        "missoesGeraisAtivas": [
+            {
+                "missao": "Fazer uma atividade relaxante por 10 minutos",
+                "trofeus": 30,
+                "id": 2
+            },
+            {
+                "missao": "Reduzir o brilho da tela por um tempo",
+                "trofeus": 15,
+                "id": 3
+            }
+        ],
+        "missoesPorDia": {
+            "2026-06-15": 22
+        }
     }
 }

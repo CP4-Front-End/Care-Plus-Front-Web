@@ -501,6 +501,7 @@ def cadastro(dados: dict):
             "beneficiosDisponiveis",
             "missoesConcluidasHoje",
             "ultimoDiaMissoes",
+            "missoesPorDia",
             "streak",
             "ultimoDiaStreak",
             "streakDiasAcendidos",
@@ -517,6 +518,7 @@ def cadastro(dados: dict):
         dados["beneficiosResgatados"] = []
         dados["beneficiosDisponiveis"] = []
         dados["missoesConcluidasHoje"] = 0
+        dados["missoesPorDia"] = {}
         preparar_progresso_usuario(dados)
         dados["streak"] = 0
         dados["ultimoDiaStreak"] = ""
@@ -569,6 +571,9 @@ def login(dados: dict):
 def buscar_usuario(carteirinha: str):
     usuarios = carregar_usuarios()
     usuario = preparar_usuario(usuarios.get(carteirinha))
+
+    if usuario:
+        salvar_usuarios(usuarios)
 
     return usuario
 

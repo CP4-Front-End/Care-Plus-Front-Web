@@ -7,10 +7,16 @@ import flux from '../assets/flux.png'
 import { API_URL } from '../services/sessao.js'
 import { buscarMissoesConnect } from '../services/fiware.js'
 
+function formatarDataLocal(data) {
+  return `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, '0')}-${String(data.getDate()).padStart(2, '0')}`
+}
+
 const Impulso = () => {
   const navigate = useNavigate()
   const [streakDias, setStreakDias] = useState(0)
   const [missoesHoje, setMissoesHoje] = useState(0)
+  const [missoesPorDia, setMissoesPorDia] = useState({})
+  const [streakDiasAcendidos, setStreakDiasAcendidos] = useState([])
   const diaAtual = new Date().getDay()
 
   const indiceDia = diaAtual === 0
@@ -51,6 +57,8 @@ const Impulso = () => {
       if (!usuario) return
 
       setStreakDias(usuario.streak || 0)
+      setMissoesPorDia(usuario.missoesPorDia || {})
+      setStreakDiasAcendidos(usuario.streakDiasAcendidos || [])
 
       setMissoesHoje(
         usuario.missoesConcluidasHoje || 0
@@ -80,6 +88,23 @@ const Impulso = () => {
     { id: 3, icon: FiStar, title: 'Ganhe recompensas', desc: 'Quanto maior seu streak, melhores as recompensas desbloqueadas.' },
     { id: 4, icon: FiAward, title: 'Suba de nível', desc: 'Evolua sua conta e desbloqueie benefícios exclusivos.' },
   ]
+
+  const dataHoje = new Date()
+  const chaveHoje = formatarDataLocal(dataHoje)
+  const inicioSemana = new Date(dataHoje)
+  inicioSemana.setDate(dataHoje.getDate() - indiceDia)
+  const diasComFluxAceso = new Set(streakDiasAcendidos)
+  const progressoSemanal = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'].map((dia, index) => {
+    const data = new Date(inicioSemana)
+    data.setDate(inicioSemana.getDate() + index)
+    const chave = formatarDataLocal(data)
+    const quantidade = missoesPorDia[chave] || (chave === chaveHoje ? missoesHoje : 0)
+
+    return {
+      dia,
+      quantidade: diasComFluxAceso.has(chave) ? Math.max(quantidade, 3) : quantidade,
+    }
+  })
 
   return (
     <div className="min-h-screen bg-[#F4F6F8]">
@@ -149,14 +174,21 @@ const Impulso = () => {
           <div className="bg-white rounded-xl border border-[#E4E7EB] shadow-brand-card p-3">
             <h2 className="font-bold text-[16px] text-[#1A202C] mb-3">Seu progresso semanal</h2>
             <div className="flex justify-between items-end gap-2">
-              {['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'].map((dia, index) => (
+              {progressoSemanal.map(({ dia, quantidade }) => (
                 <div key={dia} className="flex flex-col items-center gap-1 flex-1">
+                  <span className="text-[#1c9770] font-bold text-[12px]">{quantidade}</span>
 
                   <div
-                    className={`w-full rounded transition-all duration-300 ${index === indiceDia && streakDias > 0
-                        ? 'bg-[#1c9770] h-14'
-                        : 'bg-[rgba(28,151,112,0.1)] h-5'
+                    className={`w-full rounded transition-all duration-300 ${quantidade > 0
+                        ? 'bg-[#1c9770]'
+                        : 'bg-[rgba(28,151,112,0.1)]'
                       }`}
+                    style={{
+                      height: `${Math.max(
+                        Math.min(quantidade, 5) * 12,
+                        quantidade > 0 ? 18 : 20
+                      )}px`
+                    }}
                   />
 
 

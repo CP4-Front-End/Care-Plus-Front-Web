@@ -5,12 +5,17 @@ import TopBar from '../components/TopBar.jsx'
 import Bottomnav from '../components/Bottomnav.jsx'
 import { limparSessaoUsuario } from '../services/sessao.js'
 
+function formatarDataLocal(data) {
+  return `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, '0')}-${String(data.getDate()).padStart(2, '0')}`
+}
+
 const Perfil = () => {
   const [nome, setNome] = useState('')
   const navigate = useNavigate()
   const [usuario, setUsuario] = useState(null)
   const [nivel, setNivel] = useState("Bronze")
   const [missoesHoje, setMissoesHoje] = useState(0)
+  const [missoesPorDia, setMissoesPorDia] = useState({})
 
   useEffect(() => {
     async function carregarUsuario() {
@@ -36,6 +41,7 @@ const Perfil = () => {
       }
 
       setUsuario(dados)
+      setMissoesPorDia(dados.missoesPorDia || {})
       setMissoesHoje(
         dados.missoesConcluidasHoje || 0
       )
@@ -92,6 +98,7 @@ const Perfil = () => {
       }
 
       setUsuario(dados)
+      setMissoesPorDia(dados.missoesPorDia || {})
       setMissoesHoje(
         dados.missoesConcluidasHoje || 0
       )
@@ -135,16 +142,28 @@ const Perfil = () => {
 
 
 
-  const hoje = new Date().getDay()
-
   const dias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab']
 
-  const missoesDiarias = dias.map((dia, index) => ({
-    dia,
-    quantidade: index === hoje ? missoesHoje : 0
-  }))
+  const dataHoje = new Date()
+  const chaveHoje = formatarDataLocal(dataHoje)
+  const inicioSemana = new Date(dataHoje)
+  inicioSemana.setDate(dataHoje.getDate() - dataHoje.getDay())
 
-  const maxMissoes = 10
+  const missoesDiarias = dias.map((dia, index) => {
+    const data = new Date(inicioSemana)
+    data.setDate(inicioSemana.getDate() + index)
+    const chave = formatarDataLocal(data)
+
+    return {
+      dia,
+      quantidade: missoesPorDia[chave] || (chave === chaveHoje ? missoesHoje : 0)
+    }
+  })
+
+  const maxMissoes = Math.max(
+    10,
+    ...missoesDiarias.map(({ quantidade }) => quantidade)
+  )
 
 
   const trofeus = [
